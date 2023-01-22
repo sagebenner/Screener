@@ -1,0 +1,200 @@
+body {
+  margin: 100;
+  padding: 100;
+  font-family: "Times New Roman", Times New Roman;
+  color: #444;
+}
+/*
+ * Formatting the header area
+ */
+
+header {
+  background-color: #0057B7;
+  height: 35px;
+  width: 100%;
+  opacity: .9;
+  margin-bottom: 0px;
+  text-align: center;
+  text-transform: uppercase;
+  text-color: #444;
+}
+header h1.logo {
+  margin: 0;
+  font-size: 1.7em;
+  color: #fff;
+  text-transform: uppercase;
+  float: left;
+}
+header h1.logo:hover {
+  color: #fff;
+  text-decoration: none;
+  text-align: center:
+}
+/*
+ * Centering the body content
+ */
+.container {
+  width: 1000px;
+  margin: 10 auto;
+}
+div.home {
+  padding: 10px 0 30px 0;
+  background-color: #E6E6FA;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+}
+div.about {
+  padding: 10px 0 30px 0;
+  background-color: #E6E6FA;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+    width: 10%;
+
+}
+a {
+ left: 10px;
+  bottom: 20px;
+  text-align:center;
+  position: absolute;
+}
+button {
+  font-size: 1.1em;
+  font-weight: 100;
+  margin-top: 30px;
+  margin-left: 250px;
+  text-align: center;
+  letter-spacing: 0px;
+  color: #777;
+}
+h2 {
+  font-size: 3em;
+  margin-top: 40px;
+  text-align: center;
+  letter-spacing: -2px;
+}
+h3 {
+  font-size: 1.7em;
+  font-weight: 100;
+  margin-top: 30px;
+  text-align: center;
+  letter-spacing: -1px;
+  color: #999;
+}
+p {
+  font-size: 1em;
+  font-weight: 50;
+  margin-top: 30px;
+  margin-left: 200px;
+  margin-right: 200px;
+  text-align: left;
+  letter-spacing: 0px;
+  color: #444;
+}
+
+.menu {
+  float: right;
+  margin-top: 8px;
+}
+.menu li {
+  display: inline;
+}
+.menu li + li {
+  margin-left: 35px;
+}
+.menu li a {
+  color: #444;
+  text-decoration: none;
+}
+.parent{
+  text-align:center;
+}
+
+.button{
+  width: 10%;
+  left: 600px;
+  bottom: 0px;
+  text-align:center;
+  position: relative;
+}
+/* The container must be positioned relative: */
+.custom-select {
+  position: relative;
+  font-family: Times New Roman;
+  width: 100%;
+  left: 0px;
+  bottom: 500px;
+  position: absolute;
+}
+
+.select {
+  // A reset of styles, including removing the default dropdown arrow
+  appearance: none;
+  // Additional resets for further consistency
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 10%;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+
+}
+
+.select-selected {
+  background-color: DodgerBlue;
+}
+
+/* Style the arrow inside the select element: */
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
+}
+
+/* Point the arrow upwards when the select box is open (active): */
+.select-selected.select-arrow-active:after {
+  border-color: transparent transparent #fff transparent;
+  top: 7px;
+}
+
+/* style the items (options), including the selected item: */
+.select-items div,.select-selected {
+  color: #ffffff;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+}
+
+/* Style items (options): */
+.select-items {
+  position: absolute;
+  background-color: DodgerBlue;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+/* Hide the items when the select box is closed: */
+.select-hide {
+  display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.your-div{
+   vertical-align: bottom;
+   display: table-cell;
+   position: absolute;
+}

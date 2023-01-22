@@ -1,0 +1,30 @@
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
+<form method="post" enctype="multipart/form-data">
+    <div>
+        <h1>Minimum exercise makes you physically tired</h1>
+    </div>
+    <div id="left" style="display: inline-block;width:40%;height:200px;float:left;">
+    <label>
+    <p>{{ radio2f }}</b></p><br>
+    <p> </p>
+     </label>
+
+
+
+
+</div>
+    <div id="right" style="display:inline-block; width:45%; height:200px;float:right;">
+        <label>
+            <p>
+                {{ radio2s }}
+            </p>
+        </label>
+    </div>
+
+<div class='parent'>
+      <label class="button">
+        {{ button }}
+    </label>
+</div>
+</form>
+
