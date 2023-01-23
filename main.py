@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import RadioField, SubmitField
-from wtforms.validators import InputRequired
+import pandas as pd
+#from wtforms.validators import InputRequired
 
 SECRET_KEY = 'development'
 
@@ -157,10 +158,12 @@ def page4():
         session["remembers"] = remembers
         if int(session["rememberf"])>=2 and int(session["remembers"])>=2:
             cogdomain=1
-        return redirect(url_for("excog1"))
+            return diagnose("example3")
+        else:
+            return redirect(url_for("excog1"))
     return render_template("page4.html")
 
-@app.route('/end', methods=['get'])
+@app.route('/end2', methods=['get'])
 def end2():
     global pagenum
     fatiguescoref=int(session["fatiguescoref"])
@@ -188,6 +191,7 @@ def end2():
 @app.route('/soreness', methods = ['post', 'get'])
 def expem1():
     form = FlaskForm()
+    global pemdomain
     if request.method == "POST":
         soref = request.form.get("soref")
         sores = request.form.get("sores")
@@ -203,6 +207,7 @@ def expem1():
 @app.route('/drained', methods = ['post', 'get'])
 def expem2():
     form = FlaskForm()
+    global pemdomain
     if request.method == "POST":
         session["drainedf"] = request.form.get("drainedf")
         session["draineds"] = request.form.get("draineds")
@@ -216,6 +221,7 @@ def expem2():
 @app.route('/heavy', methods = ['post', 'get'])
 def expem3():
     form = FlaskForm()
+    global pemdomain
     if request.method == "POST":
         session["heavyf"] = request.form.get("heavyf")
         session["heavys"] = request.form.get("heavys")
@@ -229,6 +235,7 @@ def expem3():
 @app.route('/mentally', methods = ['post', 'get'])
 def expem4():
     form = FlaskForm()
+    global pemdomain
     if request.method == "POST":
         session["mentalf"] = request.form.get("mentalf")
         session["mentals"] = request.form.get("mentals")
@@ -293,7 +300,7 @@ def exsleep4():
             sleepdomain=1
             return redirect(url_for("page4"))
         else:
-            return diagnose("end")
+            return redirect(url_for("end"))
     return render_template("exsleep4.html")
 
 @app.route('/attention', methods = ['post', 'get'])
@@ -347,12 +354,12 @@ def excog3():
 
     return render_template("excog3.html")
 
-@app.route('/end')
+@app.route('/end', methods = ['post', 'get'])
 def end():
-    if sleepdomain==1 and cogdomain==1 and pemdomain==1:
-        return render_template("example3.html")
-    else:
-        return render_template("example4.html")
+    form = FlaskForm()
+    if request.method=="POST":
+        return redirect(url_for('home'))
+    return render_template("example4.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
