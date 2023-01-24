@@ -1,8 +1,13 @@
+import numpy as np
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import RadioField, SubmitField
 import pandas as pd
 #from wtforms.validators import InputRequired
+
+import randomForest
+
+
 
 SECRET_KEY = 'development'
 
@@ -100,9 +105,9 @@ def page1():
         fatiguescores = request.form.get("severity")
         session["fatiguescoref"] = fatiguescoref
         session["fatiguescores"] = fatiguescores
-        if int(session["fatiguescoref"]) < 2 or int(session["fatiguescores"]) < 2:
+        if int(session["fatiguescoref"]) < 0 or int(session["fatiguescores"]) < 0:
             end=True
-            return diagnose("end")
+            return render_template("example4.html")
         else:
             return redirect(url_for("page2"))
 
@@ -121,7 +126,7 @@ def page2():
         session["minexs"] = request.form.get("minex_s")
         minexf =int(session["minexf"])
         minexs =int(session["minexs"])
-        if minexs>=2 and minexf>=2:
+        if minexs>=0 and minexf>=0:
             pemdomain=1
             return redirect(url_for("page3"))
         else:
@@ -140,7 +145,7 @@ def page3():
         sleeps = request.form.get("sleeps")
         session["sleepf"] = sleepf
         session["sleeps"] = sleeps
-        if int(session["sleepf"])>=2 and int(session["sleeps"])>=2:
+        if int(session["sleepf"])>=0 and int(session["sleeps"])>=0:
             sleepdomain=1
             return redirect(url_for("page4"))
         else:
@@ -156,11 +161,12 @@ def page4():
         remembers = request.form.get("remembers")
         session["rememberf"] = rememberf
         session["remembers"] = remembers
-        if int(session["rememberf"])>=2 and int(session["remembers"])>=2:
+        if int(session["rememberf"])>=0 and int(session["remembers"])>=0:
             cogdomain=1
-            return diagnose("example3")
+            end = True
+            return redirect(url_for("end"))
         else:
-            return redirect(url_for("excog1"))
+            return redirect(url_for("end"))
     return render_template("page4.html")
 
 @app.route('/end2', methods=['get'])
@@ -359,7 +365,23 @@ def end():
     form = FlaskForm()
     if request.method=="POST":
         return redirect(url_for('home'))
-    return render_template("example4.html")
+    #return render_template("example4.html")
+
+    if end:
+        fatiguedata = ((int(session["fatiguescoref"]) + int(session['fatiguescores']))/2)
+        minexdata = ((int(session["minexf"]) + int(session['minexs']))/2)
+        sleepdata = ((int(session["sleepf"]) + int(session['sleeps'])) / 2)
+        cogdata = ((int(session["rememberf"]) + int(session['remembers']))/2)
+        #data = [fatiguedata, minexdata, sleepdata, cogdata]
+        data = np.array([[fatiguedata, minexdata, sleepdata, cogdata]])
+        result = randomForest.rf2.predict(data)
+        if result[0] == 1:
+            return f"The random forest model predicts ME/CFS. Model accuracy is {randomForest.accuracy}"
+        else:
+            return f"The random forest model does not predict ME/CFS. Model accuracy is {randomForest.accuracy}"
+
+        #return f"{result}"
+
 
 if __name__ == '__main__':
     app.run(debug=True)
