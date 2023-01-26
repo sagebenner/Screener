@@ -7,7 +7,7 @@ import pandas as pd
 
 import randomForest
 
-
+#df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
 
 SECRET_KEY = 'development'
 
@@ -26,17 +26,26 @@ def summ(num1, *args):
     total = int(total)
     return total
 
-def diagnose(next):
+def diagnose():
     global end
-    if cogdomain==1 and pemdomain==1 and sleepdomain==1:
-        end = True
-        return render_template("example3.html")
-    else:
-        if end == True:
-            return render_template("example4.html")
-        else:
-            return redirect(url_for(next))
+    df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
+    #if cogdomain==1 and pemdomain==1 and sleepdomain==1:
+        #end = True
+        #return render_template("example3.html")
+    #else:
+        #if end == True:
+            #return render_template("example4.html")
+        #else:
+            #return redirect(url_for(next))
+    fatiguescore = (int(session["fatiguescoref"]) + int(session["fatiguescores"]))/2
+    pemscore = (int(session["minexf"]) + int(session["minexf"]))/2
+    sleepscore = (int(session["sleepf"]) + int(session["sleeps"]))/2
+    cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
 
+    newdf = df[(df.fatigue13c == fatiguescore) & (df.minimum17c == pemscore) & (df.unrefreshed19c == sleepscore) & (df.remember36c == cogscore)]
+    probCFS = newdf.query("dx == 1")
+    probCFS = np.mean(probCFS)
+    return f"Your probability of having ME/CFS is {probCFS}"
 
 class FreVal:
     name = "Fatigue1"
@@ -88,6 +97,9 @@ def home():
     global end
     form = FlaskForm()
     if request.method=="POST":
+        session["dropdown"] = str(request.form.get("survey"))
+        option = session["dropdown"]
+
         return redirect(url_for("page1"))
     return render_template("home.html")
 
@@ -164,7 +176,7 @@ def page4():
         if int(session["rememberf"])>=0 and int(session["remembers"])>=0:
             cogdomain=1
             end = True
-            return redirect(url_for("end"))
+            return diagnose()
         else:
             return redirect(url_for("end"))
     return render_template("page4.html")

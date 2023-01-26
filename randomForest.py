@@ -18,7 +18,7 @@ from imblearn.over_sampling import RandomOverSampler, SMOTE
 from imblearn.under_sampling import RandomUnderSampler, NearMiss
 from collections import Counter
 from sklearn.tree import export_graphviz
-import pydot
+
 
 
 dsqform = 1
@@ -72,10 +72,7 @@ predictions2=rf2.predict(test_features)
 accuracy = np.mean(predictions2==test_labels)
 print('Model accuracy: ', round(accuracy, 2))
 
-tree = rf2.estimators_[5]
-export_graphviz(tree, out_file = 'tree.dot', feature_names = feature_list, rounded = True, precision = 1)
-(graph, ) = pydot.graph_from_dot_file('tree.dot')
-graph.write_png('tree.png')
+
 
 #sns.stripplot(x='fatigue13c', y = 'minimum17c', hue = 'dx', data = df2)
 
