@@ -18,6 +18,7 @@ end = False
 pemdomain = 0
 sleepdomain = 0
 cogdomain = 0
+survey = str
 
 def summ(num1, *args):
     total = num1
@@ -42,10 +43,19 @@ def diagnose():
     sleepscore = (int(session["sleepf"]) + int(session["sleeps"]))/2
     cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
 
-    newdf = df[(df.fatigue13c == fatiguescore) & (df.minimum17c == pemscore) & (df.unrefreshed19c == sleepscore) & (df.remember36c == cogscore)]
-    probCFS = newdf.query("dx == 1")
-    probCFS = np.mean(probCFS)
-    return f"Your probability of having ME/CFS is {probCFS}"
+    if survey=="rf4":
+        data = np.array([[fatiguescore, pemscore, sleepscore, cogscore]])
+        result = randomForest.rf2.predict(data)
+        if result[0] == 1:
+            return f"<h1>The random forest model predicts ME/CFS. Model accuracy is {randomForest.accuracy.round(decimals=2)}</h1>"
+        else:
+            return f"<h1>The random forest model does NOT predict ME/CFS. Model accuracy is {randomForest.accuracy.round(decimals=2)}</h1>"
+
+    if survey=="classic":
+        newdf = df[(df.fatigue13c == fatiguescore) & (df.minimum17c == pemscore) & (df.unrefreshed19c == sleepscore) & (df.remember36c == cogscore)]
+        probCFS = (np.mean(newdf.dx == 1).round(decimals=2)) * 100
+    #probCFS = np.mean(probCFS)
+        return f"<h1>Your probability of having ME/CFS is {probCFS} %</h1>"
 
 class FreVal:
     name = "Fatigue1"
@@ -96,9 +106,10 @@ def home():
     global pagenum
     global end
     form = FlaskForm()
+    global survey
     if request.method=="POST":
         session["dropdown"] = str(request.form.get("survey"))
-        option = session["dropdown"]
+        survey = session["dropdown"]
 
         return redirect(url_for("page1"))
     return render_template("home.html")
@@ -117,9 +128,12 @@ def page1():
         fatiguescores = request.form.get("severity")
         session["fatiguescoref"] = fatiguescoref
         session["fatiguescores"] = fatiguescores
-        if int(session["fatiguescoref"]) < 0 or int(session["fatiguescores"]) < 0:
-            end=True
-            return render_template("example4.html")
+        if int(session["fatiguescoref"]) < 2 or int(session["fatiguescores"]) < 2:
+            if survey=="classic":
+                end=True
+                return render_template("example4.html")
+            else:
+                return redirect(url_for("page2"))
         else:
             return redirect(url_for("page2"))
 
@@ -138,11 +152,15 @@ def page2():
         session["minexs"] = request.form.get("minex_s")
         minexf =int(session["minexf"])
         minexs =int(session["minexs"])
-        if minexs>=0 and minexf>=0:
+        if minexs>=2 and minexf>=2:
             pemdomain=1
-            return redirect(url_for("page3"))
+            if survey=="classic" or survey=="rf4":
+                return redirect(url_for("page3"))
         else:
-            return redirect(url_for("expem1"))
+            if survey == "classic":
+                return redirect(url_for("expem1"))
+            if survey=="rf4":
+                return redirect(url_for("page3"))
 
     return render_template("page2.html")
 
@@ -157,11 +175,15 @@ def page3():
         sleeps = request.form.get("sleeps")
         session["sleepf"] = sleepf
         session["sleeps"] = sleeps
-        if int(session["sleepf"])>=0 and int(session["sleeps"])>=0:
+        if int(session["sleepf"])>=2 and int(session["sleeps"])>=2:
             sleepdomain=1
-            return redirect(url_for("page4"))
+            if survey=="classic" or survey=="rf4":
+                return redirect(url_for("page4"))
         else:
-            return redirect(url_for("exsleep1"))
+            if survey=="classic":
+                return redirect(url_for("exsleep1"))
+            if survey=="rf4":
+                return redirect(url_for("page4"))
     return render_template("page3.html")
 
 @app.route('/remember', methods=['post', 'get'])
@@ -173,12 +195,16 @@ def page4():
         remembers = request.form.get("remembers")
         session["rememberf"] = rememberf
         session["remembers"] = remembers
-        if int(session["rememberf"])>=0 and int(session["remembers"])>=0:
+        if int(session["rememberf"])>=2 and int(session["remembers"])>=2:
             cogdomain=1
-            end = True
-            return diagnose()
+            if survey=="classic" or survey=="rf4":
+                end = True
+                return diagnose()
         else:
-            return redirect(url_for("end"))
+            if survey=="rf4":
+                return diagnose()
+            if survey=="classic":
+                return redirect(url_for("excog1"))
     return render_template("page4.html")
 
 @app.route('/end2', methods=['get'])

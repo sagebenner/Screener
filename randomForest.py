@@ -11,17 +11,17 @@ from sklearn.model_selection import train_test_split as tts
 from sklearn.ensemble import RandomForestClassifier  as rfc
 from sklearn.datasets import make_classification
 #import matplotlib.pyplot as plt
-#import seaborn as sns
+import seaborn as sns
 from sklearn.metrics import classification_report
 
 from imblearn.over_sampling import RandomOverSampler, SMOTE
 from imblearn.under_sampling import RandomUnderSampler, NearMiss
 from collections import Counter
 from sklearn.tree import export_graphviz
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.model_selection import GridSearchCV,RandomizedSearchCV
 
-
-
-dsqform = 1
+dsqform = 2
 
 path = "C:\\Users\\sbenner\\OneDrive - DePaul University\\Documents"
 os.chdir(path)
@@ -31,7 +31,7 @@ df2 = read_csv("MECFS CONTROLS 1.17.23 COMP.csv")
 df3 = read_csv("MECFS vs chronic illness comp.csv")
 df4 = read_csv('MECFS VS OTHERS BINARY.csv')
 
-df4 = df2
+#df4 = df2
 
 labels = np.array(df4['dx'])
 
@@ -40,21 +40,27 @@ features = df4.drop(columns='dx')
 if dsqform==1:
     features = features[['fatigue13c', 'minimum17c', 'unrefreshed19c', 'remember36c']]
 
+if dsqform == 2:
+    features = features[['fatigue13c', 'soreness15c', 'minimum17c', 
+                         'unrefreshed19c', 'musclepain25c', 'bloating29c',
+                         'remember36c', 'difficulty37c', 'bowel46c',
+                         'unsteady48c', 'limbs56c', 'hot58c', 'flu65c', 'smells66c' ]]
+
 feature_list = list(features.columns)
 
 features = np.array(features)
 
 train_features, test_features, train_labels, test_labels= tts(features, labels, test_size=0.25, random_state=42)
 
-rf = rfc(n_estimators = 1000, random_state=42)
+#rf = rfc(n_estimators = 1000)
 
-rf.fit(train_features, train_labels)
+#rf.fit(train_features, train_labels)
 
-predictions = rf.predict(test_features)
+#predictions = rf.predict(test_features)
 
-errors = abs(predictions - test_labels)
+#errors = abs(predictions - test_labels)
 
-print('Mean absolute error:', round(np.mean(errors), 2))
+#print('Mean absolute error:', round(np.mean(errors), 2))
 
 
 
@@ -65,14 +71,27 @@ features_train_ros, labels_train_ros = ros.fit_resample(train_features, train_la
 
 print(sorted(Counter(labels_train_ros).items()))
 
-rf2 = rfc(n_estimators=1000, random_state=42)
+rf2 = rfc(max_depth=16, max_features=None, max_leaf_nodes=59)
+rf2 = rfc()
 rf2.fit(features_train_ros, labels_train_ros)
 
 predictions2=rf2.predict(test_features)
-accuracy = np.mean(predictions2==test_labels)
-print('Model accuracy: ', round(accuracy, 2))
+accuracy = accuracy_score(test_labels, predictions2)
+print(accuracy)
+print(confusion_matrix(test_labels, predictions2))
+#print('Model accuracy: ', round(accuracy, 2))
 
+param_grid = {
+    'n_estimators': [25, 50, 100, 150, 900, 2000],
+    'max_features': ['sqrt', 'log2', None],
+    'max_depth': [3, 6, 9, 16, 70, 500],
+    'max_leaf_nodes': [3, 6, 9, 14, 59],
+}
 
+#grid_search = GridSearchCV(rfc(), param_grid= param_grid)
+
+#grid_search.fit(features_train_ros, labels_train_ros)
+#print(grid_search.best_estimator_)
 
 #sns.stripplot(x='fatigue13c', y = 'minimum17c', hue = 'dx', data = df2)
 

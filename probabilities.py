@@ -33,10 +33,10 @@ mecfs = df[(df["dx"]==1)]
 others = df4[(df4["dx"]==0)]
 
 
-fatiguescore = 2.5
-minexscore = 1.5
-sleepscore = 2.0
-cogscore = 3.0
+fatiguescore = 1
+pemscore = 1
+sleepscore = 1
+cogscore = 1
 
 
 pmecfs = (mecfs['fatigue13c'].value_counts(normalize=True) ).reset_index(level=0)
@@ -58,11 +58,28 @@ test = totalprob * probother
 
 (df4.dx==1).mean()
 (df4.query("fatigue13c >= @fatiguescore")).mean()
-probablyME = (df4.query("fatigue13c == @fatiguescore")['dx']==1).mean()
+probablyME = (df4.query("fatigue13c == @fatiguescore & minimum17c == @pemscore & unrefreshed19c == @sleepscore & remember36c == @cogscore")['dx']==1).mean()
+probablyME = (df4.query("fatigue13c == @fatiguescore & minimum17c == @pemscore")['dx']==1).mean()
+
+test = df4[(df4.fatigue13c == fatiguescore)]
+
+print(f"Your probability of having ME/CFS is {probablyME}")
+
+newdf = df4[(df4.fatigue13c == fatiguescore) & (df4.minimum17c == pemscore) & (df4.unrefreshed19c == sleepscore) & (df4.remember36c == cogscore)]
+
+probablyME2 = (df4.query("minimum17c == @pemscore")['dx']==1).mean()
+probablyME3 = (df4.query("fatigue13c == @fatiguescore")['dx']==1).mean()
+probablyME4 = (df4.query("unrefreshed19c == @sleepscore")['dx']==1).mean()
+probablyME5 = (df4.query("remember36c == @cogscore")['dx']==1).mean()
+test = (probablyME3+probablyME2+probablyME4+probablyME5)/4
 
 probablyOther = (df4.query("fatigue13c == @fatiguescore")['dx']==0).mean()
+probablyOther2 = (df4.query("minimum17c == @pemscore")['dx']==0).mean()
 
+test2 = (probablyME3 + probablyME2) - probablyOther - probablyOther2
 
-
-
-(df4.query("dx")['fatigue13c'] >= fatiguescore).mean()
+burden = df4.iloc[0,4]
+burden = np.sum([df4.iloc[4,1:55]])
+burden = list()
+for x in range(len(df4.index)):
+    burden.append(np.sum([df4.iloc[x,1:55]]))
