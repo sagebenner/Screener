@@ -15,16 +15,18 @@
     For more information, follow one of the links below.</p>
     <p><br>Disclaimer: This screener is for research purposes only, and is not meant to provide medical diagnoses.</p>
     <form method="post">
-    <label for="survey">Choose a screener option:</label>
-  <select name="survey" id="survey">
-    <option value="classic">Classic Screener</option>
-    <option value="rf4">Random Forest: 4 Items</option>
-    <option value="rf14">Random Forest: 14 Items</option>
+    <label for="survey" style="  margin-left: 200px; margin-right: 200px;">Choose a screener option:</label>
+  <select name="survey" id="survey" >
+    <option value="classic">(A) Dynamic Screener</option>
+    <option value="rf4">(B) Random Forest: 4 Items</option>
+    <option value="rf14">(C) Random Forest: 14 Items</option>
   </select>
-        <span title ="The Classic Screener option asks between 1 and 17 questions, and provides the probability of your diagnosis,
-based on a comparison of your answers with a dataset of 3,000 participants.
-The two Random Forest options ask you either 4 or 14 items, respectively,and apply a Random Forest algorithm to predict your diagnosis.
-Both Random Forest models were trained on a dataset of 3,000 participants"><i>What's this?</i></span>
+        <span title =  "    (A) The Dynamic Screener option asks between 1 and 17 questions, adjusting the number of questions based
+        on your answers. It compares your answers with domain scores from a dataset of 3,000, and provides you the proportion
+        of ME/CFS participants with the same scores.
+
+        The two Random Forest options ask you either 4 (B) or 14 items (C). They each apply a Random Forest algorithm to predict your
+        diagnosis. Both Random Forest models were trained on a dataset of 3,000 participants"><i>What's this?</i></span>
 
     <button class="button" type="submit" name="result" value="result" >Continue to screener</button>
   </form>
