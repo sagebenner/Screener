@@ -33,7 +33,7 @@ mecfs = df[(df["dx"]==1)]
 others = df4[(df4["dx"]==0)]
 
 
-fatiguescore = 1
+fatiguescore = 4
 pemscore = 1
 sleepscore = 1
 cogscore = 1
@@ -44,12 +44,16 @@ pother = (others['fatigue13c'].value_counts(normalize=True)).reset_index(level=0
 
 
 
-probcfs = pmecfs.fatigue13c[(pmecfs["index"]>=fatiguescore)]
+probcfs = pmecfs.fatigue13c[(pmecfs["index"]<=fatiguescore)]
 probcfs = np.sum(probcfs)
-probnotcfs = pmecfs.fatigue13c[(pmecfs["index"]<fatiguescore)]
+probnotcfs = pother.fatigue13c[(pmecfs["index"]>=fatiguescore)]
 probnotcfs = np.sum(probnotcfs)
 
 totalprob = probcfs + probnotcfs
+
+testprob = 1-probcfs
+
+testprob2 = 1-probnotcfs
 
 probother = pother.fatigue13c[(pother['index']<=fatiguescore)]
 probother = np.sum(probother)

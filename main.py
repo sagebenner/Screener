@@ -79,7 +79,7 @@ def diagnose():
                     df.remember36c == cogscore)]
         probCFS = (np.mean(newdf.dx == 1).round(decimals=2)) * 100
         # probCFS = np.mean(probCFS)
-        return f"<h1>Your probability of having ME/CFS is {probCFS} %</h1>"
+        return f"<h1>Based on our dataset, the probability of having ME/CFS with the scores you entered is {probCFS} %</h1>"
 
 
 class FreVal:
