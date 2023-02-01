@@ -11,14 +11,17 @@ import numpy as np
 from sklearn.model_selection import train_test_split as tts
 from sklearn.ensemble import RandomForestClassifier  as rfc
 from sklearn.datasets import make_classification
-#import matplotlib.pyplot as plt
-#import seaborn as sns
+import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.metrics import classification_report
 
 from imblearn.over_sampling import RandomOverSampler, SMOTE
 from imblearn.under_sampling import RandomUnderSampler, NearMiss
 from collections import Counter
 from sklearn.tree import export_graphviz
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+import plotly.offline as pyo
 
 path = "C:\\Users\\sbenner\\OneDrive - DePaul University\\Documents"
 os.chdir(path)
@@ -87,3 +90,49 @@ burden = np.sum([df4.iloc[4,1:55]])
 burden = list()
 for x in range(len(df4.index)):
     burden.append(np.sum([df4.iloc[x,1:55]]))
+
+
+
+#Working on radar plot
+newdf = mecfs.drop(columns='dx')
+
+"""features2 = features[['fatigue13c', 'soreness15c', 'minimum17c', 
+                         'unrefreshed19c', 'musclepain25c', 'bloating29c',
+                         'remember36c', 'difficulty37c', 'bowel46c',
+                         'unsteady48c', 'limbs56c', 'hot58c', 'flu65c', 'smells66c' ]]"""
+
+newdf = newdf[['fatigue13c', 'minimum17c', 'unrefreshed19c', 'remember36c']]
+
+fatmean = np.mean([newdf['fatigue13c']])
+minmean = np.mean([newdf['minimum17c']])
+sleepmean = np.mean([newdf['unrefreshed19c']])
+cogmean = np.mean([newdf['remember36c']])
+
+combmean = [fatmean, minmean, sleepmean, cogmean]
+
+othermean = [np.mean([others['fatigue13c']]), np.mean([others['minimum17c']]), np.mean([others['unrefreshed19c']]), np.mean([others['remember36c']])]
+
+feature_list = np.array(newdf.columns)
+categories = [*feature_list, feature_list[0]]
+#features = np.array(features)
+
+responses = [2, 3, 1, 3]
+
+label_loc = np.linspace(start = 0, stop = 2 * np.pi, num=len(responses))
+'''
+fig = go.Figure(
+    data=[
+        go.Scatterpolar(r=othermean, theta=categories, fill='toself', name = "Average Healthy Control scores"),
+        go.Scatterpolar(r=combmean, theta=categories, fill='toself', name = "Average ME/CFS scores"),
+        go.Scatterpolar(r=responses, theta=categories, fill='toself', name = "Your scores")], 
+        layout=go.Layout(
+        title=go.layout.Title(text='Score comparison'),
+        polar={'radialaxis': {'visible': True}},
+        showlegend = True))
+fig.update_polars(radialaxis=dict(range=[0, 4]))
+
+pyo.plot(fig)
+
+
+fig.write_image("figure.png")
+'''

@@ -3,7 +3,9 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import RadioField, SubmitField
 import pandas as pd
-
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+import plotly.offline as pyo
 # from wtforms.validators import InputRequired
 
 #import randomForest
@@ -75,9 +77,24 @@ def diagnose():
         else:
             return f"<h1>The random forest model does NOT predict ME/CFS. Model accuracy is {randomForest.accuracy2.round(decimals=2)}</h1>"
     if survey == "classic":
+        import probabilities
         newdf = df[(df.fatigue13c == fatiguescore) & (df.minimum17c == pemscore) & (df.unrefreshed19c == sleepscore) & (
                     df.remember36c == cogscore)]
         probCFS = (np.mean(newdf.dx == 1).round(decimals=2)) * 100
+        user_score = [fatiguescore, pemscore, sleepscore, cogscore]
+        fig = go.Figure(
+            data=[
+                go.Scatterpolar(r=probabilities.othermean, theta=probabilities.categories, fill='toself', name="Average Healthy Control scores"),
+                go.Scatterpolar(r=probabilities.combmean, theta=probabilities.categories, fill='toself', name="Average ME/CFS scores"),
+                go.Scatterpolar(r=user_score, theta=probabilities.categories, fill='toself', name="Your scores")],
+            layout=go.Layout(
+                title=go.layout.Title(text='Score comparison'),
+                polar={'radialaxis': {'visible': True}},
+                showlegend=True))
+        fig.update_polars(radialaxis=dict(range=[0, 4]))
+
+        pyo.plot(fig)
+
         # probCFS = np.mean(probCFS)
         return f"<h1>Based on our dataset, the probability of having ME/CFS with the scores you entered is {probCFS} %</h1>"
 
