@@ -91,7 +91,17 @@ burden = list()
 for x in range(len(df4.index)):
     burden.append(np.sum([df4.iloc[x,1:55]]))
 
+#Working on categories for probability calculations
 
+variable = 'fatigue13c'
+
+lowfat = df4.query(f'{variable} >=0 & {variable} <= 1')
+midlowfat = df4.query(f'{variable} >1 & {variable} <= 2')
+medfat = df4.query(f'{variable} > 2 & {variable} <=3')
+hifat = df4.query(f'{variable} > 3 & {variable} <=4')
+(hifat['dx']==1).mean()
+
+df4['test'] = cut(x=df4['fatigue13c'], bins = [0, 1, 2, 3, np.inf], labels=['low', 'mid-low', 'medium', 'high'], right = False)
 
 #Working on radar plot
 newdf = mecfs.drop(columns='dx')
@@ -116,9 +126,11 @@ feature_list = np.array(newdf.columns)
 categories = [*feature_list, feature_list[0]]
 #features = np.array(features)
 
-responses = [2, 3, 1, 3]
+responses = [2, 3, 2, 3]
 
 label_loc = np.linspace(start = 0, stop = 2 * np.pi, num=len(responses))
+
+
 '''
 fig = go.Figure(
     data=[
@@ -131,7 +143,7 @@ fig = go.Figure(
         showlegend = True))
 fig.update_polars(radialaxis=dict(range=[0, 4]))
 
-pyo.plot(fig)
+pyo.plot(fig, include_plotlyjs=False, output_type='div')
 
 
 fig.write_image("figure.png")

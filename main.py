@@ -1,4 +1,5 @@
 import numpy as np
+import plotly.utils
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_wtf import FlaskForm
 from wtforms import RadioField, SubmitField
@@ -6,6 +7,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.offline as pyo
+import base64
+from io import BytesIO
+import json
 # from wtforms.validators import InputRequired
 
 #import randomForest
@@ -73,14 +77,37 @@ def diagnose():
                           ((int(session["smellf"]) + int(session["smells"])) / 2)]])
         result = randomForest.rf2.predict(data)
         if result[0] == 1:
-            return f"<h1>The random forest model predicts ME/CFS. Model accuracy is {randomForest.accuracy2.round(decimals=2)}</h1>"
+            return f"<h1>The random forest model predicts ME/CFS. Model accuracy is {randomForest.accuracy2.round(decimals=12)}</h1>"
         else:
             return f"<h1>The random forest model does NOT predict ME/CFS. Model accuracy is {randomForest.accuracy2.round(decimals=2)}</h1>"
     if survey == "classic":
         import probabilities
         newdf = df[(df.fatigue13c == fatiguescore) & (df.minimum17c == pemscore) & (df.unrefreshed19c == sleepscore) & (
                     df.remember36c == cogscore)]
-        probCFS = (np.mean(newdf.dx == 1).round(decimals=2)) * 100
+        try:
+            probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
+            sample_size = len(newdf.index)
+            user_score = [fatiguescore, pemscore, sleepscore, cogscore]
+            fig = go.Figure(
+                data=[
+                    go.Scatterpolar(r=probabilities.othermean, theta=probabilities.categories, fill='toself',
+                                    name="Average Healthy Control scores"),
+                    go.Scatterpolar(r=probabilities.combmean, theta=probabilities.categories, fill='toself',
+                                    name="Average ME/CFS scores"),
+                    go.Scatterpolar(r=user_score, theta=probabilities.categories, fill='toself', name="Your scores")],
+                layout=go.Layout(
+                    title=go.layout.Title(text='Your scores compared with our dataset of 3,428'),
+                    polar={'radialaxis': {'visible': True}},
+                    showlegend=True))
+            fig.update_polars(radialaxis=dict(range=[0, 4]))
+            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+            return render_template("graph.html", graphJSON=graphJSON, probCFS=probCFS, sample_size=sample_size)
+            #pyo.plot(fig)
+
+            # probCFS = np.mean(probCFS)
+
+        except:
+            return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
         user_score = [fatiguescore, pemscore, sleepscore, cogscore]
         fig = go.Figure(
             data=[
@@ -93,10 +120,7 @@ def diagnose():
                 showlegend=True))
         fig.update_polars(radialaxis=dict(range=[0, 4]))
 
-        pyo.plot(fig)
 
-        # probCFS = np.mean(probCFS)
-        return f"<h1>Based on our dataset, the probability of having ME/CFS with the scores you entered is {probCFS} %</h1>"
 
 
 class FreVal:
@@ -143,6 +167,12 @@ class SimpleForm(FlaskForm):
     # next2 = SubmitField("Next!")
     # next3 = SubmitField('Next!')
 
+@app.route('/graph')
+def graph(graphJSON, probCFS, sample_size):
+    graphJSON = graphJSON
+    probCFS = probCFS
+    sample_size = sample_size
+    return render_template("graph.html", graphJSON=graphJSON, probCFS=probCFS, sample_size=sample_size)
 
 @app.route('/', methods=['post', 'get'])
 def home():
@@ -174,7 +204,8 @@ def page1():
         session["fatiguescores"] = fatiguescores
         if survey == "rf14":
             return redirect(url_for("expem1"))
-        if int(session["fatiguescoref"]) < 2 or int(session["fatiguescores"]) < 2:
+        # for practice purposes, I set these thresholds to 0:
+        if int(session["fatiguescoref"]) < 0 or int(session["fatiguescores"]) < 0:
             if survey == "classic":
                 end = True
                 return render_template("example4.html")

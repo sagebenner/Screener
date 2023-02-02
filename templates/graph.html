@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+ <body>
+  <h1>Based on your answers, we estimate that your probability of having ME/CFS is {{ probCFS }} %, from a sample size of {{ sample_size }} from our dataset</h1>
+
+  <div id='chart' class='chart' style="width: 50%; height: 800px;"></div>
+</body>
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script type='text/javascript'>
+  var graphs = {{graphJSON | safe}};
+  Plotly.plot('chart',graphs,{});
+</script>
+</html>
