@@ -1,6 +1,7 @@
 <!doctype html>
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
 <html>
- <body>
+ <body class="div.home">
   <h1>Based on your answers, we estimate that your probability of having ME/CFS is {{ probCFS }} %, from a sample size of {{ sample_size }} from our dataset</h1>
 
   <div id='chart' class='chart' style="width: 50%; height: 800px;"></div>

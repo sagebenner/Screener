@@ -103,6 +103,8 @@ hifat = df4.query(f'{variable} > 3 & {variable} <=4')
 
 df4['test'] = cut(x=df4['fatigue13c'], bins = [0, 1, 2, 3, np.inf], labels=['low', 'mid-low', 'medium', 'high'], right = False)
 
+
+
 #Working on radar plot
 newdf = mecfs.drop(columns='dx')
 

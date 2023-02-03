@@ -11,12 +11,38 @@ import base64
 from io import BytesIO
 import json
 # from wtforms.validators import InputRequired
+from flask_sqlalchemy import SQLAlchemy
+from os import path
 
-#import randomForest
 
-# df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
+app = Flask(__name__)
+process = []
 
-SECRET_KEY = 'development'
+app.config.from_object(__name__)
+db = SQLAlchemy()
+DB_NAME = "database.db"
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+app.config['SECRET_KEY'] = 'development'
+db.init_app(app)
+
+
+class DSQ(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    fatigue = db.Column(db.Integer)
+    minex = db.Column(db.Integer)
+    unrefreshed = db.Column(db.Integer)
+    remember = db.Column(db.Integer)
+
+
+with app.app_context():
+    db.create_all()
+
+
+
+
+
 
 symptom = ["Fatigue", "Minimum exercise", "Sleep", "Remember"]
 pagelist = ["example.html", "example2.html", "example3.html", "example4.html"]
@@ -28,25 +54,11 @@ cogdomain = 0
 survey = str
 
 
-def summ(num1, *args):
-    total = num1
-    for num in args:
-        total = total + num
-    total = int(total)
-    return total
-
 
 def diagnose():
     global end
     df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
-    # if cogdomain==1 and pemdomain==1 and sleepdomain==1:
-    # end = True
-    # return render_template("example3.html")
-    # else:
-    # if end == True:
-    # return render_template("example4.html")
-    # else:
-    # return redirect(url_for(next))
+
     fatiguescore = (int(session["fatiguescoref"]) + int(session["fatiguescores"])) / 2
     pemscore = (int(session["minexf"]) + int(session["minexf"])) / 2
     sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
@@ -91,7 +103,7 @@ def diagnose():
             fig = go.Figure(
                 data=[
                     go.Scatterpolar(r=probabilities.othermean, theta=probabilities.categories, fill='toself',
-                                    name="Average Healthy Control scores"),
+                                    name="Average Non-ME/CFS scores"),
                     go.Scatterpolar(r=probabilities.combmean, theta=probabilities.categories, fill='toself',
                                     name="Average ME/CFS scores"),
                     go.Scatterpolar(r=user_score, theta=probabilities.categories, fill='toself', name="Your scores")],
@@ -104,14 +116,14 @@ def diagnose():
             return render_template("graph.html", graphJSON=graphJSON, probCFS=probCFS, sample_size=sample_size)
             #pyo.plot(fig)
 
-            # probCFS = np.mean(probCFS)
+
 
         except:
             return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
         user_score = [fatiguescore, pemscore, sleepscore, cogscore]
         fig = go.Figure(
             data=[
-                go.Scatterpolar(r=probabilities.othermean, theta=probabilities.categories, fill='toself', name="Average Healthy Control scores"),
+                go.Scatterpolar(r=probabilities.othermean, theta=probabilities.categories, fill='toself', name="Average Non-ME/CFS scores"),
                 go.Scatterpolar(r=probabilities.combmean, theta=probabilities.categories, fill='toself', name="Average ME/CFS scores"),
                 go.Scatterpolar(r=user_score, theta=probabilities.categories, fill='toself', name="Your scores")],
             layout=go.Layout(
@@ -128,9 +140,7 @@ class FreVal:
     fatigue = int
 
 
-app = Flask(__name__)
-process = []
-app.config.from_object(__name__)
+
 
 
 class SimpleForm(FlaskForm):
@@ -306,7 +316,7 @@ def end2():
     sleeps = int(session["sleeps"])
     rememberf = int(session["rememberf"])
     remembers = int(session["remembers"])
-    tally = summ(fatiguescoref, fatiguescores, minexs, minexf, sleepf, sleeps, remembers, rememberf)
+
 
     if pemdomain == 1 and sleepdomain == 1 and cogdomain == 1:
         return f"<h1>{pemdomain}You may have ME/CFS. We advise you to consult a specialist. </h1>"
