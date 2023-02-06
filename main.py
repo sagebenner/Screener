@@ -11,23 +11,29 @@ import base64
 from io import BytesIO
 import json
 # from wtforms.validators import InputRequired
-from flask_sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
+from flask_mysqldb import MySQL
+
+import MySQLdb.cursors
+import re
 from os import path
 
 
 app = Flask(__name__)
 process = []
-
-app.config.from_object(__name__)
-db = SQLAlchemy()
-DB_NAME = "database.db"
-
-
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
 app.config['SECRET_KEY'] = 'development'
-db.init_app(app)
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'password'
+app.config['MYSQL_DB'] = 'dsq'
+
+#db = SQLAlchemy()
+mysql = MySQL(app)
 
 
+
+
+'''''
 class DSQ(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fatigue = db.Column(db.Integer)
@@ -35,12 +41,12 @@ class DSQ(db.Model):
     unrefreshed = db.Column(db.Integer)
     remember = db.Column(db.Integer)
 
+if not path.exists('Screener/' + DB_NAME):
+    with app.app_context():
+        db.create_all()
 
-with app.app_context():
-    db.create_all()
 
-
-
+'''''
 
 
 
@@ -60,13 +66,14 @@ def diagnose():
     df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
 
     fatiguescore = (int(session["fatiguescoref"]) + int(session["fatiguescores"])) / 2
-    pemscore = (int(session["minexf"]) + int(session["minexf"])) / 2
-    sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
-    cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
+
+
 
     if survey == "rf4":
         import randomForest
-
+        pemscore = (int(session["minexf"]) + int(session["minexf"])) / 2
+        sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
+        cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
         data = np.array([[fatiguescore, pemscore, sleepscore, cogscore]])
         result = randomForest.rf.predict(data)
         if result[0] == 1:
@@ -75,6 +82,9 @@ def diagnose():
             return f"<h1>The random forest model does NOT predict ME/CFS. Model accuracy is {randomForest.accuracy.round(decimals=2)}</h1>"
     if survey == "rf14":
         import randomForest
+        pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
+        sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
+        cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
         df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
         data = np.array([[fatiguescore, ((int(session["soref"]) + int(session["sores"])) / 2), pemscore,
                           ((int(session["sleepf"]) + int(session["sleeps"])) / 2),
@@ -94,12 +104,34 @@ def diagnose():
             return f"<h1>The random forest model does NOT predict ME/CFS. Model accuracy is {randomForest.accuracy2.round(decimals=2)}</h1>"
     if survey == "classic":
         import probabilities
+        if "minexs" and "minexf" in session:
+            pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
+
+        sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
+        cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
+        cursor = mysql.connection.cursor()
+        if session["checkbox"] == "data":
+            cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
+                           (fatiguescore, pemscore, sleepscore, cogscore))
+            mysql.connection.commit()
         newdf = df[(df.fatigue13c == fatiguescore) & (df.minimum17c == pemscore) & (df.unrefreshed19c == sleepscore) & (
                     df.remember36c == cogscore)]
+        cursor.execute('SELECT fatigue, pem, sleep, cog FROM screen')
+        results = cursor.fetchall()
+
+        re_array = np.array(results)
+        number_users = len(re_array)
+        mean_array = np.mean(re_array, axis=0)
+        print(mean_array)
+        #past_users = np.fromiter(cursor.fetchall(), count=rows, dtype=('i4,i4,i4,i4'))
+        #print(past_users)
         try:
             probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
             sample_size = len(newdf.index)
             user_score = [fatiguescore, pemscore, sleepscore, cogscore]
+            #new_DSQ = DSQ(fatigue=fatiguescore, minex=pemscore, unrefreshed=sleepscore, remember=cogscore)
+            #db.session.add(new_DSQ)
+            #db.session.commit()
             fig = go.Figure(
                 data=[
                     go.Scatterpolar(r=probabilities.othermean, theta=probabilities.categories, fill='toself',
@@ -108,12 +140,26 @@ def diagnose():
                                     name="Average ME/CFS scores"),
                     go.Scatterpolar(r=user_score, theta=probabilities.categories, fill='toself', name="Your scores")],
                 layout=go.Layout(
-                    title=go.layout.Title(text='Your scores compared with our dataset of 3,428'),
+                    title=go.layout.Title(text='Your scores compared with our dataset of 3,428 participants'),
                     polar={'radialaxis': {'visible': True}},
                     showlegend=True))
             fig.update_polars(radialaxis=dict(range=[0, 4]))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-            return render_template("graph.html", graphJSON=graphJSON, probCFS=probCFS, sample_size=sample_size)
+
+            fig2 = go.Figure(
+                data=[
+                    go.Scatterpolar(r=mean_array, theta=probabilities.categories, fill='toself',
+                                    name="Average scores from other users"),
+                    go.Scatterpolar(r=user_score, theta=probabilities.categories, fill='toself', name="Your scores")],
+                layout=go.Layout(
+                    title=go.layout.Title(text=f"Average scores from other users ({number_users})"),
+                    polar={'radialaxis': {'visible': True}},
+                    showlegend=True))
+            fig2.update_polars(radialaxis=dict(range=[0, 4]))
+            graphJSON2 = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
+            print(session["checkbox"])
+            return render_template("graph.html", graphJSON=graphJSON, probCFS=probCFS, sample_size=sample_size,
+                                   graphJSON2=graphJSON2)
             #pyo.plot(fig)
 
 
@@ -121,6 +167,7 @@ def diagnose():
         except:
             return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
         user_score = [fatiguescore, pemscore, sleepscore, cogscore]
+
         fig = go.Figure(
             data=[
                 go.Scatterpolar(r=probabilities.othermean, theta=probabilities.categories, fill='toself', name="Average Non-ME/CFS scores"),
@@ -131,6 +178,7 @@ def diagnose():
                 polar={'radialaxis': {'visible': True}},
                 showlegend=True))
         fig.update_polars(radialaxis=dict(range=[0, 4]))
+
 
 
 
@@ -193,7 +241,7 @@ def home():
     if request.method == "POST":
         session["dropdown"] = str(request.form.get("survey"))
         survey = session["dropdown"]
-
+        session["checkbox"] = request.form.get("checkbox")
         return redirect(url_for("page1"))
     return render_template("home.html")
 

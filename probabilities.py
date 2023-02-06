@@ -23,8 +23,8 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.offline as pyo
 
-path = "C:\\Users\\sbenner\\OneDrive - DePaul University\\Documents"
-os.chdir(path)
+#path = "C:\\Users\\sbenner\\OneDrive - DePaul University\\Documents"
+#os.chdir(path)
 
 df = read_csv("MECFS and COVID COMP.csv")
 df2 = read_csv("MECFS CONTROLS 1.17.23 COMP.csv")

@@ -1,14 +1,19 @@
 <!doctype html>
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
 <html>
- <body class="div.home">
+ <body class="home">
   <h1>Based on your answers, we estimate that your probability of having ME/CFS is {{ probCFS }} %, from a sample size of {{ sample_size }} from our dataset</h1>
 
-  <div id='chart' class='chart' style="width: 50%; height: 800px;"></div>
+  <div id='chart' class='column' style="float: left; width: 50%; height: 800px;"></div>
+  <div id='chart2' class='column' style="float: right; width: 50%; height: 800px;"></div>
 </body>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script type='text/javascript'>
   var graphs = {{graphJSON | safe}};
   Plotly.plot('chart',graphs,{});
+</script>
+<script type='text/javascript'>
+  var graphs = {{graphJSON2 | safe}};
+  Plotly.plot('chart2',graphs,{});
 </script>
 </html>
