@@ -103,7 +103,11 @@ hifat = df4.query(f'{variable} > 3 & {variable} <=4')
 
 df4['test'] = cut(x=df4['fatigue13c'], bins = [0, 1, 2, 3, np.inf], labels=['low', 'mid-low', 'medium', 'high'], right = False)
 
+qtest = qcut(df4['fatigue13c'], q=4, labels=['low', 'mid-low', 'medium', 'high'])
 
+df4['test'] = qtest
+
+(df4.query("test == 'high'")['dx']==1).mean()
 
 #Working on radar plot
 newdf = mecfs.drop(columns='dx')
