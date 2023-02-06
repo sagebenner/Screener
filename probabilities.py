@@ -35,6 +35,7 @@ mecfs = df[(df["dx"]==1)]
 
 others = df4[(df4["dx"]==0)]
 
+controls = df2[(df2['dx']==0)]
 
 fatiguescore = 4
 pemscore = 1
@@ -101,13 +102,43 @@ medfat = df4.query(f'{variable} > 2 & {variable} <=3')
 hifat = df4.query(f'{variable} > 3 & {variable} <=4')
 (hifat['dx']==1).mean()
 
-df4['test'] = cut(x=df4['fatigue13c'], bins = [0, 1, 2, 3, np.inf], labels=['low', 'mid-low', 'medium', 'high'], right = False)
+df4['test'] = cut(x=df4['fatigue13c'], bins = [0,  2, np.inf], labels=['low', 'high'], right = False)
 
-qtest = qcut(df4['fatigue13c'], q=4, labels=['low', 'mid-low', 'medium', 'high'])
 
-df4['test'] = qtest
 
-(df4.query("test == 'high'")['dx']==1).mean()
+responses = [1, 2, 3, 3]
+
+# qcut automatically creates bins, approximately equal sized
+qfatigue, fatiguebins = qcut(df4['fatigue13c'], q=3, labels=['low', 'mid', 'high'], retbins=True)
+qminex, minexbins = qcut(df4['minimum17c'], q=3, labels=['low', 'mid', 'high'], retbins=True)
+qunrefresh, unrefreshbins = qcut(df4['unrefreshed19c'], q=3, labels=['low', 'mid', 'high'], retbins=True)
+qremember, rememberbins = qcut(df4['remember36c'], q=3, labels=['low', 'mid','high'], retbins=True)
+df4['qfatigue'] = qfatigue
+df4['qminex'] = qminex
+df4['qunrefresh'] = qunrefresh
+df4['qremember'] = qremember
+
+add = []
+binList = [fatiguebins, minexbins, unrefreshbins, rememberbins]
+
+def binAccuracy(newrow):
+    for y in range(len(newrow.index)):
+        score = np.array([newrow[y]])
+        binVal = cut(score, bins=binList[y], labels=['low', 'mid', 'high'], right=True).astype('str')
+        add.append(binVal[0])
+    accuracyBin = (df4.query(f"qfatigue == '{add[0]}' & qminex == '{add[1]}' & qunrefresh == '{add[2]}' & qremember == '{add[3]}'")['dx']==1).mean()
+    return accuracyBin
+
+
+binAccuracy(responses)
+
+
+#test = cut(responses[0:,1], bins=fatiguebins, labels=['low', 'mid', 'high']).astype('str')
+
+
+#(df4.query(f"qfatigue == '{add[0]}' & qminex == '{add[1]}' & qunrefresh == '{add[2]}' & qremember == '{add[3]}'")['dx']==1).mean()
+
+
 
 #Working on radar plot
 newdf = mecfs.drop(columns='dx')
@@ -127,6 +158,8 @@ cogmean = np.mean([newdf['remember36c']])
 combmean = [fatmean, minmean, sleepmean, cogmean]
 
 othermean = [np.mean([others['fatigue13c']]), np.mean([others['minimum17c']]), np.mean([others['unrefreshed19c']]), np.mean([others['remember36c']])]
+
+controlmean = [np.mean([controls['fatigue13c']]), np.mean([controls['minimum17c']]), np.mean([controls['unrefreshed19c']]), np.mean([controls['remember36c']])]
 
 feature_list = np.array(newdf.columns)
 categories = [*feature_list, feature_list[0]]

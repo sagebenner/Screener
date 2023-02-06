@@ -22,6 +22,7 @@ from os import path
 app = Flask(__name__)
 process = []
 app.config['SECRET_KEY'] = 'development'
+
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'password'
@@ -109,11 +110,9 @@ def diagnose():
 
         sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
         cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
+
         cursor = mysql.connection.cursor()
-        if session["checkbox"] == "data":
-            cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
-                           (fatiguescore, pemscore, sleepscore, cogscore))
-            mysql.connection.commit()
+
         newdf = df[(df.fatigue13c == fatiguescore) & (df.minimum17c == pemscore) & (df.unrefreshed19c == sleepscore) & (
                     df.remember36c == cogscore)]
         cursor.execute('SELECT fatigue, pem, sleep, cog FROM screen')
@@ -123,19 +122,27 @@ def diagnose():
         number_users = len(re_array)
         mean_array = np.mean(re_array, axis=0)
         print(mean_array)
+        #new row of responeses to make categorical bins:
+        user_scores = [fatiguescore, pemscore, sleepscore, cogscore]
+        testAcc = probabilities.binAccuracy(user_scores).round(decimals=2) * 100
+
+        if session["checkbox"] == "data":
+            cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
+                           (fatiguescore, pemscore, sleepscore, cogscore))
+            mysql.connection.commit()
         #past_users = np.fromiter(cursor.fetchall(), count=rows, dtype=('i4,i4,i4,i4'))
         #print(past_users)
         try:
             probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
             sample_size = len(newdf.index)
-            user_score = [fatiguescore, pemscore, sleepscore, cogscore]
+            user_score = np.array([[fatiguescore, pemscore, sleepscore, cogscore]])
             #new_DSQ = DSQ(fatigue=fatiguescore, minex=pemscore, unrefreshed=sleepscore, remember=cogscore)
             #db.session.add(new_DSQ)
             #db.session.commit()
             fig = go.Figure(
                 data=[
-                    go.Scatterpolar(r=probabilities.othermean, theta=probabilities.categories, fill='toself',
-                                    name="Average Non-ME/CFS scores"),
+                    go.Scatterpolar(r=probabilities.controlmean, theta=probabilities.categories, fill='toself',
+                                    name="Average Healthy Control scores"),
                     go.Scatterpolar(r=probabilities.combmean, theta=probabilities.categories, fill='toself',
                                     name="Average ME/CFS scores"),
                     go.Scatterpolar(r=user_score, theta=probabilities.categories, fill='toself', name="Your scores")],
@@ -158,7 +165,7 @@ def diagnose():
             fig2.update_polars(radialaxis=dict(range=[0, 4]))
             graphJSON2 = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
             print(session["checkbox"])
-            return render_template("graph.html", graphJSON=graphJSON, probCFS=probCFS, sample_size=sample_size,
+            return render_template("graph.html", graphJSON=graphJSON, probCFS=testAcc, sample_size=sample_size,
                                    graphJSON2=graphJSON2)
             #pyo.plot(fig)
 
