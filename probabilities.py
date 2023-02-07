@@ -106,9 +106,9 @@ df4['test'] = cut(x=df4['fatigue13c'], bins = [0,  2, np.inf], labels=['low', 'h
 
 
 
-responses = [1, 2, 3, 3]
+responses = [2, 2, 2, 2]
 
-# qcut automatically creates bins, approximately equal sized
+# qcut automatically creates bins, approximately equal sized. .rank "first" method forces equal sized bins
 qfatigue, fatiguebins = qcut(df4['fatigue13c'], q=3, labels=['low', 'mid', 'high'], retbins=True)
 qminex, minexbins = qcut(df4['minimum17c'], q=3, labels=['low', 'mid', 'high'], retbins=True)
 qunrefresh, unrefreshbins = qcut(df4['unrefreshed19c'], q=3, labels=['low', 'mid', 'high'], retbins=True)
@@ -118,20 +118,21 @@ df4['qminex'] = qminex
 df4['qunrefresh'] = qunrefresh
 df4['qremember'] = qremember
 
-add = []
-binList = [fatiguebins, minexbins, unrefreshbins, rememberbins]
 
-def binAccuracy(newrow):
-    for y in range(len(newrow.index)):
+
+def binAccuracy(newrow, df4):
+    add = []
+    binList = [fatiguebins, minexbins, unrefreshbins, rememberbins]
+    for y in range(len(newrow)):
         score = np.array([newrow[y]])
         binVal = cut(score, bins=binList[y], labels=['low', 'mid', 'high'], right=True).astype('str')
         add.append(binVal[0])
-    accuracyBin = (df4.query(f"qfatigue == '{add[0]}' & qminex == '{add[1]}' & qunrefresh == '{add[2]}' & qremember == '{add[3]}'")['dx']==1).mean()
-    return accuracyBin
+    sample_size = (df4.query(f"qfatigue == '{add[0]}' & qminex == '{add[1]}' & qunrefresh == '{add[2]}' & qremember == '{add[3]}'")['dx']==1)
+    return sample_size
 
+#sample_size = (df4.query(f"qfatigue == '{add[0]}' & qminex == '{add[1]}' & qunrefresh == '{add[2]}' & qremember == '{add[3]}'")['dx']==1)
 
-binAccuracy(responses)
-
+#test = binAccuracy(responses).mean()
 
 #test = cut(responses[0:,1], bins=fatiguebins, labels=['low', 'mid', 'high']).astype('str')
 

@@ -13,6 +13,7 @@ import json
 # from wtforms.validators import InputRequired
 #from flask_sqlalchemy import SQLAlchemy
 from flask_mysqldb import MySQL
+import probabilities
 
 import MySQLdb.cursors
 import re
@@ -60,15 +61,11 @@ sleepdomain = 0
 cogdomain = 0
 survey = str
 
-
-
 def diagnose():
     global end
     df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
 
     fatiguescore = (int(session["fatiguescoref"]) + int(session["fatiguescores"])) / 2
-
-
 
     if survey == "rf4":
         import randomForest
@@ -104,7 +101,7 @@ def diagnose():
         else:
             return f"<h1>The random forest model does NOT predict ME/CFS. Model accuracy is {randomForest.accuracy2.round(decimals=2)}</h1>"
     if survey == "classic":
-        import probabilities
+        #import probabilities
         if "minexs" and "minexf" in session:
             pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
 
@@ -124,7 +121,8 @@ def diagnose():
         print(mean_array)
         #new row of responeses to make categorical bins:
         user_scores = [fatiguescore, pemscore, sleepscore, cogscore]
-        testAcc = probabilities.binAccuracy(user_scores).round(decimals=2) * 100
+        sample_size = len(probabilities.binAccuracy(user_scores, df4=probabilities.df4))
+        testAcc = probabilities.binAccuracy(user_scores, df4=probabilities.df4).mean().round(decimals=2) * 100
 
         if session["checkbox"] == "data":
             cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
@@ -134,18 +132,14 @@ def diagnose():
         #print(past_users)
         try:
             probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
-            sample_size = len(newdf.index)
-            user_score = np.array([[fatiguescore, pemscore, sleepscore, cogscore]])
-            #new_DSQ = DSQ(fatigue=fatiguescore, minex=pemscore, unrefreshed=sleepscore, remember=cogscore)
-            #db.session.add(new_DSQ)
-            #db.session.commit()
+
             fig = go.Figure(
                 data=[
                     go.Scatterpolar(r=probabilities.controlmean, theta=probabilities.categories, fill='toself',
                                     name="Average Healthy Control scores"),
                     go.Scatterpolar(r=probabilities.combmean, theta=probabilities.categories, fill='toself',
                                     name="Average ME/CFS scores"),
-                    go.Scatterpolar(r=user_score, theta=probabilities.categories, fill='toself', name="Your scores")],
+                    go.Scatterpolar(r=user_scores, theta=probabilities.categories, fill='toself', name="Your scores")],
                 layout=go.Layout(
                     title=go.layout.Title(text='Your scores compared with our dataset of 3,428 participants'),
                     polar={'radialaxis': {'visible': True}},
@@ -157,7 +151,7 @@ def diagnose():
                 data=[
                     go.Scatterpolar(r=mean_array, theta=probabilities.categories, fill='toself',
                                     name="Average scores from other users"),
-                    go.Scatterpolar(r=user_score, theta=probabilities.categories, fill='toself', name="Your scores")],
+                    go.Scatterpolar(r=user_scores, theta=probabilities.categories, fill='toself', name="Your scores")],
                 layout=go.Layout(
                     title=go.layout.Title(text=f"Average scores from other users ({number_users})"),
                     polar={'radialaxis': {'visible': True}},
@@ -439,7 +433,7 @@ def expem4():
             pemdomain = 1
             return redirect(url_for("page3"))
         else:
-            return render_template("example4.html")
+            return redirect(url_for("page3"))
     return render_template("expem4.html")
 
 
@@ -498,7 +492,7 @@ def exsleep4():
             sleepdomain = 1
             return redirect(url_for("page4"))
         else:
-            return redirect(url_for("end"))
+            return redirect(url_for("page4"))
     return render_template("exsleep4.html")
 
 
@@ -547,11 +541,11 @@ def excog3():
         session["focusf"] = request.form.get("focusf")
         session["focuss"] = request.form.get("focuss")
         if int(session["focusf"]) >= 2 and int(session["focuss"]) >= 2:
-            end = True
+            #end = True
             cogdomain = 1
             return diagnose()
         else:
-            end = True
+            #end = True
             cogdomain = 0
             return diagnose()
 
