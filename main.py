@@ -110,8 +110,8 @@ def diagnose():
 
         cursor = mysql.connection.cursor()
 
-        newdf = df[(df.fatigue13c == fatiguescore) & (df.minimum17c == pemscore) & (df.unrefreshed19c == sleepscore) & (
-                    df.remember36c == cogscore)]
+        #newdf = df[(df.fatigue13c == fatiguescore) & (df.minimum17c == pemscore) & (df.unrefreshed19c == sleepscore) & (
+                    #df.remember36c == cogscore)]
         cursor.execute('SELECT fatigue, pem, sleep, cog FROM screen')
         results = cursor.fetchall()
 
@@ -121,9 +121,20 @@ def diagnose():
         print(mean_array)
         #new row of responeses to make categorical bins:
         user_scores = [fatiguescore, pemscore, sleepscore, cogscore]
-        sample_size = len(probabilities.binAccuracy(user_scores, df4=probabilities.df4))
-        testAcc = probabilities.binAccuracy(user_scores, df4=probabilities.df4).mean().round(decimals=2) * 100
+        responses = [fatiguescore, pemscore, sleepscore, cogscore]
+        newdf = df[(df['fatigue13c'] >= (responses[0]-0.5)) &
+           (df['fatigue13c'] <= (responses[0] + 0.5)) &
+           (df['minimum17c'] >= (responses[1] - 0.5)) &
+           (df['minimum17c'] <= (responses[1] + 0.5)) &
+           (df['unrefreshed19c'] >= (responses[2] - 0.5)) &
+           (df['unrefreshed19c'] <= (responses[2] + 0.5)) &
+           (df['remember36c'] <= (responses[3] + 0.5)) &
+           (df['remember36c'] >= (responses[3] - 0.5))]
 
+        sample_size = len(newdf.index)
+        #sample_size = len(probabilities.binAccuracy(user_scores, df4=probabilities.df4))
+        #testAcc = probabilities.binAccuracy(user_scores, df4=probabilities.df4).mean().round(decimals=2) * 100
+        testAcc = np.mean(newdf['dx']==1).round(decimals=2) * 100
         if session["checkbox"] == "data":
             cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
                            (fatiguescore, pemscore, sleepscore, cogscore))

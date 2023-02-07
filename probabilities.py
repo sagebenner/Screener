@@ -26,6 +26,11 @@ import plotly.offline as pyo
 #path = "C:\\Users\\sbenner\\OneDrive - DePaul University\\Documents"
 #os.chdir(path)
 
+
+#Define whether we use qcut method or cut method manually
+q_cut = 0
+
+
 df = read_csv("MECFS and COVID COMP.csv")
 df2 = read_csv("MECFS CONTROLS 1.17.23 COMP.csv")
 df3 = read_csv("MECFS vs chronic illness comp.csv")
@@ -94,52 +99,74 @@ for x in range(len(df4.index)):
 
 #Working on categories for probability calculations
 
-variable = 'fatigue13c'
 
-lowfat = df4.query(f'{variable} >=0 & {variable} <= 1')
-midlowfat = df4.query(f'{variable} >1 & {variable} <= 2')
-medfat = df4.query(f'{variable} > 2 & {variable} <=3')
-hifat = df4.query(f'{variable} > 3 & {variable} <=4')
-(hifat['dx']==1).mean()
-
-df4['test'] = cut(x=df4['fatigue13c'], bins = [0,  2, np.inf], labels=['low', 'high'], right = False)
-
-
-
-responses = [2, 2, 2, 2]
+responses = [4,4,4,4]
 
 # qcut automatically creates bins, approximately equal sized. .rank "first" method forces equal sized bins
-qfatigue, fatiguebins = qcut(df4['fatigue13c'], q=3, labels=['low', 'mid', 'high'], retbins=True)
-qminex, minexbins = qcut(df4['minimum17c'], q=3, labels=['low', 'mid', 'high'], retbins=True)
-qunrefresh, unrefreshbins = qcut(df4['unrefreshed19c'], q=3, labels=['low', 'mid', 'high'], retbins=True)
-qremember, rememberbins = qcut(df4['remember36c'], q=3, labels=['low', 'mid','high'], retbins=True)
+qfatigue, fatiguebins = qcut(df4['fatigue13c'], q=2, labels=['low', 'high'], retbins=True)
+qminex, minexbins = qcut(df4['minimum17c'], q=2, labels=['low', 'high'], retbins=True)
+qunrefresh, unrefreshbins = qcut(df4['unrefreshed19c'], q=2, labels=['low', 'high'], retbins=True)
+qremember, rememberbins = qcut(df4['remember36c'], q=2, labels=['low', 'high'], retbins=True)
+
+
+
+if q_cut == 0:
+    bins = [-np.inf, 1.9, 2.9, np.inf]
+    labels = ['low', 'mid','high']
+    qfatigue = cut(x=df4['fatigue13c'], bins = bins, labels=labels, right = True)
+    qminex = cut(x=df4['minimum17c'], bins = bins, labels=labels, right = True)
+    qunrefresh = cut(x=df4['unrefreshed19c'], bins = bins, labels=labels, right = True)
+    qremember = cut(x=df4['remember36c'], bins = bins, labels=labels, right = True)
+    
 df4['qfatigue'] = qfatigue
 df4['qminex'] = qminex
 df4['qunrefresh'] = qunrefresh
 df4['qremember'] = qremember
-
-
 
 def binAccuracy(newrow, df4):
     add = []
     binList = [fatiguebins, minexbins, unrefreshbins, rememberbins]
     for y in range(len(newrow)):
         score = np.array([newrow[y]])
-        binVal = cut(score, bins=binList[y], labels=['low', 'mid', 'high'], right=True).astype('str')
+        binVal = cut(score, bins=bins, labels=labels, right=True).astype('str')
         add.append(binVal[0])
     sample_size = (df4.query(f"qfatigue == '{add[0]}' & qminex == '{add[1]}' & qunrefresh == '{add[2]}' & qremember == '{add[3]}'")['dx']==1)
     return sample_size
 
 #sample_size = (df4.query(f"qfatigue == '{add[0]}' & qminex == '{add[1]}' & qunrefresh == '{add[2]}' & qremember == '{add[3]}'")['dx']==1)
 
-#test = binAccuracy(responses).mean()
+test = binAccuracy(responses, df4).mean()
+
+test = df4[(df4['fatigue13c'] >= (responses[0]-0.5)) & 
+           (df4['fatigue13c'] <= (responses[0] + 0.5)) &
+           (df4['minimum17c'] >= (responses[1] - 0.5)) &
+           (df4['minimum17c'] <= (responses[1] + 0.5)) & 
+           (df4['unrefreshed19c'] >= (responses[2] - 0.5)) &
+           (df4['unrefreshed19c'] <= (responses[2] + 0.5)) &
+           (df4['remember36c'] <= (responses[3] + 0.5)) &
+           (df4['remember36c'] >= (responses[3] - 0.5))] 
+
+np.mean(test['dx']==1)
+
+
 
 #test = cut(responses[0:,1], bins=fatiguebins, labels=['low', 'mid', 'high']).astype('str')
 
 
 #(df4.query(f"qfatigue == '{add[0]}' & qminex == '{add[1]}' & qunrefresh == '{add[2]}' & qremember == '{add[3]}'")['dx']==1).mean()
 
+#plotting histograms of each bin, separated by dx 
+#plt.hist(df4.qfatigue[(df4['dx']==1)])
 
+#plt.hist(df4.qfatigue[(df4['dx']==0)])
+
+crosstab(df4.qfatigue, df4.dx).plot(kind='bar')
+
+crosstab(df4.qminex, df4.dx).plot(kind='bar')
+
+crosstab(df4.qunrefresh, df4.dx).plot(kind='bar')
+
+crosstab(df4.qremember, df4.dx).plot(kind='bar')
 
 #Working on radar plot
 newdf = mecfs.drop(columns='dx')
@@ -186,5 +213,16 @@ fig.update_polars(radialaxis=dict(range=[0, 4]))
 pyo.plot(fig, include_plotlyjs=False, output_type='div')
 
 
-fig.write_image("figure.png")
+fig.write_image("figure.png")variable = 'fatigue13c'
+
+lowfat = df4.query(f'{variable} >=0 & {variable} <= 1')
+midlowfat = df4.query(f'{variable} >1 & {variable} <= 2')
+medfat = df4.query(f'{variable} > 2 & {variable} <=3')
+hifat = df4.query(f'{variable} > 3 & {variable} <=4')
+(hifat['dx']==1).mean()
+
+df4['test'] = cut(x=df4['fatigue13c'], bins = [0,  2, np.inf], labels=['low', 'high'], right = False)
+
+
+
 '''
