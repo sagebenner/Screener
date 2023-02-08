@@ -68,16 +68,13 @@ def diagnose():
     fatiguescore = (int(session["fatiguescoref"]) + int(session["fatiguescores"])) / 2
 
     if survey == "rf4":
-        import randomForest
+        import probabilities
         pemscore = (int(session["minexf"]) + int(session["minexf"])) / 2
         sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
         cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
         data = np.array([[fatiguescore, pemscore, sleepscore, cogscore]])
-        result = randomForest.rf.predict(data)
-        if result[0] == 1:
-            return f"<h1>The random forest model predicts ME/CFS. Model accuracy is {randomForest.accuracy.round(decimals=2)}</h1>"
-        else:
-            return f"<h1>The random forest model does NOT predict ME/CFS. Model accuracy is {randomForest.accuracy.round(decimals=2)}</h1>"
+
+
     if survey == "rf14":
         import randomForest
         pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
@@ -95,11 +92,31 @@ def diagnose():
                           ((int(session["hotf"]) + int(session["hots"])) / 2),
                           ((int(session["fluf"]) + int(session["flus"])) / 2),
                           ((int(session["smellf"]) + int(session["smells"])) / 2)]])
-        result = randomForest.rf2.predict(data)
-        if result[0] == 1:
-            return f"<h1>The random forest model predicts ME/CFS. Model accuracy is {randomForest.accuracy2.round(decimals=12)}</h1>"
-        else:
-            return f"<h1>The random forest model does NOT predict ME/CFS. Model accuracy is {randomForest.accuracy2.round(decimals=2)}</h1>"
+
+        newdf = df[(df['fatigue13c'] >= (data[0]-0.5)) &
+                (df['fatigue13c'] <= (data[0] + 0.5)) &
+                (df['minimum17c'] >= (data[1] - 0.5)) &
+                (df['minimum17c'] <= (data[1] + 0.5)) &
+                (df['unrefreshed19c'] >= (data[2] - 0.5)) &
+                (df['unrefreshed19c'] <= (data[2] + 0.5)) &
+                (df['musclepain25c'] >= (data[2] - 0.5)) &
+                (df['musclepain25c'] <= (data[2] + 0.5)) &
+                (df['bloating29c'] >= (data[2] - 0.5)) &
+                (df['bloating29c'] <= (data[2] + 0.5)) &
+                (df['remember36c'] <= (data[3] + 0.5)) &
+                (df['remember36c'] >= (data[3] - 0.5)) &
+                (df['difficulty37c'] >= (data[2] - 0.5)) &
+                (df['difficulty37c'] <= (data[2] + 0.5)) &
+                (df['bowel46c'] >= (data[2] - 0.5)) &
+                (df['bowel46c'] <= (data[2] + 0.5)) &
+                (df['unsteady48c'] >= (data[2] - 0.5)) &
+                (df['unsteady48c'] <= (data[2] + 0.5)) &
+                (df['limbs56c'] >= (data[2] - 0.5)) &
+                (df['limbs56c'] <= (data[2] + 0.5)) &
+                (df['unrefreshed19c'] >= (data[2] - 0.5)) &
+                (df['unrefreshed19c'] <= (data[2] + 0.5)) &
+                   ]
+
     if survey == "classic":
         #import probabilities
         if "minexs" and "minexf" in session:
