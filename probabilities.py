@@ -149,6 +149,41 @@ test = df4[(df4['fatigue13c'] >= (responses[0]-0.5)) &
 np.mean(test['dx']==1)
 
 
+# I'm going to test the dsq-sf for the probabilities method
+data = [2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+df = df4
+newdf = df[(df['fatigue13c'] >= (data[0]-1)) &
+                (df['fatigue13c'] <= (data[0] + 1)) &
+                (df['soreness15c'] >= (data[1] - 1)) &
+                (df['soreness15c'] <= (data[1] + 1)) &
+                (df['minimum17c'] >= (data[2] - 1)) &
+                (df['minimum17c'] <= (data[2] + 1)) &
+                (df['unrefreshed19c'] >= (data[3] - 1)) &
+                (df['unrefreshed19c'] <= (data[3] + 1)) &
+                (df['musclepain25c'] >= (data[4] - 1)) &
+                (df['musclepain25c'] <= (data[4] + 1)) &
+                (df['bloating29c'] >= (data[5] - 1)) &
+                (df['bloating29c'] <= (data[5] + 1)) &
+                (df['remember36c'] <= (data[6] + 1)) &
+                (df['remember36c'] >= (data[6] - 1)) &
+                (df['difficulty37c'] >= (data[7] - 1)) &
+                (df['difficulty37c'] <= (data[7] + 1)) &
+                (df['bowel46c'] >= (data[8] - 1)) &
+                (df['bowel46c'] <= (data[8] + 1)) &
+                (df['unsteady48c'] >= (data[9] - 1)) &
+                (df['unsteady48c'] <= (data[9] + 1)) &
+                (df['limbs56c'] >= (data[10] - 1)) &
+                (df['limbs56c'] <= (data[10] + 1)) &
+                (df['hot58c'] >= (data[11] - 1)) &
+                (df['hot58c'] <= (data[11] + 1)) &
+                (df['flu65c'] >= (data[12] - 1)) &
+                (df['flu65c'] <= (data[12] + 1)) &
+                (df['smells66c'] >= (data[13] - 1)) &
+                (df['smells66c'] <= (data[13] + 1))]
+
+sample_size = len(newdf.index)
+testAcc = np.mean(newdf['dx'] == 1).round(decimals=2) * 100
+
 
 #test = cut(responses[0:,1], bins=fatiguebins, labels=['low', 'mid', 'high']).astype('str')
 
@@ -197,7 +232,16 @@ responses = [2, 3, 2, 3]
 
 label_loc = np.linspace(start = 0, stop = 2 * np.pi, num=len(responses))
 
+testdf = mecfs.mean(axis=0)
 
+testintersect = df2[df2.columns.intersection(newdf.columns)]
+
+shortform_items = ['fatigue13c', 'soreness15c', 'minimum17c', 'unrefreshed19c',
+                   'musclepain25c', 'bloating29c', 'remember36c', 'difficulty37c',
+                   'bowel46c', 'unsteady48c', 'limbs56c', 'hot58c', 'flu65c', 
+                   'smells66c']
+
+dsqsf = df4[shortform_items]
 '''
 fig = go.Figure(
     data=[

@@ -77,11 +77,12 @@ def diagnose():
 
     if survey == "rf14":
         import randomForest
+        import probabilities
         pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
         sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
         cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
         df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
-        data = np.array([[fatiguescore, ((int(session["soref"]) + int(session["sores"])) / 2), pemscore,
+        data = [fatiguescore, ((int(session["soref"]) + int(session["sores"])) / 2), pemscore,
                           ((int(session["sleepf"]) + int(session["sleeps"])) / 2),
                           ((int(session["musclef"]) + int(session["muscles"])) / 2),
                           ((int(session["bloatf"]) + int(session["bloats"])) / 2), cogscore,
@@ -91,34 +92,78 @@ def diagnose():
                           ((int(session["limbsf"]) + int(session["limbss"])) / 2),
                           ((int(session["hotf"]) + int(session["hots"])) / 2),
                           ((int(session["fluf"]) + int(session["flus"])) / 2),
-                          ((int(session["smellf"]) + int(session["smells"])) / 2)]])
+                          ((int(session["smellf"]) + int(session["smells"])) / 2)]
 
-        newdf = df[(df['fatigue13c'] >= (data[0]-0.5)) &
-                (df['fatigue13c'] <= (data[0] + 0.5)) &
-                (df['minimum17c'] >= (data[1] - 0.5)) &
-                (df['minimum17c'] <= (data[1] + 0.5)) &
-                (df['unrefreshed19c'] >= (data[2] - 0.5)) &
-                (df['unrefreshed19c'] <= (data[2] + 0.5)) &
-                (df['musclepain25c'] >= (data[2] - 0.5)) &
-                (df['musclepain25c'] <= (data[2] + 0.5)) &
-                (df['bloating29c'] >= (data[2] - 0.5)) &
-                (df['bloating29c'] <= (data[2] + 0.5)) &
-                (df['remember36c'] <= (data[3] + 0.5)) &
-                (df['remember36c'] >= (data[3] - 0.5)) &
-                (df['difficulty37c'] >= (data[2] - 0.5)) &
-                (df['difficulty37c'] <= (data[2] + 0.5)) &
-                (df['bowel46c'] >= (data[2] - 0.5)) &
-                (df['bowel46c'] <= (data[2] + 0.5)) &
-                (df['unsteady48c'] >= (data[2] - 0.5)) &
-                (df['unsteady48c'] <= (data[2] + 0.5)) &
-                (df['limbs56c'] >= (data[2] - 0.5)) &
-                (df['limbs56c'] <= (data[2] + 0.5)) &
-                (df['unrefreshed19c'] >= (data[2] - 0.5)) &
-                (df['unrefreshed19c'] <= (data[2] + 0.5)) &
-                   ]
+        newdf = df[(df['fatigue13c'] >= (data[0] - 1)) &
+                   (df['fatigue13c'] <= (data[0] + 1)) &
+                   (df['soreness15c'] >= (data[1] - 1)) &
+                   (df['soreness15c'] <= (data[1] + 1)) &
+                   (df['minimum17c'] >= (data[2] - 1)) &
+                   (df['minimum17c'] <= (data[2] + 1)) &
+                   (df['unrefreshed19c'] >= (data[3] - 1)) &
+                   (df['unrefreshed19c'] <= (data[3] + 1)) &
+                   (df['musclepain25c'] >= (data[4] - 1)) &
+                   (df['musclepain25c'] <= (data[4] + 1)) &
+                   (df['bloating29c'] >= (data[5] - 1)) &
+                   (df['bloating29c'] <= (data[5] + 1)) &
+                   (df['remember36c'] <= (data[6] + 1)) &
+                   (df['remember36c'] >= (data[6] - 1)) &
+                   (df['difficulty37c'] >= (data[7] - 1)) &
+                   (df['difficulty37c'] <= (data[7] + 1)) &
+                   (df['bowel46c'] >= (data[8] - 1)) &
+                   (df['bowel46c'] <= (data[8] + 1)) &
+                   (df['unsteady48c'] >= (data[9] - 1)) &
+                   (df['unsteady48c'] <= (data[9] + 1)) &
+                   (df['limbs56c'] >= (data[10] - 1)) &
+                   (df['limbs56c'] <= (data[10] + 1)) &
+                   (df['hot58c'] >= (data[11] - 1)) &
+                   (df['hot58c'] <= (data[11] + 1)) &
+                   (df['flu65c'] >= (data[12] - 1)) &
+                   (df['flu65c'] <= (data[12] + 1)) &
+                   (df['smells66c'] >= (data[13] - 1)) &
+                   (df['smells66c'] <= (data[13] + 1))]
 
+        sample_size = len(newdf.index)
+        testAcc = np.mean(newdf['dx'] == 1).round(decimals=2) * 100
+        user_scores = data
+        cursor = mysql.connection.cursor()
+        if session["checkbox"] == "data":
+            cursor.execute('INSERT INTO shortform VALUES (NULL, % s, % s, % s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+                           , (data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9],
+                            data[10], data[11], data[12], data[13]))
+            mysql.connection.commit()
+
+        mecfs_selection = probabilities.mecfs[probabilities.shortform_items]
+        mecfs_14mean = mecfs_selection.mean(axis=0)
+        feature_list = np.array(mecfs_selection.columns)
+        categories = [*feature_list, feature_list[0]]
+        print(categories)
+        control_selection = probabilities.controls[probabilities.shortform_items]
+        control_14mean = control_selection.mean(axis=0).drop(columns=['dx'])
+        try:
+            #probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
+            fig = go.Figure(
+                data=[
+                    go.Scatterpolar(r=control_14mean, theta=categories, fill='toself',
+                                    name="Average Healthy Control scores"),
+                    go.Scatterpolar(r=mecfs_14mean, theta=categories, fill='toself',
+                                    name="Average ME/CFS scores"),
+                    go.Scatterpolar(r=user_scores, theta=categories, fill='toself', name="Your scores")],
+                layout=go.Layout(
+                    title=go.layout.Title(text='Your scores compared with our dataset of 3,428 participants'),
+                    polar={'radialaxis': {'visible': True}},
+                    showlegend=True))
+            fig.update_polars(radialaxis=dict(range=[0, 4]))
+            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+            return render_template("graph.html", graphJSON=graphJSON, probCFS=testAcc, sample_size=sample_size)
+            return f"<h1>We estimate that your probability of having ME/CFS is approximately {testAcc}%, based on a sample size of " \
+                   f"{sample_size} from our dataset.</h1>"
+
+        except:
+            return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
     if survey == "classic":
-        #import probabilities
+        import probabilities
         if "minexs" and "minexf" in session:
             pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
 
@@ -159,6 +204,7 @@ def diagnose():
         #past_users = np.fromiter(cursor.fetchall(), count=rows, dtype=('i4,i4,i4,i4'))
         #print(past_users)
         try:
+
             probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
 
             fig = go.Figure(
@@ -175,20 +221,9 @@ def diagnose():
             fig.update_polars(radialaxis=dict(range=[0, 4]))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-            fig2 = go.Figure(
-                data=[
-                    go.Scatterpolar(r=mean_array, theta=probabilities.categories, fill='toself',
-                                    name="Average scores from other users"),
-                    go.Scatterpolar(r=user_scores, theta=probabilities.categories, fill='toself', name="Your scores")],
-                layout=go.Layout(
-                    title=go.layout.Title(text=f"Average scores from other users ({number_users})"),
-                    polar={'radialaxis': {'visible': True}},
-                    showlegend=True))
-            fig2.update_polars(radialaxis=dict(range=[0, 4]))
-            graphJSON2 = json.dumps(fig2, cls=plotly.utils.PlotlyJSONEncoder)
+
             print(session["checkbox"])
-            return render_template("graph.html", graphJSON=graphJSON, probCFS=testAcc, sample_size=sample_size,
-                                   graphJSON2=graphJSON2)
+            return render_template("graph.html", graphJSON=graphJSON, probCFS=testAcc, sample_size=sample_size)
             #pyo.plot(fig)
 
 
