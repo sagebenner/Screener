@@ -1,6 +1,6 @@
 import numpy as np
 import plotly.utils
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_wtf import FlaskForm
 from wtforms import RadioField, SubmitField
 import pandas as pd
@@ -60,6 +60,7 @@ pemdomain = 0
 sleepdomain = 0
 cogdomain = 0
 survey = str
+message = "*Please enter a response for both frequency and severity"
 
 def diagnose():
     global end
@@ -73,7 +74,6 @@ def diagnose():
         sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
         cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
         data = np.array([[fatiguescore, pemscore, sleepscore, cogscore]])
-
 
     if survey == "rf14":
         import randomForest
@@ -124,7 +124,7 @@ def diagnose():
                    (df['smells66c'] <= (data[13] + 1))]
 
         sample_size = len(newdf.index)
-        testAcc = np.mean(newdf['dx'] == 1).round(decimals=2) * 100
+        testAcc = int(np.mean(newdf['dx'] == 1).round(decimals=2) * 100)
         user_scores = data
         cursor = mysql.connection.cursor()
         if session["checkbox"] == "data":
@@ -157,18 +157,40 @@ def diagnose():
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
             return render_template("graph.html", graphJSON=graphJSON, probCFS=testAcc, sample_size=sample_size)
-            return f"<h1>We estimate that your probability of having ME/CFS is approximately {testAcc}%, based on a sample size of " \
-                   f"{sample_size} from our dataset.</h1>"
 
         except:
             return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
     if survey == "classic":
         import probabilities
-        if "minexs" and "minexf" in session:
-            pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
 
-        sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
-        cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
+        if session.get('minexf') is not None:
+            pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
+        if session.get('soref') is not None:
+            pemscore = (int(session["soref"]) + int(session["sores"])) / 2
+        if session.get('heavyf') is not None:
+            pemscore = (int(session["heavyf"]) + int(session["heavys"])) / 2
+        if session.get('drainedf') is not None:
+            pemscore = (int(session["drainedf"]) + int(session["draineds"])) / 2
+        if session.get('mentalf') is not None:
+            pemscore = (int(session["mentalf"]) + int(session["mentals"])) / 2
+
+        if session.get('sleepf') is not None:
+            sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
+        if session.get('stayf') is not None:
+            sleepscore = (int(session["stayf"]) + int(session["stays"])) / 2
+        if session.get('napf') is not None:
+            sleepscore = (int(session["napf"]) + int(session["naps"])) / 2
+        if session.get('fallf') is not None:
+            sleepscore = (int(session["fallf"]) + int(session["falls"])) / 2
+
+        if session.get('rememberf') is not None:
+            cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
+        if session.get('attentionf') is not None:
+            cogscore = (int(session["attentionf"]) + int(session["attentions"])) / 2
+        if session.get('wordf') is not None:
+            cogscore = (int(session["wordf"]) + int(session["words"])) / 2
+        if session.get('focusf') is not None:
+            cogscore = (int(session["focusf"]) + int(session["focuss"])) / 2
 
         cursor = mysql.connection.cursor()
 
@@ -196,7 +218,7 @@ def diagnose():
         sample_size = len(newdf.index)
         #sample_size = len(probabilities.binAccuracy(user_scores, df4=probabilities.df4))
         #testAcc = probabilities.binAccuracy(user_scores, df4=probabilities.df4).mean().round(decimals=2) * 100
-        testAcc = np.mean(newdf['dx']==1).round(decimals=2) * 100
+        testAcc = int(np.mean(newdf['dx']==1).round(decimals=2) * 100)
         if session["checkbox"] == "data":
             cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
                            (fatiguescore, pemscore, sleepscore, cogscore))
@@ -206,14 +228,15 @@ def diagnose():
         try:
 
             probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
-
+            categories = ['Fatigue', 'Post-exertional malaise', 'Sleep problems',
+                                                                        'Cognitive problems']
             fig = go.Figure(
                 data=[
-                    go.Scatterpolar(r=probabilities.controlmean, theta=probabilities.categories, fill='toself',
+                    go.Scatterpolar(r=probabilities.controlmean, theta=categories, fill='toself',
                                     name="Average Healthy Control scores"),
-                    go.Scatterpolar(r=probabilities.combmean, theta=probabilities.categories, fill='toself',
+                    go.Scatterpolar(r=probabilities.combmean, theta=categories, fill='toself',
                                     name="Average ME/CFS scores"),
-                    go.Scatterpolar(r=user_scores, theta=probabilities.categories, fill='toself', name="Your scores")],
+                    go.Scatterpolar(r=user_scores, theta=categories, fill='toself', name="Your scores")],
                 layout=go.Layout(
                     title=go.layout.Title(text='Your scores compared with our dataset of 3,428 participants'),
                     polar={'radialaxis': {'visible': True}},
@@ -320,24 +343,27 @@ def page1():
     form = FlaskForm()
 
     if request.method == "POST":
+
         fatiguescoref = request.form.get("fatigue")
         fatiguescores = request.form.get("severity")
-        session["fatiguescoref"] = fatiguescoref
-        session["fatiguescores"] = fatiguescores
-        if survey == "rf14":
-            return redirect(url_for("expem1"))
-        # for practice purposes, I set these thresholds to 0:
-        if int(session["fatiguescoref"]) < 0 or int(session["fatiguescores"]) < 0:
-            if survey == "classic":
-                end = True
-                return render_template("example4.html")
+        if fatiguescores is not None and fatiguescoref is not None:
+            session["fatiguescoref"] = fatiguescoref
+            session["fatiguescores"] = fatiguescores
+            if survey == "rf14":
+                return redirect(url_for("expem1"))
+            # for practice purposes, I set these thresholds to 0:
+            if int(session["fatiguescoref"]) < 0 or int(session["fatiguescores"]) < 0:
+                if survey == "classic":
+                    end = True
+                    return render_template("example4.html")
+                else:
+                    return redirect(url_for("page2"))
             else:
                 return redirect(url_for("page2"))
         else:
-            return redirect(url_for("page2"))
-
+            return render_template("result.html", message=message)
     else:
-        return render_template("result.html")
+        return render_template("result.html", message='')
 
 
 @app.route('/minimum', methods=["post", "get"])
@@ -346,23 +372,27 @@ def page2():
     form = FlaskForm()
     global pemdomain
     if request.method == "POST":
-        session["minexf"] = request.form.get("minex")
-        session["minexs"] = request.form.get("minex_s")
-        minexf = int(session["minexf"])
-        minexs = int(session["minexs"])
-        if survey == "rf14":
-            return redirect(url_for("page3"))
-        if minexs >= 2 and minexf >= 2:
-            pemdomain = 1
-            if survey == "classic" or survey == "rf4":
-                return redirect(url_for("page3"))
-        else:
-            if survey == "classic":
-                return redirect(url_for("expem1"))
-            if survey == "rf4":
-                return redirect(url_for("page3"))
+        minexf = request.form.get("minex")
+        minexs = request.form.get("minex_s")
+        if minexs is not None and minexf is not None:
+            session["minexf"] = int(minexf)
+            session["minexs"] = int(minexs)
 
-    return render_template("page2.html")
+            if survey == "rf14":
+                return redirect(url_for("page3"))
+            if int(minexs) >= 2 and int(minexf) >= 2:
+                pemdomain = 1
+                if survey == "classic" or survey == "rf4":
+                    return redirect(url_for("page3"))
+            else:
+                if survey == "classic":
+                    return redirect(url_for("expem1"))
+                if survey == "rf4":
+                    return redirect(url_for("page3"))
+        else:
+            return render_template("page2.html", message=message)
+    else:
+        return render_template("page2.html")
 
 
 @app.route('/unrefreshed', methods=['post', 'get'])

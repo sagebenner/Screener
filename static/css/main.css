@@ -73,7 +73,7 @@ button {
   padding: 20px;
 }
 h2 {
-  font-size: 2.5em;
+  font-size: 2.2em;
   margin-top: 40px;
   margin-left: 200px;
   margin-right: 200px;
@@ -116,7 +116,7 @@ figure {
 }
 
 .menu {
-  float: right;
+  text-align: center;
   margin-top: 8px;
 }
 .menu li {
@@ -126,8 +126,9 @@ figure {
   margin-left: 35px;
 }
 .menu li a {
-  color: #444;
-  text-decoration: none;
+
+  text-decoration: underline;
+
 }
 .parent{
   text-align:center;
