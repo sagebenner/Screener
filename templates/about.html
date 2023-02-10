@@ -1,10 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
-<html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>About</title>
+</head>
 <header></header>
- <body >
-  <h3>Based on your answers, we estimate that your probability of having ME/CFS is<b> {{ probCFS }}%</b>, from a sample size of {{ sample_size }} from our dataset</h3>
- <ul class="menu">
+<body>
+<ul class="menu">
   <li >
    <a href="{{ url_for('home') }}">Home</a>
   </li>
@@ -25,14 +30,11 @@
   </li>
   <li>
  </ul>
-  <figure id='chart'  style="width: 70%; height: 600px; border: thin #c0c0c0 solid; align: center;"></figure>
-<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-<script type='text/javascript'>
-  var graphs = {{graphJSON | safe}};
-  Plotly.plot('chart',graphs,{});
-</script>
-
-
+<hr>
+<p>This online screener is based on the DePaul Symptom Questionnaire, a validated instrument meant to assess
+ME/CFS Symptomatology. <br><br>
+    This screener was created with Python by Sage Benner at DePaul's Center for Community Research. For technical issues or to
+    provide design-related feedback, contact Sage at sage.benner@gmail.com.
+</p>
 </body>
-
 </html>

@@ -10,13 +10,9 @@ body {
  */
 
 header {
-  background-color: #0057B7;
-  height: 35px;
-  width: 100%;
   opacity: .9;
-  margin-bottom: 0px;
   text-align: center;
-  text-transform: uppercase;
+  text-transform: none;
   text-color: #444;
 }
 header h1.logo {
@@ -56,7 +52,7 @@ div.about {
 
 }
 a {
-  margin-top: 30px;
+  margin-top: 20px;
   left: 10px;
   bottom: 20px;
   text-align:center;
@@ -115,19 +111,35 @@ figure {
     margin: auto;
 }
 
+
+
 .menu {
   text-align: center;
-  margin-top: 8px;
+  height: 35px;
+  background-color: #0057B7;
+  overflow: hidden;
 }
 .menu li {
-  display: inline;
+  display: inline-block;
+  position: relative;
+  vertical-align: center;
+  padding: 7px;
+  margin-top: 0px;
 }
 .menu li + li {
   margin-left: 35px;
 }
 .menu li a {
 
-  text-decoration: underline;
+  text-decoration: none;
+  color: white;
+
+
+
+}
+li a:hover {
+text-decoration: underline;
+
 
 }
 .parent{
@@ -236,3 +248,35 @@ figure {
     max-width: 220px;
 
     }
+
+.symptom {
+display: inline-block;
+width:50%;
+height:200px;
+
+}
+
+.typed {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  animation: typing;
+  animation-duration: 1.5s;
+  animation-timing-function: steps(30, end);
+  animation-fill-mode: forwards;
+}
+.typed {
+
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  animation: typing;
+  animation-duration: 0.5s;
+  animation-timing-function: steps(30, end);
+  animation-fill-mode: forwards;
+}
+
+@keyframes typing {
+  from { width: 0% }
+  to { width: 100% }
+}

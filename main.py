@@ -60,7 +60,7 @@ pemdomain = 0
 sleepdomain = 0
 cogdomain = 0
 survey = str
-message = "*Please enter a response for both frequency and severity"
+message = "*Please enter a response for both frequency and severity before continuing to the next question"
 
 def diagnose():
     global end
@@ -325,10 +325,12 @@ def home():
     global end
     form = FlaskForm()
     global survey
+    session["pagenum"] = 0
     if request.method == "POST":
         session["dropdown"] = str(request.form.get("survey"))
         survey = session["dropdown"]
         session["checkbox"] = request.form.get("checkbox")
+        session["pagenum"] += 1
         return redirect(url_for("page1"))
     return render_template("home.html")
 
@@ -349,6 +351,7 @@ def page1():
         if fatiguescores is not None and fatiguescoref is not None:
             session["fatiguescoref"] = fatiguescoref
             session["fatiguescores"] = fatiguescores
+            session['pagenum'] += 1
             if survey == "rf14":
                 return redirect(url_for("expem1"))
             # for practice purposes, I set these thresholds to 0:
@@ -361,9 +364,9 @@ def page1():
             else:
                 return redirect(url_for("page2"))
         else:
-            return render_template("result.html", message=message)
+            return render_template("result.html", message=message, pagenum=session['pagenum'])
     else:
-        return render_template("result.html", message='')
+        return render_template("result.html", message='', pagenum=session['pagenum'])
 
 
 @app.route('/minimum', methods=["post", "get"])
@@ -467,7 +470,7 @@ def end2():
 
 
 @app.route('/soreness', methods=['post', 'get'])
-def expem1():
+def expem1(sore_page):
     form = FlaskForm()
     global pemdomain
     if request.method == "POST":
@@ -482,7 +485,7 @@ def expem1():
             return redirect(url_for("page3"))
         else:
             return redirect(url_for("expem2"))
-    return render_template("expem1.html")
+    return render_template("expem1.html", sore_page=sore_page)
 
 
 @app.route('/drained', methods=['post', 'get'])
@@ -759,6 +762,10 @@ def end():
 
         # return f"{result}"
 
+
+@app.route('/about', methods=['post', 'get'])
+def about():
+    return render_template('about.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

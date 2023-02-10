@@ -1,15 +1,17 @@
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
 
+
+
 <body class="about">
 
 <form method="post">
 <div >
     <p class="instructions"><i>For each question below, please select <b>one number for frequency</b> and <b>one number for severity.</b>
     </i></p>
-    <h3>1. Fatigue/extreme tiredness</h3>
+    <h3> {{ pagenum }}. Fatigue/extreme tiredness</h3>
 </div>
 
-<div id="left" style="display: inline-block;width:50%;height:200px;float:left;">
+<div id="left" style="display: inline-block;width:50%;height:200px;float:left; left: 20px">
        <fieldset>
         <legend><b>Frequency: </b>Throughout the past 6 months, how often have you had this symptom?</legend>
         <ol start="0">
@@ -43,7 +45,7 @@
 
 
 
-<div id="right" style="display:inline-block; width:50%; height:200px;float:right;">
+<div id="right" style="display:inline-block; width:50%; height:200px;float:right; right: 20px">
     <fieldset>
         <legend><b>Severity: </b>Throughout the past 6 months, how much has this symptom bothered you? </legend>
         <ol start="0">
@@ -74,9 +76,10 @@
 
 </div>
 </form>
+<div class="container">
 
-<p style="text-align: center;"> <i>{{ message }} </i></p>
-
+<p class="typed" > <i>{{ message }} </i></p>
+</div>
 </body>
 
 

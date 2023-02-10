@@ -5,15 +5,40 @@
     <meta charset="UTF-8">
     <title>Home</title>
 </head>
-<header></header>
+
+    <ul class="menu">
+  <li >
+   <a href="{{ url_for('home') }}">Home</a>
+  </li>
+  <li>
+   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Documents/DEPAUL%20SYMPTOM%20QUESTIONNAIRE%20with%20SF-36%20and%20MFI%20and%20SI%205-18-11.pdf"
+   target="_blank">
+    Full DSQ 1 (PDF)
+   </a>
+  </li>
+  <li>
+   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/media-links.aspx"
+   target="_blank">
+    More Information About ME/CFS
+   </a>
+  </li>
+    <li >
+   <a href="{{ url_for('about') }}">About This Screener</a>
+  </li>
+  <li>
+ </ul>
+
+
 <body>
 <h2>Welcome to the online screener for Myalgic Encephalomyelitis/Chronic Fatigue Syndrome (ME/CFS)</h2>
-<p><h3><b></b></h3><hr><br>
+<p><h3></h3><hr><br>
 <div class="div">
 <p>This online screener is based on the DePaul Symptom Questionnaire (DSQ), a validated instrument for assessing
   ME/CFS Symptom burden.
-    For more information, follow one of the links below.</p>
+    For more information, follow one of the links above.</p>
     <p><br>Disclaimer: This screener is for educational purposes only, and is not meant to provide medical diagnoses.</p>
+
+
     <form method="post">
     <label for="survey" style="  margin-left: 200px; margin-right: 200px;">Choose a screener option:</label>
   <select name="survey" id="survey" title =  "
@@ -36,9 +61,9 @@ while keeping the same number of domains as the full DSQ.">
 a result, then erased once you close this webpage. "> OPTIONAL: I agree to have my answers stored confidentially for analysis purposes.</label><br>
     <button class="button" type="submit" name="result" value="result" >Continue to screener</button>
   </form>
-<a  style="display:inline-block; width:20%; float:center;"
+<!a  style="display:inline-block; width:20%; float:center;"
    href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/measures.aspx"
-  target="_blank">DePaul Symptom Questionnaire</a>
+  target="_blank"><!/a>
 
 </div>
 </body>
