@@ -60,7 +60,7 @@ pemdomain = 0
 sleepdomain = 0
 cogdomain = 0
 survey = str
-message = "*Please enter a response for both frequency and severity before continuing to the next question"
+message = "*Please enter a response for both frequency and severity before continuing"
 
 def diagnose():
     global end
@@ -364,9 +364,10 @@ def page1():
             else:
                 return redirect(url_for("page2"))
         else:
+            flash(message)
             return render_template("result.html", message=message, pagenum=session['pagenum'])
-    else:
-        return render_template("result.html", message='', pagenum=session['pagenum'])
+
+    return render_template("result.html", message='', pagenum=session['pagenum'])
 
 
 @app.route('/minimum', methods=["post", "get"])
@@ -380,7 +381,7 @@ def page2():
         if minexs is not None and minexf is not None:
             session["minexf"] = int(minexf)
             session["minexs"] = int(minexs)
-
+            session['pagenum'] += 1
             if survey == "rf14":
                 return redirect(url_for("page3"))
             if int(minexs) >= 2 and int(minexf) >= 2:
@@ -393,9 +394,9 @@ def page2():
                 if survey == "rf4":
                     return redirect(url_for("page3"))
         else:
-            return render_template("page2.html", message=message)
+            return render_template("page2.html", pagenum=session['pagenum'], message=message)
     else:
-        return render_template("page2.html")
+        return render_template("page2.html", pagenum=session['pagenum'])
 
 
 @app.route('/unrefreshed', methods=['post', 'get'])
@@ -405,20 +406,24 @@ def page3():
     if request.method == "POST":
         sleepf = request.form.get("sleepf")
         sleeps = request.form.get("sleeps")
-        session["sleepf"] = sleepf
-        session["sleeps"] = sleeps
-        if survey == "rf14":
-            return redirect(url_for("musclepain"))
-        if int(session["sleepf"]) >= 2 and int(session["sleeps"]) >= 2:
-            sleepdomain = 1
-            if survey == "classic" or survey == "rf4":
-                return redirect(url_for("page4"))
+        if sleeps is not None and sleepf is not None:
+            session["sleepf"] = sleepf
+            session["sleeps"] = sleeps
+            session['pagenum'] += 1
+            if survey == "rf14":
+                return redirect(url_for("musclepain"))
+            if int(session["sleepf"]) >= 2 and int(session["sleeps"]) >= 2:
+                sleepdomain = 1
+                if survey == "classic" or survey == "rf4":
+                    return redirect(url_for("page4"))
+            else:
+                if survey == "classic":
+                    return redirect(url_for("exsleep1"))
+                if survey == "rf4":
+                    return redirect(url_for("page4"))
         else:
-            if survey == "classic":
-                return redirect(url_for("exsleep1"))
-            if survey == "rf4":
-                return redirect(url_for("page4"))
-    return render_template("page3.html")
+            return render_template("page3.html", pagenum=session['pagenum'], message=message)
+    return render_template("page3.html", pagenum=session['pagenum'], message='')
 
 
 @app.route('/remember', methods=['post', 'get'])
@@ -428,22 +433,26 @@ def page4():
     if request.method == "POST":
         rememberf = request.form.get("rememberf")
         remembers = request.form.get("remembers")
-        session["rememberf"] = rememberf
-        session["remembers"] = remembers
-        if survey == "rf14":
-            return redirect(url_for("excog1"))
-        else:
-            if int(session["rememberf"]) >= 2 and int(session["remembers"]) >= 2:
-                cogdomain = 1
-                if survey == "classic" or survey == "rf4":
-                    end = True
-                    return diagnose()
+        if remembers is not None and rememberf is not None:
+            session["rememberf"] = rememberf
+            session["remembers"] = remembers
+            session['pagenum'] += 1
+            if survey == "rf14":
+                return redirect(url_for("excog1"))
             else:
-                if survey == "rf4":
-                    return diagnose()
-                if survey == "classic":
-                    return redirect(url_for("excog1"))
-    return render_template("page4.html")
+                if int(session["rememberf"]) >= 2 and int(session["remembers"]) >= 2:
+                    cogdomain = 1
+                    if survey == "classic" or survey == "rf4":
+                        end = True
+                        return diagnose()
+                else:
+                    if survey == "rf4":
+                        return diagnose()
+                    if survey == "classic":
+                        return redirect(url_for("excog1"))
+        else:
+            return render_template("page4.html", pagenum=session['pagenum'], message=message)
+    return render_template("page4.html", pagenum=session['pagenum'], message='')
 
 
 @app.route('/end2', methods=['get'])
