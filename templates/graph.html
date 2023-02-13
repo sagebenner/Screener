@@ -1,9 +1,10 @@
 <!doctype html>
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
 <html>
-<header></header>
- <body >
-  <h3>Based on your answers, we estimate that your probability of having ME/CFS is<b> {{ probCFS }}%</b>, from a sample size of {{ sample_size }} from our dataset</h3>
+<header>
+
+
+
  <ul class="menu">
   <li >
    <a href="{{ url_for('home') }}">Home</a>
@@ -25,6 +26,10 @@
   </li>
   <li>
  </ul>
+
+</header>
+ <body >
+   <h3>Based on your answers, we estimate that your probability of having ME/CFS is<b> {{ probCFS }}%</b>, from a sample size of {{ sample_size }} from our dataset</h3>
   <figure id='chart'  style="width: 70%; height: 600px; border: thin #c0c0c0 solid; align: center;"></figure>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script type='text/javascript'>
