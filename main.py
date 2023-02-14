@@ -11,7 +11,6 @@ import base64
 from io import BytesIO
 import json
 # from wtforms.validators import InputRequired
-#from flask_sqlalchemy import SQLAlchemy
 from flask_mysqldb import MySQL
 import probabilities
 
@@ -29,26 +28,9 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'dsq'
 
-#db = SQLAlchemy()
+
 mysql = MySQL(app)
 
-
-
-
-'''''
-class DSQ(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    fatigue = db.Column(db.Integer)
-    minex = db.Column(db.Integer)
-    unrefreshed = db.Column(db.Integer)
-    remember = db.Column(db.Integer)
-
-if not path.exists('Screener/' + DB_NAME):
-    with app.app_context():
-        db.create_all()
-
-
-'''''
 
 
 
@@ -61,6 +43,7 @@ sleepdomain = 0
 cogdomain = 0
 survey = str
 message = "*Please enter a response for both frequency and severity before continuing"
+composite = 0
 
 def diagnose():
     global end
@@ -81,7 +64,10 @@ def diagnose():
         pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
         sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
         cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
-        df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
+        if composite == 1:
+            df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
+        else:
+            df = pd.read_csv('MECFS No Comorbidities vs All Others.csv')
         data = [fatiguescore, ((int(session["soref"]) + int(session["sores"])) / 2), pemscore,
                           ((int(session["sleepf"]) + int(session["sleeps"])) / 2),
                           ((int(session["musclef"]) + int(session["muscles"])) / 2),
@@ -171,37 +157,59 @@ def diagnose():
 
         cursor = mysql.connection.cursor()
 
-        #newdf = df[(df.fatigue13c == fatiguescore) & (df.minimum17c == pemscore) & (df.unrefreshed19c == sleepscore) & (
-                    #df.remember36c == cogscore)]
         cursor.execute('SELECT fatigue, pem, sleep, cog FROM screen')
+
         results = cursor.fetchall()
 
         re_array = np.array(results)
         number_users = len(re_array)
         mean_array = np.mean(re_array, axis=0)
         print(mean_array)
-        #new row of responeses to make categorical bins:
-        user_scores = [fatiguescore, pemscore, sleepscore, cogscore]
-        responses = [fatiguescore, pemscore, sleepscore, cogscore]
-        newdf = df[(df['fatigue13c'] >= (responses[0]-0.5)) &
-           (df['fatigue13c'] <= (responses[0] + 0.5)) &
-           (df['minimum17c'] >= (responses[1] - 0.5)) &
-           (df['minimum17c'] <= (responses[1] + 0.5)) &
-           (df['unrefreshed19c'] >= (responses[2] - 0.5)) &
-           (df['unrefreshed19c'] <= (responses[2] + 0.5)) &
-           (df['remember36c'] <= (responses[3] + 0.5)) &
-           (df['remember36c'] >= (responses[3] - 0.5))]
+
+        # see if we want to treat data as separate f and s or composite scores:
+        if composite == 1:
+            # new row of responses to make categorical bins:
+            user_scores = [fatiguescore, pemscore, sleepscore, cogscore]
+            responses = [fatiguescore, pemscore, sleepscore, cogscore]
+            newdf = df[(df['fatigue13c'] >= (responses[0]-0.5)) &
+               (df['fatigue13c'] <= (responses[0] + 0.5)) &
+               (df['minimum17c'] >= (responses[1] - 0.5)) &
+               (df['minimum17c'] <= (responses[1] + 0.5)) &
+               (df['unrefreshed19c'] >= (responses[2] - 0.5)) &
+               (df['unrefreshed19c'] <= (responses[2] + 0.5)) &
+               (df['remember36c'] <= (responses[3] + 0.5)) &
+               (df['remember36c'] >= (responses[3] - 0.5))]
+        else:
+            user_scores = [int(session['fatiguescoref']), int(session['fatiguescores']), int(session['pemscoref']),
+                           int(session['pemscores']), int(session['sleepscoref']), int(session['sleepscores']),
+                           int(session['cogscoref']), int(session['cogscores'])]
+
+            responses = user_scores
+            newdf = df[(df['fatigue13f'] >= (responses[0]-0.5)) &
+               (df['fatigue13f'] <= (responses[0] + 0.5)) &
+                df[(df['fatigue13s'] >= (responses[1] - 0.5)) &
+                (df['fatigue13s'] <= (responses[1] + 0.5)) &
+               (df['minimum17f'] >= (responses[2] - 0.5)) &
+               (df['minimum17f'] <= (responses[2] + 0.5)) &
+                (df['minimum17s'] >= (responses[3] - 0.5)) &
+                (df['minimum17s'] <= (responses[3] + 0.5)) &
+               (df['unrefreshed19f'] >= (responses[4] - 0.5)) &
+               (df['unrefreshed19f'] <= (responses[4] + 0.5)) &
+                (df['unrefreshed19s'] >= (responses[5] - 0.5)) &
+                (df['unrefreshed19s'] <= (responses[5] + 0.5)) &
+               (df['remember36f'] <= (responses[6] + 0.5)) &
+               (df['remember36f'] >= (responses[6] - 0.5)) &
+                (df['remember36s'] <= (responses[7] + 0.5)) &
+                (df['remember36s'] >= (responses[7] - 0.5))]]
 
         sample_size = len(newdf.index)
-        #sample_size = len(probabilities.binAccuracy(user_scores, df4=probabilities.df4))
-        #testAcc = probabilities.binAccuracy(user_scores, df4=probabilities.df4).mean().round(decimals=2) * 100
+
         testAcc = int(np.mean(newdf['dx']==1).round(decimals=2) * 100)
         if session["checkbox"] == "data":
             cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
                            (fatiguescore, pemscore, sleepscore, cogscore))
             mysql.connection.commit()
-        #past_users = np.fromiter(cursor.fetchall(), count=rows, dtype=('i4,i4,i4,i4'))
-        #print(past_users)
+
         try:
 
             probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
@@ -221,30 +229,12 @@ def diagnose():
             fig.update_polars(radialaxis=dict(range=[0, 4]))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-
             print(session["checkbox"])
             return render_template("graph.html", graphJSON=graphJSON, probCFS=testAcc, sample_size=sample_size)
             #pyo.plot(fig)
 
-
-
         except:
             return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
-        user_score = [fatiguescore, pemscore, sleepscore, cogscore]
-
-        fig = go.Figure(
-            data=[
-                go.Scatterpolar(r=probabilities.othermean, theta=probabilities.categories, fill='toself', name="Average Non-ME/CFS scores"),
-                go.Scatterpolar(r=probabilities.combmean, theta=probabilities.categories, fill='toself', name="Average ME/CFS scores"),
-                go.Scatterpolar(r=user_score, theta=probabilities.categories, fill='toself', name="Your scores")],
-            layout=go.Layout(
-                title=go.layout.Title(text='Score comparison'),
-                polar={'radialaxis': {'visible': True}},
-                showlegend=True))
-        fig.update_polars(radialaxis=dict(range=[0, 4]))
-
-
-
 
 
 class FreVal:
@@ -285,9 +275,7 @@ class SimpleForm(FlaskForm):
         (0, "0:symptom not present"), (1, '1: mild'), (2, '2:moderate'), (3, '3: severe'), (4, '4:very severe')
     ], coerce=int)
 
-    # next = SubmitField('Next!')
-    # next2 = SubmitField("Next!")
-    # next3 = SubmitField('Next!')
+
 
 @app.route('/graph')
 def graph(graphJSON, probCFS, sample_size):

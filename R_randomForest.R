@@ -49,7 +49,7 @@ items.list4c <- c(1, 2, 9, 10, 13, 14, 47, 48)
 items.list4f <- c(1, 9, 13, 47)
 items.list4s <- c(2, 10, 14, 48)
 
-items.listr <- sample(1:ncol(initial.import), 1)
+#items.listr <- sample(1:ncol(initial.import), 1)
 
 items.top.pem <- c(3, 5, 6, 21)
 items.4comp <- c(1, 5, 7, 24)
@@ -88,7 +88,7 @@ data <- train
 
 
 
-rf.model <- randomForest(dx~., data = data, mtry = 3, ntree=500)
+rf.model <- randomForest(dx~., data = data, mtry = 5, ntree=500)
 print(rf.model)
 
 
@@ -100,3 +100,12 @@ confusionMatrix(p1, data$dx)
 
 p2 <- predict(rf.model, test)
 confusionMatrix(p2, test$dx)
+
+
+# Variable Importance Plot:
+
+data_x <- data[, 2:ncol(data)]
+data_y <- data$dx
+
+rfpref <- rf_prep(data_x, data_y)
+varImpPlot(rfpref$rf, main="Ranked variables - ME/CFS vs All, 54 items")
