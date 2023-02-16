@@ -180,27 +180,28 @@ def diagnose():
                (df['remember36c'] <= (responses[3] + 0.5)) &
                (df['remember36c'] >= (responses[3] - 0.5))]
         else:
+            df = pd.read_csv("MECFS No Comorbidities vs All Others3.csv")
             user_scores = [int(session['fatiguescoref']), int(session['fatiguescores']), int(session['pemscoref']),
                            int(session['pemscores']), int(session['sleepscoref']), int(session['sleepscores']),
                            int(session['cogscoref']), int(session['cogscores'])]
 
             responses = user_scores
-            newdf = df[(df['fatigue13f'] >= (responses[0]-0.5)) &
-               (df['fatigue13f'] <= (responses[0] + 0.5)) &
-                df[(df['fatigue13s'] >= (responses[1] - 0.5)) &
-                (df['fatigue13s'] <= (responses[1] + 0.5)) &
-               (df['minimum17f'] >= (responses[2] - 0.5)) &
-               (df['minimum17f'] <= (responses[2] + 0.5)) &
-                (df['minimum17s'] >= (responses[3] - 0.5)) &
-                (df['minimum17s'] <= (responses[3] + 0.5)) &
-               (df['unrefreshed19f'] >= (responses[4] - 0.5)) &
-               (df['unrefreshed19f'] <= (responses[4] + 0.5)) &
-                (df['unrefreshed19s'] >= (responses[5] - 0.5)) &
-                (df['unrefreshed19s'] <= (responses[5] + 0.5)) &
-               (df['remember36f'] <= (responses[6] + 0.5)) &
-               (df['remember36f'] >= (responses[6] - 0.5)) &
-                (df['remember36s'] <= (responses[7] + 0.5)) &
-                (df['remember36s'] >= (responses[7] - 0.5))]]
+            newdf = df[(df['fatigue13f'] >= (responses[0]-1)) &
+               (df['fatigue13f'] <= (responses[0] + 1)) &
+                (df['fatigue13s'] >= (responses[1] - 1)) &
+                (df['fatigue13s'] <= (responses[1] + 1)) &
+               (df['minimum17f'] >= (responses[2] - 1)) &
+               (df['minimum17f'] <= (responses[2] + 1)) &
+                (df['minimum17s'] >= (responses[3] - 1)) &
+                (df['minimum17s'] <= (responses[3] + 1)) &
+               (df['unrefreshed19f'] >= (responses[4] - 1)) &
+               (df['unrefreshed19f'] <= (responses[4] + 1)) &
+                (df['unrefreshed19s'] >= (responses[5] - 1)) &
+                (df['unrefreshed19s'] <= (responses[5] + 1)) &
+               (df['remember36f'] <= (responses[6] + 1)) &
+               (df['remember36f'] >= (responses[6] - 1)) &
+                (df['remember36s'] <= (responses[7] + 1)) &
+                (df['remember36s'] >= (responses[7] - 1))]
 
         sample_size = len(newdf.index)
 
@@ -213,6 +214,7 @@ def diagnose():
         try:
 
             probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
+            """
             categories = ['Fatigue', 'Post-exertional malaise', 'Sleep problems',
                                                                         'Cognitive problems']
             fig = go.Figure(
@@ -228,9 +230,9 @@ def diagnose():
                     showlegend=True))
             fig.update_polars(radialaxis=dict(range=[0, 4]))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
+            """
             print(session["checkbox"])
-            return render_template("graph.html", graphJSON=graphJSON, probCFS=testAcc, sample_size=sample_size)
+            return render_template("graph.html", probCFS=testAcc, sample_size=sample_size)
             #pyo.plot(fig)
 
         except:
@@ -351,6 +353,8 @@ def page2():
                 return redirect(url_for("page3"))
             if int(minexs) >= 2 and int(minexf) >= 2:
                 pemdomain = 1
+                session['pemscoref'] = session['minexf']
+                session['pemscores'] = session['minexs']
                 session['pemscore'] = (session['minexf'] + session['minexs']) / 2
                 if survey == "classic" or survey == "rf4":
                     return redirect(url_for("page3"))
@@ -379,6 +383,8 @@ def page3():
             if survey == "rf14":
                 return redirect(url_for("musclepain"))
             if int(session["sleepf"]) >= 2 and int(session["sleeps"]) >= 2:
+                session['sleepscoref'] = int(sleepf)
+                session['sleepscores'] = int(sleeps)
                 session['sleepscore'] = (int(session['sleepf']) + int(session['sleeps'])) / 2
                 sleepdomain = 1
                 if survey == "classic" or survey == "rf4":
@@ -408,6 +414,8 @@ def page4():
                 return redirect(url_for("excog1"))
             else:
                 if int(session["rememberf"]) >= 2 and int(session["remembers"]) >= 2:
+                    session['cogscoref'] = int(rememberf)
+                    session['cogscores'] = int(remembers)
                     cogdomain = 1
                     session['cogscore'] = (int(session['rememberf']) + int(session['remembers'])) / 2
                     if survey == "classic" or survey == "rf4":
@@ -460,6 +468,8 @@ def expem1():
             if survey == "rf14":
                 return redirect(url_for("page2"))
             if int(session["soref"]) >= 2 and int(session["sores"]) >= 2:
+                session['pemscoref'] = session['soref']
+                session['pemscores'] = session['sores']
                 session['pemscore'] = (int(session['soref']) + int(session['sores'])) / 2
                 pemdomain = 1
                 if survey == "classic":
@@ -483,6 +493,8 @@ def expem2():
             session["draineds"] = draineds
             session['pagenum'] += 1
             if int(session["drainedf"]) >= 2 and int(session["draineds"]) >= 2:
+                session['pemscoref'] = session['drainedf']
+                session['pemscores'] = session['draineds']
                 session['pemscore'] = (int(session['drainedf']) + int(session['draineds'])) / 2
                 pemdomain = 1
                 return redirect(url_for("page3"))
@@ -505,6 +517,8 @@ def expem3():
             session["heavyf"] = heavyf
             session["heavys"] = heavys
             if int(session["heavyf"]) >= 2 and int(session["heavys"]) >= 2:
+                session['pemscoref'] = session['heavyf']
+                session['pemscores'] = session['heavys']
                 session['pemscore'] = (int(session['heavyf']) + int(session['heavys'])) / 2
                 pemdomain = 1
                 return redirect(url_for("page3"))
@@ -527,6 +541,8 @@ def expem4():
             session["mentals"] = mentals
             session['pagenum'] += 1
             if int(session["mentalf"]) >= 2 and int(session["mentals"]) >= 2:
+                session['pemscoref'] = int(mentalf)
+                session['pemscores'] = int(mentals)
                 session['pemscore'] = (int(session['mentalf']) + int(session['mentals'])) / 2
                 pemdomain = 1
                 return redirect(url_for("page3"))
@@ -548,6 +564,8 @@ def exsleep1():
             session["stays"] = stays
             session['pagenum'] +=1
             if int(session["stayf"]) >= 2 and int(session["stays"]) >= 2:
+                session['sleepscoref'] = int(stayf)
+                session['sleepscores'] = int(stays)
                 session['sleepscore'] = (int(session['stayf']) + int(session['stays'])) / 2
                 sleepdomain = 1
                 return redirect(url_for("page4"))
@@ -570,6 +588,8 @@ def exsleep2():
             session["naps"] = naps
             session['pagenum'] +=1
             if int(session["napf"]) >= 2 and int(session["naps"]) >= 2:
+                session['sleepscoref'] = int(napf)
+                session['sleepscores'] = int(naps)
                 session['sleepscore'] = (int(session['napf']) + int(session['naps'])) / 2
                 sleepdomain = 1
                 return redirect(url_for("page4"))
@@ -592,6 +612,8 @@ def exsleep3():
             session["falls"] = falls
             session['pagenum'] += 1
             if int(session["fallf"]) >= 2 and int(session["falls"]) >= 2:
+                session['sleepscoref'] = int(fallf)
+                session['sleepscores'] = int(falls)
                 session['sleepscore'] = (int(session['fallf']) + int(session['falls'])) / 2
                 sleepdomain = 1
                 return redirect(url_for("page4"))
@@ -613,6 +635,8 @@ def exsleep4():
             session["alldays"] = alldays
             session['pagenum'] += 1
             if int(session["alldayf"]) >= 2 and int(session["alldays"]) >= 2:
+                session['sleepscoref'] = int(alldayf)
+                session['sleepscores'] = int(alldays)
                 session['sleepscore'] = (int(session['alldayf']) + int(session['alldays'])) / 2
                 sleepdomain = 1
                 return redirect(url_for("page4"))
@@ -636,6 +660,8 @@ def excog1():
                 return redirect(url_for("bowel"))
             else:
                 if int(session["attentionf"]) >= 2 and int(session["attentions"]) >= 2:
+                    session['cogscoref'] = int(attentionf)
+                    session['cogscores'] = int(attentions)
                     cogdomain = 1
                     session['cogscore'] = (int(session['attentionf']) + int(session['attentions'])) / 2
                     end = True
@@ -661,6 +687,8 @@ def excog2():
             session["words"] = words
             session['pagenum'] += 1
             if int(session["wordf"]) >= 2 and int(session["words"]) >= 2:
+                session['cogscoref'] = int(wordf)
+                session['cogscores'] = int(words)
                 session['cogscore'] = (int(session['wordf']) + int(session['words'])) / 2
                 end = True
                 cogdomain = 1
@@ -685,6 +713,8 @@ def excog3():
             session["focuss"] = focuss
             session['pagenum']+=1
             if int(session["focusf"]) >= 2 and int(session["focuss"]) >= 2:
+                session['cogscoref'] = int(focusf)
+                session['cogscores'] = int(focuss)
                 session['cogscore'] = (int(session['focusf']) + int(session['focuss'])) / 2
                 #end = True
                 cogdomain = 1
