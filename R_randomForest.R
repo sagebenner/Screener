@@ -52,9 +52,9 @@ items.list4s <- c(2, 10, 14, 48)
 #items.listr <- sample(1:ncol(initial.import), 1)
 
 items.top.pem <- c(3, 5, 6, 21)
-items.4comp <- c(1, 5, 7, 24)
+items.4comp <- c(1, 5, 7, 24, 53)
 items.14comp <- c(1, 3, 5, 7, 13, 17, 24, 25, 34, 36, 44, 46, 53, 54)
-new.items <- c(1, 3, 7, 25)
+new.items <- c(53, 7, 22, 51, 49, 20, 36)
 
 #initial.import %<>% filter(1:nrow(initial.import) %in% (1:nrow(data)))
 
@@ -62,7 +62,7 @@ new.items <- c(1, 3, 7, 25)
 data <- read.csv('DSQ 1 Composite MECFS and Controls.csv')
 dx <- data$dx %>% as.factor()
 data <- subset(data, select = -`dx`)
-data <- subset(data, select = c(items.4comp))
+data <- subset(data, select = c(new.items))
 data <- cbind(dx, data)
 #data <- data %>% relocate(dx, .before = data$nausea47f)
 
@@ -88,7 +88,7 @@ data <- train
 
 
 
-rf.model <- randomForest(dx~., data = data, mtry = 5, ntree=500)
+rf.model <- randomForest(dx~., data = data, mtry = 3, ntree=1000)
 print(rf.model)
 
 
@@ -108,4 +108,5 @@ data_x <- data[, 2:ncol(data)]
 data_y <- data$dx
 
 rfpref <- rf_prep(data_x, data_y)
-varImpPlot(rfpref$rf, main="Ranked variables - ME/CFS vs All, 54 items")
+varImpPlot(rfpref$rf, main="90% Acc. Ranked variables - ME/CFS vs all, 14 items")
+
