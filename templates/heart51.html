@@ -1,0 +1,82 @@
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
+
+
+
+<body class="about">
+
+<form method="post">
+<div >
+    <p class="instructions"><i>For each question below, please select <b>one number for frequency</b> and <b>one number for severity.</b>
+    </i></p>
+    <h3> {{ pagenum }}. Irregular heart beats</h3>
+</div>
+
+<div id="left" style="display: inline-block;width:50%;height:200px;float:left; left: 20px">
+       <fieldset>
+        <legend><b>Frequency: </b>Throughout the past 6 months, how often have you had this symptom?</legend>
+        <ol start="0">
+            <li>
+                <input type="radio" id="f0" name="heartf" value="0">
+                <label for="f0">None of the time</label>
+            </li>
+            <li>
+                <input type="radio" id="f1" name="heartf" value="1">
+                <label for="f1">A little of the time</label>
+            </li>
+            <li>
+                <input type="radio" id="f2" name="heartf" value="2">
+                <label for="f2">About half the time</label>
+            </li>
+            <li>
+                <input type="radio" id="f3" name="heartf" value="3">
+                <label for="f3">Most of the time</label>
+            </li>
+            <li>
+                <input type="radio" id="f4" name="heartf" value="4">
+                <label for="f4">All of the time</label>
+            </li>
+
+        </ol>
+    </fieldset>
+
+
+
+</div>
+
+
+
+<div id="right" style="display:inline-block; width:50%; height:200px;float:right; right: 20px">
+    <fieldset>
+        <legend><b>Severity: </b>Throughout the past 6 months, how much has this symptom bothered you? </legend>
+        <ol start="0">
+            <li>
+                <input type="radio" id="s0" name="hearts" value="0">
+                <label for="s0">Symptom not present</label>
+            </li>
+            <li>
+                <input type="radio" id="s1" name="hearts" value="1">
+                <label for="s1">Mild</label>
+            </li>
+            <li>
+                <input type="radio" id="s2" name="hearts" value="2">
+                <label for="s2">Moderate</label>
+            </li>
+            <li>
+                <input type="radio" id="s3" name="hearts" value="3">
+                <label for="s3">Severe</label>
+            </li>
+            <li>
+                <input type="radio" id="s4" name="hearts" value="4">
+                <label for="s4">Very severe</label>
+            </li>
+
+        </ol>
+    </fieldset>
+       <button type="submit" name="result" value="result">Next</button>
+
+</div>
+</form>
+<div class="container">
+
+<p class="typed" > <i>{{ message }} </i></p>
+</div>

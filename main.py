@@ -44,6 +44,9 @@ cogdomain = 0
 survey = str
 message = "*Please enter a response for both frequency and severity before continuing"
 composite = 0
+pemname = str
+sleepname = str
+cogname = str
 
 def diagnose():
     global end
@@ -190,18 +193,18 @@ def diagnose():
                (df['fatigue13f'] <= (responses[0] + 1)) &
                 (df['fatigue13s'] >= (responses[1] - 1)) &
                 (df['fatigue13s'] <= (responses[1] + 1)) &
-               (df['minimum17f'] >= (responses[2] - 1)) &
-               (df['minimum17f'] <= (responses[2] + 1)) &
-                (df['minimum17s'] >= (responses[3] - 1)) &
-                (df['minimum17s'] <= (responses[3] + 1)) &
-               (df['unrefreshed19f'] >= (responses[4] - 1)) &
-               (df['unrefreshed19f'] <= (responses[4] + 1)) &
-                (df['unrefreshed19s'] >= (responses[5] - 1)) &
-                (df['unrefreshed19s'] <= (responses[5] + 1)) &
-               (df['remember36f'] <= (responses[6] + 1)) &
-               (df['remember36f'] >= (responses[6] - 1)) &
-                (df['remember36s'] <= (responses[7] + 1)) &
-                (df['remember36s'] >= (responses[7] - 1))]
+               (df[(pemname + 'f')] >= (responses[2] - 1)) &
+               (df[(pemname + 'f')] <= (responses[2] + 1)) &
+                (df[(pemname + 's')] >= (responses[3] - 1)) &
+                (df[(pemname + 's')] <= (responses[3] + 1)) &
+               (df[(sleepname + 'f')] >= (responses[4] - 1)) &
+               (df[(sleepname + 'f')] <= (responses[4] + 1)) &
+                (df[(sleepname + 's')] >= (responses[5] - 1)) &
+                (df[(sleepname + 's')] <= (responses[5] + 1)) &
+               (df[(cogname + 'f')] <= (responses[6] + 1)) &
+               (df[(cogname + 'f')] >= (responses[6] - 1)) &
+                (df[(cogname + 's')] <= (responses[7] + 1)) &
+                (df[(cogname + 's')] >= (responses[7] - 1))]
 
         sample_size = len(newdf.index)
 
@@ -341,7 +344,7 @@ def page1():
 def page2():
     # fatiguescore = session["fatiguescore"]
     form = FlaskForm()
-    global pemdomain
+    global pemname
     if request.method == "POST":
         minexf = request.form.get("minex")
         minexs = request.form.get("minex_s")
@@ -352,7 +355,7 @@ def page2():
             if survey == "rf14":
                 return redirect(url_for("page3"))
             if int(minexs) >= 2 and int(minexf) >= 2:
-                pemdomain = 1
+                pemname = 'minimum17'
                 session['pemscoref'] = session['minexf']
                 session['pemscores'] = session['minexs']
                 session['pemscore'] = (session['minexf'] + session['minexs']) / 2
@@ -371,7 +374,7 @@ def page2():
 
 @app.route('/unrefreshed', methods=['post', 'get'])
 def page3():
-    global sleepdomain
+    global sleepname
     form = FlaskForm()
     if request.method == "POST":
         sleepf = request.form.get("sleepf")
@@ -386,7 +389,7 @@ def page3():
                 session['sleepscoref'] = int(sleepf)
                 session['sleepscores'] = int(sleeps)
                 session['sleepscore'] = (int(session['sleepf']) + int(session['sleeps'])) / 2
-                sleepdomain = 1
+                sleepname = 'unrefreshed19'
                 if survey == "classic" or survey == "rf4":
                     return redirect(url_for("page4"))
             else:
@@ -401,7 +404,7 @@ def page3():
 
 @app.route('/remember', methods=['post', 'get'])
 def page4():
-    global cogdomain
+    global cogname
     form = FlaskForm()
     if request.method == "POST":
         rememberf = request.form.get("rememberf")
@@ -416,7 +419,7 @@ def page4():
                 if int(session["rememberf"]) >= 2 and int(session["remembers"]) >= 2:
                     session['cogscoref'] = int(rememberf)
                     session['cogscores'] = int(remembers)
-                    cogdomain = 1
+                    cogname = 'remember36'
                     session['cogscore'] = (int(session['rememberf']) + int(session['remembers'])) / 2
                     if survey == "classic" or survey == "rf4":
                         end = True
@@ -457,7 +460,7 @@ def end2():
 @app.route('/soreness', methods=['post', 'get'])
 def expem1():
     form = FlaskForm()
-    global pemdomain
+    global pemname
     if request.method == "POST":
         soref = request.form.get("soref")
         sores = request.form.get("sores")
@@ -471,7 +474,7 @@ def expem1():
                 session['pemscoref'] = session['soref']
                 session['pemscores'] = session['sores']
                 session['pemscore'] = (int(session['soref']) + int(session['sores'])) / 2
-                pemdomain = 1
+                pemname = 'soreness15'
                 if survey == "classic":
                     return redirect(url_for("page3"))
             else:
@@ -484,7 +487,7 @@ def expem1():
 @app.route('/drained', methods=['post', 'get'])
 def expem2():
     form = FlaskForm()
-    global pemdomain
+    global pemname
     if request.method == "POST":
         drainedf = request.form.get("drainedf")
         draineds = request.form.get("draineds")
@@ -496,7 +499,7 @@ def expem2():
                 session['pemscoref'] = session['drainedf']
                 session['pemscores'] = session['draineds']
                 session['pemscore'] = (int(session['drainedf']) + int(session['draineds'])) / 2
-                pemdomain = 1
+                pemname = 'drained18'
                 return redirect(url_for("page3"))
             else:
                 return redirect(url_for("expem3"))
@@ -508,7 +511,7 @@ def expem2():
 @app.route('/heavy', methods=['post', 'get'])
 def expem3():
     form = FlaskForm()
-    global pemdomain
+    global pemname
     if request.method == "POST":
         heavyf = request.form.get("heavyf")
         heavys = request.form.get("heavys")
@@ -520,7 +523,7 @@ def expem3():
                 session['pemscoref'] = session['heavyf']
                 session['pemscores'] = session['heavys']
                 session['pemscore'] = (int(session['heavyf']) + int(session['heavys'])) / 2
-                pemdomain = 1
+                pemname = 'heavy14'
                 return redirect(url_for("page3"))
             else:
                 return redirect(url_for("expem4"))
@@ -532,7 +535,7 @@ def expem3():
 @app.route('/mentally', methods=['post', 'get'])
 def expem4():
     form = FlaskForm()
-    global pemdomain
+    global pemname
     if request.method == "POST":
         mentalf = request.form.get("mentalf")
         mentals = request.form.get("mentals")
@@ -544,9 +547,10 @@ def expem4():
                 session['pemscoref'] = int(mentalf)
                 session['pemscores'] = int(mentals)
                 session['pemscore'] = (int(session['mentalf']) + int(session['mentals'])) / 2
-                pemdomain = 1
+                pemname = 'mental16'
                 return redirect(url_for("page3"))
             else:
+                pemname = 'mental16'
                 session['pemscore'] = (int(session['mentalf']) + int(session['mentals'])) / 2
                 return redirect(url_for("page3"))
     return render_template("expem4.html", message='', pagenum=session['pagenum'])
@@ -555,7 +559,7 @@ def expem4():
 @app.route('/staying', methods=['post', 'get'])
 def exsleep1():
     form = FlaskForm()
-    global sleepdomain
+    global sleepname
     if request.method == "POST":
         stayf = request.form.get("stayf")
         stays = request.form.get("stays")
@@ -567,7 +571,7 @@ def exsleep1():
                 session['sleepscoref'] = int(stayf)
                 session['sleepscores'] = int(stays)
                 session['sleepscore'] = (int(session['stayf']) + int(session['stays'])) / 2
-                sleepdomain = 1
+                sleepname = 'staying22'
                 return redirect(url_for("page4"))
             else:
                 return redirect(url_for("exsleep2"))
@@ -579,7 +583,7 @@ def exsleep1():
 @app.route('/nap', methods=['post', 'get'])
 def exsleep2():
     form = FlaskForm()
-    global sleepdomain
+    global sleepname
     if request.method == "POST":
         napf  = request.form.get("napf")
         naps = request.form.get("naps")
@@ -591,7 +595,7 @@ def exsleep2():
                 session['sleepscoref'] = int(napf)
                 session['sleepscores'] = int(naps)
                 session['sleepscore'] = (int(session['napf']) + int(session['naps'])) / 2
-                sleepdomain = 1
+                sleepname = 'nap20'
                 return redirect(url_for("page4"))
             else:
                 return redirect(url_for("exsleep3"))
@@ -603,7 +607,7 @@ def exsleep2():
 @app.route('/falling', methods=['post', 'get'])
 def exsleep3():
     form = FlaskForm()
-    global sleepdomain
+    global sleepname
     if request.method == "POST":
         fallf  = request.form.get("fallf")
         falls = request.form.get("falls")
@@ -615,7 +619,7 @@ def exsleep3():
                 session['sleepscoref'] = int(fallf)
                 session['sleepscores'] = int(falls)
                 session['sleepscore'] = (int(session['fallf']) + int(session['falls'])) / 2
-                sleepdomain = 1
+                sleepname = 'falling21'
                 return redirect(url_for("page4"))
             else:
                 return redirect(url_for("exsleep4"))
@@ -627,6 +631,7 @@ def exsleep3():
 @app.route('/allday', methods=['post', 'get'])
 def exsleep4():
     form = FlaskForm()
+    global sleepname
     if request.method == "POST":
         alldayf = request.form.get("alldayf")
         alldays = request.form.get("alldays")
@@ -638,9 +643,10 @@ def exsleep4():
                 session['sleepscoref'] = int(alldayf)
                 session['sleepscores'] = int(alldays)
                 session['sleepscore'] = (int(session['alldayf']) + int(session['alldays'])) / 2
-                sleepdomain = 1
+                sleepname = 'allday24'
                 return redirect(url_for("page4"))
             else:
+                sleepname = 'allday24'
                 session['sleepscore'] = (int(session['alldayf']) + int(session['alldays'])) / 2
                 return redirect(url_for("page4"))
     return render_template("exsleep4.html", message='', pagenum=session['pagenum'])
@@ -649,6 +655,7 @@ def exsleep4():
 @app.route('/attention', methods=['post', 'get'])
 def excog1():
     form = FlaskForm()
+    global cogname
     if request.method == "POST":
         attentionf = request.form.get("attentionf")
         attentions = request.form.get("attentions")
@@ -662,7 +669,7 @@ def excog1():
                 if int(session["attentionf"]) >= 2 and int(session["attentions"]) >= 2:
                     session['cogscoref'] = int(attentionf)
                     session['cogscores'] = int(attentions)
-                    cogdomain = 1
+                    cogname = 'difficulty37'
                     session['cogscore'] = (int(session['attentionf']) + int(session['attentions'])) / 2
                     end = True
 
@@ -677,7 +684,7 @@ def excog1():
 @app.route('/word', methods=['post', 'get'])
 def excog2():
     form = FlaskForm()
-    global cogdomain
+    global cogname
     global end
     if request.method == "POST":
         wordf = request.form.get("wordf")
@@ -691,7 +698,7 @@ def excog2():
                 session['cogscores'] = int(words)
                 session['cogscore'] = (int(session['wordf']) + int(session['words'])) / 2
                 end = True
-                cogdomain = 1
+                cogname='word38'
                 return diagnose()
             else:
                 return redirect(url_for("excog3"))
@@ -704,7 +711,7 @@ def excog2():
 def excog3():
     form = FlaskForm()
     global end
-    global cogdomain
+    global cogname
     if request.method == "POST":
         focusf = request.form.get("focusf")
         focuss = request.form.get("focuss")
@@ -717,9 +724,10 @@ def excog3():
                 session['cogscores'] = int(focuss)
                 session['cogscore'] = (int(session['focusf']) + int(session['focuss'])) / 2
                 #end = True
-                cogdomain = 1
+                cogname = 'focus40'
                 return diagnose()
             else:
+                cogname = 'focus40'
                 #end = True
                 cogdomain = 0
                 session['cogscore'] = (int(session['focusf']) + int(session['focuss'])) / 2
