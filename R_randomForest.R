@@ -30,7 +30,7 @@ require(VanillaICE)
 source("dsq_functions.R")
 rm(data)
 #To compare with Unsupervised Machine Learning, I import only the data usable for the 54 item k-means clustering
-#initial.import <- read.csv("DSQ-1 108 items with NAs removed.csv")
+initial.import <- read.csv("DSQ-1 108 items with NAs removed.csv")
 #initial.import <- read.csv("108 dsq items imputed.csv")
 
 

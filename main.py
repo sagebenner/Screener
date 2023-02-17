@@ -208,7 +208,7 @@ def diagnose():
 
         sample_size = len(newdf.index)
 
-        testAcc = int(np.mean(newdf['dx']==1).round(decimals=2) * 100)
+        testAcc = round(np.mean(newdf['dx']==1), 2) * 100
         if session["checkbox"] == "data":
             cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
                            (fatiguescore, pemscore, sleepscore, cogscore))
@@ -216,7 +216,7 @@ def diagnose():
 
         try:
 
-            probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
+
             """
             categories = ['Fatigue', 'Post-exertional malaise', 'Sleep problems',
                                                                         'Cognitive problems']
@@ -235,7 +235,12 @@ def diagnose():
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
             """
             print(session["checkbox"])
-            return render_template("graph.html", probCFS=testAcc, sample_size=sample_size)
+            if testAcc > 50.0:
+                return render_template("graph.html", probCFS=testAcc, sample_size=sample_size, full_DSQ="Because you scored 50% or higher, we recommend continuing to the full DSQ for further assessment",
+                                       next_link="Continue to full DSQ")
+            else:
+                return render_template("graph.html", probCFS=testAcc, sample_size=sample_size, full_DSQ=
+                "Your scores suggest that you do not suffer from a fatigue-related illness")
             #pyo.plot(fig)
 
         except:
@@ -550,6 +555,8 @@ def expem4():
                 pemname = 'mental16'
                 return redirect(url_for("page3"))
             else:
+                session['pemscoref'] = int(mentalf)
+                session['pemscores'] = int(mentals)
                 pemname = 'mental16'
                 session['pemscore'] = (int(session['mentalf']) + int(session['mentals'])) / 2
                 return redirect(url_for("page3"))
@@ -647,6 +654,8 @@ def exsleep4():
                 return redirect(url_for("page4"))
             else:
                 sleepname = 'allday24'
+                session['sleepscoref'] = int(alldayf)
+                session['sleepscores'] = int(alldays)
                 session['sleepscore'] = (int(session['alldayf']) + int(session['alldays'])) / 2
                 return redirect(url_for("page4"))
     return render_template("exsleep4.html", message='', pagenum=session['pagenum'])
@@ -727,6 +736,8 @@ def excog3():
                 cogname = 'focus40'
                 return diagnose()
             else:
+                session['cogscoref'] = int(focusf)
+                session['cogscores'] = int(focuss)
                 cogname = 'focus40'
                 #end = True
                 cogdomain = 0

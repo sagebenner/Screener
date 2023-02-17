@@ -30,6 +30,9 @@
 </header>
  <body >
    <h3>Based on your answers, we estimate that your probability of having ME/CFS is<b> {{ probCFS }}%</b>, from a sample size of {{ sample_size }} from our dataset</h3>
+   <h3> <i> {{ full_DSQ }}</i> </h3>
+   <div class="instructions">
+   <a  href="{{ url_for('home') }}">{{ next_link }}</a></div>
   <figure id='chart'  style="width: 70%; height: 600px; border: thin #c0c0c0 solid; align: center;"></figure>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script type='text/javascript'>
