@@ -444,7 +444,7 @@ def page4():
                     session['cogscore'] = (int(session['rememberf']) + int(session['remembers'])) / 2
                     if survey == "classic" or survey == "rf4":
                         end = True
-                        return diagnose()
+                        return redirect(url_for('reduction'))
                 else:
                     if survey == "rf4":
                         return diagnose()
@@ -1039,6 +1039,17 @@ def smells():
             return render_template("smells.html", message=message, pagenum=session['pagenum'])
     return render_template("smells.html", message='', pagenum=session['pagenum'])
 
+@app.route('/reduction', methods=['post', 'get'])
+def reduction():
+    msg_reduction = "Please select one of the options before continuing"
+    if request.method == 'POST':
+        reduction = request.form.get('reduction')
+        if reduction is not None:
+            session['reduction'] = reduction
+            return diagnose()
+        else:
+            return render_template("reduction.html", message=msg_reduction, pagenum=session['pagenum'])
+    return render_template('reduction.html', message='', pagenum=session['pagenum'])
 
 @app.route('/end', methods=['post', 'get'])
 def end():
