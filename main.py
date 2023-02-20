@@ -41,7 +41,7 @@ end = False
 pemdomain = 0
 sleepdomain = 0
 cogdomain = 0
-survey = str
+survey = 'classic'
 message = "*Please enter a response for both frequency and severity before continuing"
 composite = 0
 pemname = str
@@ -184,6 +184,7 @@ def diagnose():
                (df['remember36c'] >= (responses[3] - 0.5))]
         else:
             df = pd.read_csv("MECFS No Comorbidities vs All Others3.csv")
+            dfcon = pd.read_csv("DSQ-1 108 items with NAs removed.csv")
             user_scores = [int(session['fatiguescoref']), int(session['fatiguescores']), int(session['pemscoref']),
                            int(session['pemscores']), int(session['sleepscoref']), int(session['sleepscores']),
                            int(session['cogscoref']), int(session['cogscores'])]
@@ -215,8 +216,23 @@ def diagnose():
             mysql.connection.commit()
 
         try:
+            composite_scores = [fatiguescore, pemscore, sleepscore, cogscore]
+            categories = ['Fatigue', 'Post-exertional malaise', 'Sleep problems',
+                          'Cognitive problems']
 
-
+            fig = go.Figure(
+                data=[
+                    go.Bar(y=np.mean(dfcon[(dfcon['type.labels'] != 1)], axis=0), x=categories,
+                                    name="Average Healthy Control scores"),
+                    go.Bar(y=np.mean(df[(df['dx']==1)], axis=0), x=categories,
+                                    name="Average ME/CFS scores"),
+                    go.Bar(y=composite_scores, x=categories, name="Your scores")],
+                layout=go.Layout(
+                    title=go.layout.Title(text='Your scores compared with our dataset of 3,428 participants'),
+                    #polar={'radialaxis': {'visible': True}},
+                    showlegend=True))
+            fig.update_polars(radialaxis=dict(range=[0, 4]))
+            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
             """
             categories = ['Fatigue', 'Post-exertional malaise', 'Sleep problems',
                                                                         'Cognitive problems']
@@ -237,10 +253,10 @@ def diagnose():
             print(session["checkbox"])
             if testAcc > 50.0:
                 return render_template("graph.html", probCFS=testAcc, sample_size=sample_size, full_DSQ="Because you scored 50% or higher, we recommend continuing to the full DSQ for further assessment",
-                                       next_link="Continue to full DSQ")
+                                       next_link="Continue to full DSQ", graphJSON=graphJSON)
             else:
                 return render_template("graph.html", probCFS=testAcc, sample_size=sample_size, full_DSQ=
-                "Your scores suggest that you do not suffer from a fatigue-related illness")
+                "Your scores suggest that you do not suffer from a fatigue-related illness", graphJSON=graphJSON)
             #pyo.plot(fig)
 
         except:
@@ -302,8 +318,8 @@ def home():
     global survey
     session["pagenum"] = 0
     if request.method == "POST":
-        session["dropdown"] = str(request.form.get("survey"))
-        survey = session["dropdown"]
+        #session["dropdown"] = str(request.form.get("survey"))
+        #survey = session["dropdown"]
         session["checkbox"] = request.form.get("checkbox")
         session["pagenum"] += 1
         return redirect(url_for("page1"))
@@ -555,13 +571,37 @@ def expem4():
                 pemname = 'mental16'
                 return redirect(url_for("page3"))
             else:
-                session['pemscoref'] = int(mentalf)
-                session['pemscores'] = int(mentals)
-                pemname = 'mental16'
-                session['pemscore'] = (int(session['mentalf']) + int(session['mentals'])) / 2
-                return redirect(url_for("page3"))
+                return redirect(url_for("weakness"))
+        else:
+            return render_template("expem4.html", message=message, pagenum=session['pagenum'])
     return render_template("expem4.html", message='', pagenum=session['pagenum'])
 
+@app.route('/weakness', methods=['post', 'get'])
+def weakness():
+    form = FlaskForm()
+    global pemname
+    if request.method == "POST":
+        weakf = request.form.get("weakf")
+        weaks = request.form.get("weaks")
+        if weakf is not None and weaks is not None:
+            session["weakf"] = weakf
+            session["weaks"] = weaks
+            session['pagenum'] += 1
+            if int(session["weakf"]) >= 2 and int(session["weaks"]) >= 2:
+                session['pemscoref'] = int(weakf)
+                session['pemscores'] = int(weaks)
+                session['pemscore'] = (int(session['weakf']) + int(session['weaks'])) / 2
+                pemname = 'mental16'
+                return redirect(url_for("page3"))
+            else:
+                session['pemscoref'] = int(weakf)
+                session['pemscores'] = int(weaks)
+                pemname = 'weakness33'
+                session['pemscore'] = (int(session['weakf']) + int(session['weaks'])) / 2
+                return redirect(url_for("page3"))
+        else:
+            return render_template("weakness33.html", message=message, pagenum=session['pagenum'])
+    return render_template("weakness33.html", message='', pagenum=session['pagenum'])
 
 @app.route('/staying', methods=['post', 'get'])
 def exsleep1():
@@ -629,10 +669,33 @@ def exsleep3():
                 sleepname = 'falling21'
                 return redirect(url_for("page4"))
             else:
-                return redirect(url_for("exsleep4"))
+                return redirect(url_for("early"))
         else:
             return render_template("exsleep3.html", message=message, pagenum=session['pagenum'])
     return render_template("exsleep3.html", message='', pagenum=session['pagenum'])
+
+@app.route('/early', methods=['post', 'get'])
+def early():
+    form = FlaskForm()
+    global sleepname
+    if request.method == "POST":
+        earlyf  = request.form.get("earlyf")
+        earlys = request.form.get("earlys")
+        if earlyf is not None and earlys is not None:
+            session["earlyf"] = earlyf
+            session["earlyf"] = earlyf
+            session['pagenum'] += 1
+            if int(session["earlyf"]) >= 2 and int(session["earlys"]) >= 2:
+                session['sleepscoref'] = int(earlyf)
+                session['sleepscores'] = int(earlys)
+                session['sleepscore'] = (int(session['earlyf']) + int(session['earlys'])) / 2
+                sleepname = 'falling21'
+                return redirect(url_for("page4"))
+            else:
+                return redirect(url_for("exsleep4"))
+        else:
+            return render_template("early23.html", message=message, pagenum=session['pagenum'])
+    return render_template("early23.html", message='', pagenum=session['pagenum'])
 
 
 @app.route('/allday', methods=['post', 'get'])
@@ -736,17 +799,115 @@ def excog3():
                 cogname = 'focus40'
                 return diagnose()
             else:
-                session['cogscoref'] = int(focusf)
-                session['cogscores'] = int(focuss)
-                cogname = 'focus40'
-                #end = True
-                cogdomain = 0
-                session['cogscore'] = (int(session['focusf']) + int(session['focuss'])) / 2
-                return diagnose()
+                return redirect(url_for('absent'))
         else:
             return render_template("excog3.html", message=message, pagenum=session['pagenum'])
     return render_template("excog3.html", message='', pagenum=session['pagenum'])
 
+@app.route('/absent', methods=['post', 'get'])
+def absent():
+    form = FlaskForm()
+    global end
+    global cogname
+    if request.method == "POST":
+        absentf = request.form.get("absentf")
+        absents = request.form.get("absents")
+        if absentf is not None and absents is not None:
+            session["absentf"] = absentf
+            session["absents"] = absents
+            session['pagenum']+=1
+            if int(session["absentf"]) >= 2 and int(session["absents"]) >= 2:
+                session['cogscoref'] = int(absentf)
+                session['cogscores'] = int(absents)
+                session['cogscore'] = (int(session['absentf']) + int(session['absents'])) / 2
+                #end = True
+                cogname = 'absent44'
+                return diagnose()
+            else:
+                return redirect(url_for("slowness"))
+        else:
+            return render_template("absent44.html", message=message, pagenum=session['pagenum'])
+    return render_template("absent44.html", message='', pagenum=session['pagenum'])
+
+@app.route('/understand', methods=['post', 'get'])
+def understand():
+    form = FlaskForm()
+    global end
+    global cogname
+    if request.method == "POST":
+        understandf = request.form.get("understandf")
+        understands = request.form.get("understands")
+        if understandf is not None and understands is not None:
+            session["understandf"] = understandf
+            session["understands"] = understands
+            session['pagenum']+=1
+            if int(session["understandf"]) >= 2 and int(session["understands"]) >= 2:
+                session['cogscoref'] = int(understandf)
+                session['cogscores'] = int(understands)
+                session['cogscore'] = (int(session['understandf']) + int(session['understands'])) / 2
+                #end = True
+                cogname = 'understand39'
+                return diagnose()
+            else:
+                return redirect(url_for("vision"))
+        else:
+            return render_template("understand39.html", message=message, pagenum=session['pagenum'])
+    return render_template("understand39.html", message='', pagenum=session['pagenum'])
+
+@app.route('/slowness', methods=['post', 'get'])
+def slowness():
+    form = FlaskForm()
+    global end
+    global cogname
+    if request.method == "POST":
+        slowf = request.form.get("slowf")
+        slows = request.form.get("slows")
+        if slowf is not None and slows is not None:
+            session["slowf"] = slowf
+            session["slows"] = slows
+            session['pagenum']+=1
+            if int(session["slowf"]) >= 2 and int(session["slows"]) >= 2:
+                session['cogscoref'] = int(slowf)
+                session['cogscores'] = int(slows)
+                session['cogscore'] = (int(session['slowf']) + int(session['slowf'])) / 2
+                #end = True
+                cogname = 'slowness43'
+                return diagnose()
+            else:
+                return redirect(url_for("understand"))
+        else:
+            return render_template("slowness43.html", message=message, pagenum=session['pagenum'])
+    return render_template("slowness43.html", message='', pagenum=session['pagenum'])
+
+@app.route('/vision', methods=['post', 'get'])
+def vision():
+    form = FlaskForm()
+    global end
+    global cogname
+    if request.method == "POST":
+        visionf = request.form.get("visionf")
+        visions = request.form.get("visions")
+        if visionf is not None and visions is not None:
+            session["visionf"] = visionf
+            session["visions"] = visions
+            session['pagenum']+=1
+            if int(session["visionf"]) >= 2 and int(session["visions"]) >= 2:
+                session['cogscoref'] = int(visionf)
+                session['cogscores'] = int(visions)
+                session['cogscore'] = (int(session['visionf']) + int(session['visions'])) / 2
+                #end = True
+                cogname = 'unable41'
+                return diagnose()
+            else:
+                session['cogscoref'] = int(visionf)
+                session['cogscores'] = int(visions)
+                session['cogscore'] = (int(session['visionf']) + int(session['visions'])) / 2
+                # end = True
+                cogname = 'unable41'
+                return diagnose()
+        else:
+            return render_template("vision41.html", message=message, pagenum=session['pagenum'])
+    return render_template("vision41.html", message='', pagenum=session['pagenum'])
 
 @app.route('/musclepain', methods=['post', 'get'])
 def musclepain():

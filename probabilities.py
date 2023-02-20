@@ -23,8 +23,8 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.offline as pyo
 
-path = "C:\\Users\\sbenner\\OneDrive - DePaul University\\Documents"
-os.chdir(path)
+#path = "C:\\Users\\sbenner\\OneDrive - DePaul University\\Documents"
+#os.chdir(path)
 
 
 #Define whether we use qcut method or cut method manually
