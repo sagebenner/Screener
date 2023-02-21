@@ -32,10 +32,11 @@
 
    <h3>Based on your answers, we estimate that your probability of having ME/CFS is<b> {{ probCFS }}%</b>, from a sample size of {{ sample_size }} from our dataset</h3>
    <h3> <i> {{ full_DSQ }}</i> </h3>
-      <h3> <i> {{ fukuda_msg }}</i> </h3>
+   <h3> <i> {{ caveat }}</i> </h3>
+   <h3> <i> {{ fukuda_msg }}</i> </h3>
    <div class="instructions">
    <b>
-    <a href="{{ url_for('musclepain') }}">Continue to DSQ-SF Questions</a></b></div><br>
+    <a href="{{ url_for('musclepain') }}">Continue to DSQ-1 Questions</a></b></div><br>
   <figure id='chart'  style="width: 70%; height: 600px; border: thin #c0c0c0 solid; align: center;"></figure>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script type='text/javascript'>

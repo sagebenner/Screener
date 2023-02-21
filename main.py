@@ -48,6 +48,7 @@ pemname = str
 sleepname = str
 cogname = str
 
+#@app.route('/graph', methods=['post'])
 def diagnose():
     global end
     df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
@@ -62,15 +63,15 @@ def diagnose():
         data = np.array([[fatiguescore, pemscore, sleepscore, cogscore]])
 
     if survey == "rf14":
-        import randomForest
+        #import randomForest
         import probabilities
         pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
         sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
         cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
-        if composite == 1:
-            df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
-        else:
-            df = pd.read_csv('MECFS No Comorbidities vs All Others.csv')
+
+        df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
+
+        #df = pd.read_csv('MECFS No Comorbidities vs All Others.csv')
         data = [fatiguescore, ((int(session["soref"]) + int(session["sores"])) / 2), pemscore,
                           ((int(session["sleepf"]) + int(session["sleeps"])) / 2),
                           ((int(session["musclef"]) + int(session["muscles"])) / 2),
@@ -111,7 +112,16 @@ def diagnose():
                    (df['flu65c'] <= (data[12] + 1)) &
                    (df['smells66c'] >= (data[13] - 1)) &
                    (df['smells66c'] <= (data[13] + 1))]
-
+        fukuda = 0
+        for f in range(len(data)):
+            if data[f] >= 2:
+                fukuda+=1
+        if fukuda >= 4:
+            fukuda_msg = "Your scores indicate that you may meet the Fukuda criteria for ME/CFS, because 4 required" \
+                         " symptoms meet the threshold for frequency and severity. To compare your symptoms with more" \
+                         " ME/CFS case definitions, continue to the full DSQ-1 below (54 items total)"
+        else:
+            fukuda_msg = ""
         sample_size = len(newdf.index)
         testAcc = int(np.mean(newdf['dx'] == 1).round(decimals=2) * 100)
         user_scores = data
@@ -133,19 +143,23 @@ def diagnose():
             #probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
             fig = go.Figure(
                 data=[
-                    go.Scatterpolar(r=control_14mean, theta=categories, fill='toself',
+                    go.Bar(y=control_14mean, x=categories,
                                     name="Average Healthy Control scores"),
-                    go.Scatterpolar(r=mecfs_14mean, theta=categories, fill='toself',
+                    go.Bar(y=mecfs_14mean, x=categories,
                                     name="Average ME/CFS scores"),
-                    go.Scatterpolar(r=user_scores, theta=categories, fill='toself', name="Your scores")],
+                    go.Bar(y=user_scores, x=categories, name="Your scores")],
                 layout=go.Layout(
-                    title=go.layout.Title(text='Your scores compared with our dataset of 3,428 participants'),
-                    polar={'radialaxis': {'visible': True}},
+                    title=go.layout.Title(text='Your scores compared (average frequency and severity per symptom) '
+                                               'with our dataset of 3,428 participants'),
+                    #polar={'radialaxis': {'visible': True}},
                     showlegend=True))
-            fig.update_polars(radialaxis=dict(range=[0, 4]))
+            #fig.update_polars(radialaxis=dict(range=[0, 4]))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-            return render_template("graph.html", graphJSON=graphJSON, probCFS=testAcc, sample_size=sample_size)
+            if sample_size < 100:
+                caveat = "*Your unique scores result in a small sample size, so be cautious interpreting results"
+            else:
+                caveat=''
+            return render_template("graph2.html", graphJSON=graphJSON, probCFS=testAcc, sample_size=sample_size, caveat=caveat, fukuda_msg=fukuda_msg)
 
         except:
             return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
@@ -168,7 +182,7 @@ def diagnose():
         number_users = len(re_array)
         mean_array = np.mean(re_array, axis=0)
         print(mean_array)
-
+        session['pagenum']+=1
         # see if we want to treat data as separate f and s or composite scores:
         if composite == 1:
             # new row of responses to make categorical bins:
@@ -184,7 +198,7 @@ def diagnose():
                (df['remember36c'] >= (responses[3] - 0.5))]
         else:
             df = pd.read_csv("MECFS No Comorbidities vs All Others3.csv")
-            dfcon = pd.read_csv("DSQ-1 108 items with NAs removed.csv")
+            dfcon = pd.read_csv("MECFS CONTROLS 1.17.23 COMP.csv")
             user_scores = [int(session['fatiguescoref']), int(session['fatiguescores']), int(session['pemscoref']),
                            int(session['pemscores']), int(session['sleepscoref']), int(session['sleepscores']),
                            int(session['cogscoref']), int(session['cogscores'])]
@@ -219,16 +233,20 @@ def diagnose():
             composite_scores = [fatiguescore, pemscore, sleepscore, cogscore]
             categories = ['Fatigue', 'Post-exertional malaise', 'Sleep problems',
                           'Cognitive problems']
+            #dfcon['dx'] = dfcon['type.labels']
+            select_list = ['fatigue13c', (pemname + 'c'), (cogname + 'c'), (sleepname + 'c'), 'dx']
+            dfcon = dfcon[select_list]
 
             fig = go.Figure(
                 data=[
-                    go.Bar(y=np.mean(dfcon[(dfcon['type.labels'] != 1)], axis=0), x=categories,
+                    go.Bar(y=np.mean(dfcon[(dfcon['dx'] != 1)], axis=0), x=categories,
                                     name="Average Healthy Control scores"),
-                    go.Bar(y=np.mean(df[(df['dx']==1)], axis=0), x=categories,
+                    go.Bar(y=np.mean(dfcon[(dfcon['dx']==1)], axis=0), x=categories,
                                     name="Average ME/CFS scores"),
                     go.Bar(y=composite_scores, x=categories, name="Your scores")],
                 layout=go.Layout(
-                    title=go.layout.Title(text='Your scores compared with our dataset of 3,428 participants'),
+                    title=go.layout.Title(text='Your scores compared '
+                                               'with our dataset of 3,428 participants'),
                     #polar={'radialaxis': {'visible': True}},
                     showlegend=True))
             fig.update_polars(radialaxis=dict(range=[0, 4]))
@@ -490,7 +508,10 @@ def expem1():
             session["sores"] = sores
             session['pagenum'] += 1
             if survey == "rf14":
-                return redirect(url_for("page2"))
+                if cogname == 'remember36':
+                    return redirect(url_for("excog1"))
+                else:
+                    return diagnose()
             if int(session["soref"]) >= 2 and int(session["sores"]) >= 2:
                 session['pemscoref'] = session['soref']
                 session['pemscores'] = session['sores']
@@ -736,7 +757,7 @@ def excog1():
             session["attentions"] = attentions
             session['pagenum'] += 1
             if survey == "rf14":
-                return redirect(url_for("bowel"))
+                return diagnose()
             else:
                 if int(session["attentionf"]) >= 2 and int(session["attentions"]) >= 2:
                     session['cogscoref'] = int(attentionf)
@@ -937,7 +958,7 @@ def bloating():
             session["bloatf"] = bloatf
             session["bloats"] = bloats
             session['pagenum'] += 1
-            return redirect(url_for("page4"))
+            return redirect(url_for("bowel"))
         else:
             return render_template("bloating.html", message=message, pagenum=session['pagenum'])
     return render_template("bloating.html", message='', pagenum=session['pagenum'])
@@ -1026,6 +1047,7 @@ def flu():
 @app.route('/smells', methods=['post', 'get'])
 def smells():
     global end
+    global survey
     form = FlaskForm()
     if request.method == "POST":
         smellf = request.form.get("smellf")
@@ -1034,7 +1056,13 @@ def smells():
             session["smellf"] = smellf
             session["smells"] = smells
             session['pagenum'] += 1
-            return diagnose()
+            survey='rf14'
+            if pemname == 'minimum17':
+                return redirect(url_for("expem1"))
+            elif cogname == 'difficulty37':
+                return redirect(url_for('excog1'))
+            else:
+                return diagnose()
         else:
             return render_template("smells.html", message=message, pagenum=session['pagenum'])
     return render_template("smells.html", message='', pagenum=session['pagenum'])
