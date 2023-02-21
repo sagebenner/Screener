@@ -154,6 +154,7 @@ def diagnose():
                     #polar={'radialaxis': {'visible': True}},
                     showlegend=True))
             #fig.update_polars(radialaxis=dict(range=[0, 4]))
+            fig.add_hline(y=2)
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
             if sample_size < 100:
                 caveat = "*Your unique scores result in a small sample size, so be cautious interpreting results"
