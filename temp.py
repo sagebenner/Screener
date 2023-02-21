@@ -19,9 +19,9 @@ from collections import Counter
 survey = 1
 
 #df = pd.read_csv('C:/Users/sageb/OneDrive - DePaul University/Documents/merged mouse data.csv')
-#data = pd.read_csv("MECFS No Comorbidities vs All Others3.csv")
+data = pd.read_csv("MECFS No Comorbidities vs All Others3.csv")
 #data = pd.read_csv("MECFS and Controls F+S Reduction.csv")
-data = pd.read_csv("MECFS and Chronic F+S Reduction.csv")
+#data = pd.read_csv("MECFS and Chronic F+S Reduction.csv")
 #data = pd.read_csv(r"C:\Users\sageb\Downloads\MECFS vs Chronic F and S.csv")
 #data= pd.read_csv(r"C:\Users\sageb\Downloads\CFS AND CHRONIC INCLUDED VS CONTROLS.csv")
 
