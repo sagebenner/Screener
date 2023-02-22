@@ -123,7 +123,7 @@ def diagnose():
         else:
             fukuda_msg = ""
         sample_size = len(newdf.index)
-        testAcc = int(np.mean(newdf['dx'] == 1).round(decimals=2) * 100)
+        testAcc = round(np.mean(newdf['dx']==1), 2) * 100
         user_scores = data
         cursor = mysql.connection.cursor()
         if session["checkbox"] == "data":
@@ -282,6 +282,22 @@ def diagnose():
             return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
 
 
+def diagnose2():
+    import probabilities
+    pem_domainscore = (int(session["minexf"]) + int(session["minexs"]) + int(session['soref']) + int(session['sores']) +
+                int(session['heavyf']) + int(session['heavys']) + int(session['drainedf']) + int(session['draineds']) +
+                int(session['mentalf']) + int(session['mentals']) + int(session['weakf']) + int(session['weaks']) / 12)
+
+    sleep_domainscore = (int(session["sleepf"]) + int(session["sleeps"]) + int(session['napf']) + int(session['naps']) +
+                         int(session['fallf']) + int(session['falls']) + int(session['stayf']) + int(session['stays']) +
+                         int(session['earlyf']) + int(session['earlys']) + int(session['alldayf']) + int(session['alldays']) / 12)
+
+    cog_domainscore = (int(session["rememberf"]) + int(session["remembers"]) + int(session['attentionf']) +
+                       int(session['attentions']) ) / 2
+
+    df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
+
+
 class FreVal:
     name = "Fatigue1"
     fatigue = int
@@ -335,7 +351,9 @@ def home():
     global end
     form = FlaskForm()
     global survey
+    session.clear()
     session["pagenum"] = 0
+    survey='classic'
     if request.method == "POST":
         #session["dropdown"] = str(request.form.get("survey"))
         #survey = session["dropdown"]
@@ -394,7 +412,7 @@ def page2():
             session['pagenum'] += 1
             if survey == "rf14":
                 return redirect(url_for("page3"))
-            if int(minexs) >= 2 and int(minexf) >= 2:
+            if int(minexs) >= 0 and int(minexf) >= 0:
                 pemname = 'minimum17'
                 session['pemscoref'] = session['minexf']
                 session['pemscores'] = session['minexs']
@@ -403,7 +421,7 @@ def page2():
                     return redirect(url_for("page3"))
             else:
                 if survey == "classic":
-                    return redirect(url_for("expem1"))
+                    return redirect(url_for("page3"))
                 if survey == "rf4":
                     return redirect(url_for("page3"))
         else:
@@ -425,7 +443,7 @@ def page3():
             session['pagenum'] += 1
             if survey == "rf14":
                 return redirect(url_for("musclepain"))
-            if int(session["sleepf"]) >= 2 and int(session["sleeps"]) >= 2:
+            if int(session["sleepf"]) >= 0 and int(session["sleeps"]) >= 0:
                 session['sleepscoref'] = int(sleepf)
                 session['sleepscores'] = int(sleeps)
                 session['sleepscore'] = (int(session['sleepf']) + int(session['sleeps'])) / 2
@@ -434,7 +452,7 @@ def page3():
                     return redirect(url_for("page4"))
             else:
                 if survey == "classic":
-                    return redirect(url_for("exsleep1"))
+                    return redirect(url_for("page4"))
                 if survey == "rf4":
                     return redirect(url_for("page4"))
         else:
@@ -456,7 +474,7 @@ def page4():
             if survey == "rf14":
                 return redirect(url_for("excog1"))
             else:
-                if int(session["rememberf"]) >= 2 and int(session["remembers"]) >= 2:
+                if int(session["rememberf"]) >= 0 and int(session["remembers"]) >= 0:
                     session['cogscoref'] = int(rememberf)
                     session['cogscores'] = int(remembers)
                     cogname = 'remember36'
@@ -468,7 +486,7 @@ def page4():
                     if survey == "rf4":
                         return diagnose()
                     if survey == "classic":
-                        return redirect(url_for("excog1"))
+                        return diagnose()
         else:
             return render_template("page4.html", pagenum=session['pagenum'], message=message)
     return render_template("page4.html", pagenum=session['pagenum'], message='')
@@ -508,20 +526,16 @@ def expem1():
             session["soref"] = soref
             session["sores"] = sores
             session['pagenum'] += 1
-            if survey == "rf14":
-                if cogname == 'remember36':
-                    return redirect(url_for("excog1"))
-                else:
-                    return diagnose()
-            if int(session["soref"]) >= 2 and int(session["sores"]) >= 2:
+
+            if int(session["soref"]) >= 0 and int(session["sores"]) >= 0:
                 session['pemscoref'] = session['soref']
                 session['pemscores'] = session['sores']
                 session['pemscore'] = (int(session['soref']) + int(session['sores'])) / 2
                 pemname = 'soreness15'
-                if survey == "classic":
-                    return redirect(url_for("page3"))
-            else:
-                return redirect(url_for("expem2"))
+
+                return redirect(url_for("excog1"))
+
+
         else:
             return render_template("expem1.html", pagenum=session['pagenum'], message=message)
     return render_template("expem1.html", pagenum=session['pagenum'], message='')
@@ -538,14 +552,12 @@ def expem2():
             session["drainedf"] = drainedf
             session["draineds"] = draineds
             session['pagenum'] += 1
-            if int(session["drainedf"]) >= 2 and int(session["draineds"]) >= 2:
+            if int(session["drainedf"]) >= 0 and int(session["draineds"]) >= 0:
                 session['pemscoref'] = session['drainedf']
                 session['pemscores'] = session['draineds']
                 session['pemscore'] = (int(session['drainedf']) + int(session['draineds'])) / 2
                 pemname = 'drained18'
-                return redirect(url_for("page3"))
-            else:
-                return redirect(url_for("expem3"))
+                return redirect(url_for("weakness"))
         else:
             return render_template("expem2.html", pagenum=session['pagenum'], message=message)
     return render_template("expem2.html", pagenum=session['pagenum'], message='')
@@ -562,13 +574,11 @@ def expem3():
         if heavyf is not None and heavys is not None:
             session["heavyf"] = heavyf
             session["heavys"] = heavys
-            if int(session["heavyf"]) >= 2 and int(session["heavys"]) >= 2:
+            if int(session["heavyf"]) >= 0 and int(session["heavys"]) >= 0:
                 session['pemscoref'] = session['heavyf']
                 session['pemscores'] = session['heavys']
                 session['pemscore'] = (int(session['heavyf']) + int(session['heavys'])) / 2
                 pemname = 'heavy14'
-                return redirect(url_for("page3"))
-            else:
                 return redirect(url_for("expem4"))
         else:
             return render_template("expem3.html", pagenum=session['pagenum'], message=message)
@@ -586,14 +596,12 @@ def expem4():
             session["mentalf"] = mentalf
             session["mentals"] = mentals
             session['pagenum'] += 1
-            if int(session["mentalf"]) >= 2 and int(session["mentals"]) >= 2:
+            if int(session["mentalf"]) >= 0 and int(session["mentals"]) >= 0:
                 session['pemscoref'] = int(mentalf)
                 session['pemscores'] = int(mentals)
                 session['pemscore'] = (int(session['mentalf']) + int(session['mentals'])) / 2
                 pemname = 'mental16'
-                return redirect(url_for("page3"))
-            else:
-                return redirect(url_for("weakness"))
+                return redirect(url_for("expem2"))
         else:
             return render_template("expem4.html", message=message, pagenum=session['pagenum'])
     return render_template("expem4.html", message='', pagenum=session['pagenum'])
@@ -609,18 +617,11 @@ def weakness():
             session["weakf"] = weakf
             session["weaks"] = weaks
             session['pagenum'] += 1
-            if int(session["weakf"]) >= 2 and int(session["weaks"]) >= 2:
-                session['pemscoref'] = int(weakf)
-                session['pemscores'] = int(weaks)
-                session['pemscore'] = (int(session['weakf']) + int(session['weaks'])) / 2
-                pemname = 'mental16'
-                return redirect(url_for("page3"))
-            else:
-                session['pemscoref'] = int(weakf)
-                session['pemscores'] = int(weaks)
-                pemname = 'weakness33'
-                session['pemscore'] = (int(session['weakf']) + int(session['weaks'])) / 2
-                return redirect(url_for("page3"))
+            session['pemscoref'] = int(weakf)
+            session['pemscores'] = int(weaks)
+            pemname = 'weakness33'
+            session['pemscore'] = (int(session['weakf']) + int(session['weaks'])) / 2
+            return redirect(url_for("exsleep2"))
         else:
             return render_template("weakness33.html", message=message, pagenum=session['pagenum'])
     return render_template("weakness33.html", message='', pagenum=session['pagenum'])
@@ -636,14 +637,12 @@ def exsleep1():
             session["stayf"] = stayf
             session["stays"] = stays
             session['pagenum'] +=1
-            if int(session["stayf"]) >= 2 and int(session["stays"]) >= 2:
+            if int(session["stayf"]) >= 0 and int(session["stays"]) >= 0:
                 session['sleepscoref'] = int(stayf)
                 session['sleepscores'] = int(stays)
                 session['sleepscore'] = (int(session['stayf']) + int(session['stays'])) / 2
                 sleepname = 'staying22'
-                return redirect(url_for("page4"))
-            else:
-                return redirect(url_for("exsleep2"))
+                return redirect(url_for("early"))
         else:
             return render_template("exsleep1.html", message=message, pagenum=session['pagenum'])
     return render_template("exsleep1.html", message='', pagenum=session['pagenum'])
@@ -660,14 +659,12 @@ def exsleep2():
             session["napf"] = napf
             session["naps"] = naps
             session['pagenum'] +=1
-            if int(session["napf"]) >= 2 and int(session["naps"]) >= 2:
-                session['sleepscoref'] = int(napf)
-                session['sleepscores'] = int(naps)
-                session['sleepscore'] = (int(session['napf']) + int(session['naps'])) / 2
-                sleepname = 'nap20'
-                return redirect(url_for("page4"))
-            else:
-                return redirect(url_for("exsleep3"))
+
+            session['sleepscoref'] = int(napf)
+            session['sleepscores'] = int(naps)
+            session['sleepscore'] = (int(session['napf']) + int(session['naps'])) / 2
+            sleepname = 'nap20'
+            return redirect(url_for("exsleep3"))
         else:
             return render_template("exsleep2.html", message=message, pagenum=session['pagenum'])
     return render_template("exsleep2.html", message='', pagenum=session['pagenum'])
@@ -684,14 +681,12 @@ def exsleep3():
             session["fallf"] = fallf
             session["falls"] = falls
             session['pagenum'] += 1
-            if int(session["fallf"]) >= 2 and int(session["falls"]) >= 2:
+            if int(session["fallf"]) >= 0 and int(session["falls"]) >= 0:
                 session['sleepscoref'] = int(fallf)
                 session['sleepscores'] = int(falls)
                 session['sleepscore'] = (int(session['fallf']) + int(session['falls'])) / 2
                 sleepname = 'falling21'
-                return redirect(url_for("page4"))
-            else:
-                return redirect(url_for("early"))
+                return redirect(url_for("exsleep1"))
         else:
             return render_template("exsleep3.html", message=message, pagenum=session['pagenum'])
     return render_template("exsleep3.html", message='', pagenum=session['pagenum'])
@@ -705,15 +700,13 @@ def early():
         earlys = request.form.get("earlys")
         if earlyf is not None and earlys is not None:
             session["earlyf"] = earlyf
-            session["earlyf"] = earlyf
+            session["earlys"] = earlys
             session['pagenum'] += 1
-            if int(session["earlyf"]) >= 2 and int(session["earlys"]) >= 2:
+            if int(session["earlyf"]) >= 0 and int(session["earlys"]) >= 0:
                 session['sleepscoref'] = int(earlyf)
                 session['sleepscores'] = int(earlys)
                 session['sleepscore'] = (int(session['earlyf']) + int(session['earlys'])) / 2
                 sleepname = 'falling21'
-                return redirect(url_for("page4"))
-            else:
                 return redirect(url_for("exsleep4"))
         else:
             return render_template("early23.html", message=message, pagenum=session['pagenum'])
@@ -731,18 +724,20 @@ def exsleep4():
             session["alldayf"] = alldayf
             session["alldays"] = alldays
             session['pagenum'] += 1
-            if int(session["alldayf"]) >= 2 and int(session["alldays"]) >= 2:
+            if int(session["alldayf"]) >= 0 and int(session["alldays"]) >= 0:
                 session['sleepscoref'] = int(alldayf)
                 session['sleepscores'] = int(alldays)
                 session['sleepscore'] = (int(session['alldayf']) + int(session['alldays'])) / 2
                 sleepname = 'allday24'
-                return redirect(url_for("page4"))
+                return redirect(url_for("excog2"))
             else:
                 sleepname = 'allday24'
                 session['sleepscoref'] = int(alldayf)
                 session['sleepscores'] = int(alldays)
                 session['sleepscore'] = (int(session['alldayf']) + int(session['alldays'])) / 2
-                return redirect(url_for("page4"))
+                return redirect(url_for("excog2"))
+        else:
+            return render_template("exsleep4.html", message=message, pagenum=session['pagenum'])
     return render_template("exsleep4.html", message='', pagenum=session['pagenum'])
 
 
@@ -757,19 +752,13 @@ def excog1():
             session["attentionf"] = attentionf
             session["attentions"] = attentions
             session['pagenum'] += 1
-            if survey == "rf14":
-                return diagnose()
-            else:
-                if int(session["attentionf"]) >= 2 and int(session["attentions"]) >= 2:
-                    session['cogscoref'] = int(attentionf)
-                    session['cogscores'] = int(attentions)
-                    cogname = 'difficulty37'
-                    session['cogscore'] = (int(session['attentionf']) + int(session['attentions'])) / 2
-                    end = True
-
-                    return diagnose()
-                else:
-                    return redirect(url_for("excog2"))
+            if int(session["attentionf"]) >= 0 and int(session["attentions"]) >= 0:
+                session['cogscoref'] = int(attentionf)
+                session['cogscores'] = int(attentions)
+                cogname = 'difficulty37'
+                session['cogscore'] = (int(session['attentionf']) + int(session['attentions'])) / 2
+                end = True
+                return redirect(url_for("musclepain"))
         else:
             return render_template("excog1.html", message=message, pagenum=session['pagenum'])
     return render_template("excog1.html", message='', pagenum=session['pagenum'])
@@ -787,15 +776,11 @@ def excog2():
             session["wordf"] = wordf
             session["words"] = words
             session['pagenum'] += 1
-            if int(session["wordf"]) >= 2 and int(session["words"]) >= 2:
+            if int(session["wordf"]) >= 0 and int(session["words"]) >= 0:
                 session['cogscoref'] = int(wordf)
                 session['cogscores'] = int(words)
                 session['cogscore'] = (int(session['wordf']) + int(session['words'])) / 2
-                end = True
-                cogname='word38'
-                return diagnose()
-            else:
-                return redirect(url_for("excog3"))
+                return redirect(url_for("understand"))
         else:
             return render_template("excog2.html", message=message, pagenum=session['pagenum'])
     return render_template("excog2.html", message='', pagenum=session['pagenum'])
@@ -813,43 +798,17 @@ def excog3():
             session["focusf"] = focusf
             session["focuss"] = focuss
             session['pagenum']+=1
-            if int(session["focusf"]) >= 2 and int(session["focuss"]) >= 2:
+            if int(session["focusf"]) >= 0 and int(session["focuss"]) >= 0:
                 session['cogscoref'] = int(focusf)
                 session['cogscores'] = int(focuss)
                 session['cogscore'] = (int(session['focusf']) + int(session['focuss'])) / 2
                 #end = True
                 cogname = 'focus40'
-                return diagnose()
-            else:
-                return redirect(url_for('absent'))
+                return redirect(url_for('vision'))
         else:
             return render_template("excog3.html", message=message, pagenum=session['pagenum'])
     return render_template("excog3.html", message='', pagenum=session['pagenum'])
 
-@app.route('/absent', methods=['post', 'get'])
-def absent():
-    form = FlaskForm()
-    global end
-    global cogname
-    if request.method == "POST":
-        absentf = request.form.get("absentf")
-        absents = request.form.get("absents")
-        if absentf is not None and absents is not None:
-            session["absentf"] = absentf
-            session["absents"] = absents
-            session['pagenum']+=1
-            if int(session["absentf"]) >= 2 and int(session["absents"]) >= 2:
-                session['cogscoref'] = int(absentf)
-                session['cogscores'] = int(absents)
-                session['cogscore'] = (int(session['absentf']) + int(session['absents'])) / 2
-                #end = True
-                cogname = 'absent44'
-                return diagnose()
-            else:
-                return redirect(url_for("slowness"))
-        else:
-            return render_template("absent44.html", message=message, pagenum=session['pagenum'])
-    return render_template("absent44.html", message='', pagenum=session['pagenum'])
 
 @app.route('/understand', methods=['post', 'get'])
 def understand():
@@ -863,15 +822,13 @@ def understand():
             session["understandf"] = understandf
             session["understands"] = understands
             session['pagenum']+=1
-            if int(session["understandf"]) >= 2 and int(session["understands"]) >= 2:
+            if int(session["understandf"]) >= 0 and int(session["understands"]) >= 0:
                 session['cogscoref'] = int(understandf)
                 session['cogscores'] = int(understands)
                 session['cogscore'] = (int(session['understandf']) + int(session['understands'])) / 2
                 #end = True
                 cogname = 'understand39'
-                return diagnose()
-            else:
-                return redirect(url_for("vision"))
+                return redirect(url_for("excog3"))
         else:
             return render_template("understand39.html", message=message, pagenum=session['pagenum'])
     return render_template("understand39.html", message='', pagenum=session['pagenum'])
@@ -888,18 +845,304 @@ def slowness():
             session["slowf"] = slowf
             session["slows"] = slows
             session['pagenum']+=1
-            if int(session["slowf"]) >= 2 and int(session["slows"]) >= 2:
+            if int(session["slowf"]) >= 0 and int(session["slows"]) >= 0:
                 session['cogscoref'] = int(slowf)
                 session['cogscores'] = int(slows)
                 session['cogscore'] = (int(session['slowf']) + int(session['slowf'])) / 2
                 #end = True
                 cogname = 'slowness43'
-                return diagnose()
+                return redirect(url_for("absent"))
             else:
-                return redirect(url_for("understand"))
+                return redirect(url_for("absent"))
         else:
             return render_template("slowness43.html", message=message, pagenum=session['pagenum'])
     return render_template("slowness43.html", message='', pagenum=session['pagenum'])
+
+@app.route('/absent', methods=['post', 'get'])
+def absent():
+    form = FlaskForm()
+    global end
+    global cogname
+    if request.method == "POST":
+        absentf = request.form.get("absentf")
+        absents = request.form.get("absents")
+        if absentf is not None and absents is not None:
+            session["absentf"] = absentf
+            session["absents"] = absents
+            session['pagenum']+=1
+            if int(session["absentf"]) >= 0 and int(session["absents"]) >= 0:
+                session['cogscoref'] = int(absentf)
+                session['cogscores'] = int(absents)
+                session['cogscore'] = (int(session['absentf']) + int(session['absents'])) / 2
+                #end = True
+                cogname = 'absent44'
+                return redirect(url_for("bladder"))
+        else:
+            return render_template("absent44.html", message=message, pagenum=session['pagenum'])
+    return render_template("absent44.html", message='', pagenum=session['pagenum'])
+
+@app.route('/bladder', methods=['post', 'get'])
+def bladder():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        bladderf  = request.form.get("bladderf")
+        bladders = request.form.get("bladders")
+        if bladderf is not None and bladders is not None:
+            session["bladderf"] = bladderf
+            session["bladders"] = bladders
+            session['pagenum'] += 1
+            return redirect(url_for("nausea"))
+        else:
+            return render_template("bladder45.html", message=message, pagenum=session['pagenum'])
+    return render_template("bladder45.html", message='', pagenum=session['pagenum'])
+
+@app.route('/nausea', methods=['post', 'get'])
+def nausea():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        nauseaf  = request.form.get("nauseaf")
+        nauseas = request.form.get("nauseas")
+        if nauseaf is not None and nauseas is not None:
+            session["nauseaf"] = nauseaf
+            session["nauseas"] = nauseas
+            session['pagenum'] += 1
+            return redirect(url_for("shortness"))
+        else:
+            return render_template("nausea47.html", message=message, pagenum=session['pagenum'])
+    return render_template("nausea47.html", message='', pagenum=session['pagenum'])
+
+@app.route('/shortness', methods=['post', 'get'])
+def shortness():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        shortf  = request.form.get("shortf")
+        shorts = request.form.get("shorts")
+        if shortf is not None and shorts is not None:
+            session["shortf"] = shortf
+            session["shorts"] = shorts
+            session['pagenum'] += 1
+            return redirect(url_for("dizzy"))
+        else:
+            return render_template("shortness49.html", message=message, pagenum=session['pagenum'])
+    return render_template("shortness49.html", message='', pagenum=session['pagenum'])
+
+@app.route('/dizzy', methods=['post', 'get'])
+def dizzy():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        dizzyf  = request.form.get("dizzyf")
+        dizzys = request.form.get("dizzys")
+        if dizzyf is not None and dizzys is not None:
+            session["dizzyf"] = dizzyf
+            session["dizzys"] = dizzys
+            session['pagenum'] += 1
+            return redirect(url_for("heart"))
+        else:
+            return render_template("dizzy50.html", message=message, pagenum=session['pagenum'])
+    return render_template("dizzy50.html", message='', pagenum=session['pagenum'])
+
+@app.route('/heart', methods=['post', 'get'])
+def heart():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        heartf  = request.form.get("heartf")
+        hearts = request.form.get("hearts")
+        if heartf is not None and hearts is not None:
+            session["heartf"] = heartf
+            session["hearts"] = hearts
+            session['pagenum'] += 1
+            return redirect(url_for("weight"))
+        else:
+            return render_template("heart51.html", message=message, pagenum=session['pagenum'])
+    return render_template("heart51.html", message='', pagenum=session['pagenum'])
+
+@app.route('/weight', methods=['post', 'get'])
+def weight():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        weightf  = request.form.get("weightf")
+        weights = request.form.get("weights")
+        if weightf is not None and weights is not None:
+            session["weightf"] = weightf
+            session["weights"] = weights
+            session['pagenum'] += 1
+            return redirect(url_for("appetite"))
+        else:
+            return render_template("weight52.html", message=message, pagenum=session['pagenum'])
+    return render_template("weight52.html", message='', pagenum=session['pagenum'])
+
+@app.route('/appetite', methods=['post', 'get'])
+def appetite():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        appetitef  = request.form.get("appetitef")
+        appetites = request.form.get("appetites")
+        if appetitef is not None and appetites is not None:
+            session["appetitef"] = appetitef
+            session["appetites"] = appetites
+            session['pagenum'] += 1
+            return redirect(url_for("sweating"))
+        else:
+            return render_template("appetite53.html", message=message, pagenum=session['pagenum'])
+    return render_template("appetite53.html", message='', pagenum=session['pagenum'])
+
+@app.route('/sweating', methods=['post', 'get'])
+def sweating():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        sweatf  = request.form.get("sweatf")
+        sweats = request.form.get("sweats")
+        if sweatf is not None and sweats is not None:
+            session["sweatf"] = sweatf
+            session["sweats"] = sweats
+            session['pagenum'] += 1
+            return redirect(url_for("night"))
+        else:
+            return render_template("sweating54.html", message=message, pagenum=session['pagenum'])
+    return render_template("sweating54.html", message='', pagenum=session['pagenum'])
+
+@app.route('/night', methods=['post', 'get'])
+def night():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        nightf = request.form.get("nightf")
+        nights = request.form.get("nights")
+        if nightf is not None and nights is not None:
+            session["nightf"] = nightf
+            session["nights"] = nights
+            session['pagenum'] += 1
+            return redirect(url_for("chills"))
+        else:
+            return render_template("night55.html", message=message, pagenum=session['pagenum'])
+    return render_template("night55.html", message='', pagenum=session['pagenum'])
+
+@app.route('/chills', methods=['post', 'get'])
+def chills():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        chillsf = request.form.get("chillsf")
+        chillss = request.form.get("chillss")
+        if chillsf is not None and chillss is not None:
+            session["chillsf"] = chillsf
+            session["chillss"] = chillss
+            session['pagenum'] += 1
+            return redirect(url_for("hitemp"))
+        else:
+            return render_template("chills57.html", message=message, pagenum=session['pagenum'])
+    return render_template("chills57.html", message='', pagenum=session['pagenum'])
+
+@app.route('/59', methods=['post', 'get'])
+def hitemp():
+    global end
+
+    form = FlaskForm()
+    if request.method == "POST":
+        hitempf = request.form.get("hitempf")
+        hitemps = request.form.get("hitemps")
+        if hitempf is not None and chills is not None:
+            session["hitempf"] = hitempf
+            session["hitemps"] = hitemps
+            session['pagenum'] += 1
+            return redirect(url_for("lotemp"))
+        else:
+            return render_template("hitemp59.html", message=message, pagenum=session['pagenum'])
+    return render_template("hitemp59.html", message='', pagenum=session['pagenum'])
+
+@app.route('/60', methods=['post', 'get'])
+def lotemp():
+    global end
+
+    form = FlaskForm()
+    if request.method == "POST":
+        lotempf = request.form.get("lotempf")
+        lotemps = request.form.get("lotemps")
+        if lotempf is not None and lotemps is not None:
+            session["lotempf"] = lotempf
+            session["lotemps"] = lotemps
+            session['pagenum'] += 1
+            return redirect(url_for("alcohol"))
+        else:
+            return render_template("lotemp60.html", message=message, pagenum=session['pagenum'])
+    return render_template("lotemp60.html", message='', pagenum=session['pagenum'])
+
+@app.route('/61', methods=['post', 'get'])
+def alcohol():
+    global end
+
+    form = FlaskForm()
+    if request.method == "POST":
+        alcoholf = request.form.get("alcoholf")
+        alcohols = request.form.get("alcohols")
+        if alcoholf is not None and alcohols is not None:
+            session["alcoholf"] = alcoholf
+            session["alcohols"] = alcohols
+            session['pagenum'] += 1
+            return redirect(url_for("throat"))
+        else:
+            return render_template("alcohol61.html", message=message, pagenum=session['pagenum'])
+    return render_template("alcohol61.html", message='', pagenum=session['pagenum'])
+
+@app.route('/62', methods=['post', 'get'])
+def throat():
+
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        throatf = request.form.get("throatf")
+        throats = request.form.get("throats")
+        if throatf is not None and throats is not None:
+            session["throatf"] = throatf
+            session["throats"] = throats
+            session['pagenum'] += 1
+            return redirect(url_for("lymphnodes"))
+        else:
+            return render_template("throat62.html", message=message, pagenum=session['pagenum'])
+    return render_template("throat62.html", message='', pagenum=session['pagenum'])
+
+@app.route('/63', methods=['post', 'get'])
+def lymphnodes():
+
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        lymphnodesf = request.form.get("lymphnodesf")
+        lymphnodess = request.form.get("lymphnodess")
+        if lymphnodesf is not None and lymphnodess is not None:
+            session["lymphnodesf"] = lymphnodesf
+            session["lymphnodess"] = lymphnodess
+            session['pagenum'] += 1
+            return redirect(url_for("fever"))
+        else:
+            return render_template("lymphnodes63.html", message=message, pagenum=session['pagenum'])
+    return render_template("lymphnodes63.html", message='', pagenum=session['pagenum'])
+
+
+@app.route('/64', methods=['post', 'get'])
+def fever():
+
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        feverf = request.form.get("feverf")
+        fevers = request.form.get("fevers")
+        if feverf is not None and fevers is not None:
+            session["feverf"] = feverf
+            session["fevers"] = fevers
+            session['pagenum'] += 1
+            return diagnose()
+        else:
+            return render_template("fever64.html", message=message, pagenum=session['pagenum'])
+    return render_template("fever64.html", message='', pagenum=session['pagenum'])
 
 @app.route('/vision', methods=['post', 'get'])
 def vision():
@@ -919,17 +1162,34 @@ def vision():
                 session['cogscore'] = (int(session['visionf']) + int(session['visions'])) / 2
                 #end = True
                 cogname = 'unable41'
-                return diagnose()
+                return redirect(url_for('depth'))
             else:
                 session['cogscoref'] = int(visionf)
                 session['cogscores'] = int(visions)
                 session['cogscore'] = (int(session['visionf']) + int(session['visions'])) / 2
                 # end = True
                 cogname = 'unable41'
-                return diagnose()
+                return redirect(url_for('depth'))
         else:
             return render_template("vision41.html", message=message, pagenum=session['pagenum'])
     return render_template("vision41.html", message='', pagenum=session['pagenum'])
+
+@app.route('/depth', methods=['post', 'get'])
+def depth():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        depthf  = request.form.get("depthf")
+        depths = request.form.get("depths")
+        if depthf is not None and depths is not None:
+            session["depthf"] = depthf
+            session["depths"] = depths
+            session['pagenum'] += 1
+            return redirect(url_for("slowness"))
+        else:
+            return render_template("depth42.html", message=message, pagenum=session['pagenum'])
+    return render_template("depth42.html", message='', pagenum=session['pagenum'])
+
 
 @app.route('/musclepain', methods=['post', 'get'])
 def musclepain():
@@ -1058,12 +1318,7 @@ def smells():
             session["smells"] = smells
             session['pagenum'] += 1
             survey='rf14'
-            if pemname == 'minimum17':
-                return redirect(url_for("expem1"))
-            elif cogname == 'difficulty37':
-                return redirect(url_for('excog1'))
-            else:
-                return diagnose()
+            return diagnose()
         else:
             return render_template("smells.html", message=message, pagenum=session['pagenum'])
     return render_template("smells.html", message='', pagenum=session['pagenum'])

@@ -19,8 +19,8 @@ from collections import Counter
 survey = 1
 
 #df = pd.read_csv('C:/Users/sageb/OneDrive - DePaul University/Documents/merged mouse data.csv')
-data = pd.read_csv("MECFS No Comorbidities vs All Others3.csv")
-#data = pd.read_csv("MECFS and Controls F+S Reduction.csv")
+#data = pd.read_csv("MECFS No Comorbidities vs All Others3.csv")
+data = pd.read_csv("MECFS and Controls F+S Reduction.csv")
 #data = pd.read_csv("MECFS and Chronic F+S Reduction.csv")
 #data = pd.read_csv(r"C:\Users\sageb\Downloads\MECFS vs Chronic F and S.csv")
 #data= pd.read_csv(r"C:\Users\sageb\Downloads\CFS AND CHRONIC INCLUDED VS CONTROLS.csv")
@@ -57,25 +57,25 @@ diagnosis = [0] * len(data.index)
 
 if survey == 1:
     for x in range(len(data.index)):
-        if df['fatigue13f'][x] >= 2 and df['fatigue13s'][x] >= 2:
+        if df['fatigue13f'][x] >= 1 and df['fatigue13s'][x] >= 1:
             fatiguescore[x] = 1
             '''
         if df['flu65f'][x] >= 1 and df['flu65s'][x] >= 1:
             immunescore[x] = 1
             '''
         for i in range(len(pemdomain)):
-            if df[pemdomain[i] + 'f'][x] >= 2 and df[pemdomain[i] + 's'][x] >= 2:
+            if df[pemdomain[i] + 'f'][x] >= 2 or df[pemdomain[i] + 's'][x] >= 2:
                 pemscore[x] = 1
                 pemcount.append(pemdomain[i])
         for i in range(len(sleepdomain)):
-            if df[sleepdomain[i] + 'f'][x] >= 1 and df[sleepdomain[i] + 's'][x] >= 1:
+            if df[sleepdomain[i] + 'f'][x] >=2 or df[sleepdomain[i] + 's'][x] >= 2:
                 sleepscore[x] = 1 
                 sleepcount.append(sleepdomain[i])
         for i in range(len(cogdomain)):
-            if df[cogdomain[i] + 'f'][x] >= 1 and df[cogdomain[i] + 's'][x] >= 1:
+            if df[cogdomain[i] + 'f'][x] >= 2 or df[cogdomain[i] + 's'][x] >= 2:
                 cogscore[x] = 1 
                 cogcount.append(cogdomain[i])
-        if fatiguescore[x] ==1 and pemscore[x] == 1 and sleepscore[x] == 1 and \
+        if fatiguescore[x] ==1 or pemscore[x] == 1 or sleepscore[x] == 1 or \
             cogscore[x] ==1:
             diagnosis[x] = 1
             
