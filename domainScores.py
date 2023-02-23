@@ -19,7 +19,7 @@ from sklearn.metrics import classification_report
 from collections import Counter
 import plotly.graph_objects as go
 import plotly.express as px
-import plotly.offline as pyo
+#import plotly.offline as pyo
 
 pemdomain = ['minimum17f', 'soreness15f', 'drained18f', 'mental16f', 'heavy14f', 'weakness33f',
              'minimum17s', 'soreness15s', 'drained18s', 'mental16s', 'heavy14s', 'weakness33s']
