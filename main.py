@@ -117,8 +117,7 @@ def diagnose():
             if data[f] >= 2:
                 fukuda+=1
         if fukuda >= 4:
-            fukuda_msg = "Your scores indicate that you may meet the Fukuda criteria for ME/CFS, because 4 required" \
-                         " symptoms meet the threshold for frequency and severity. To compare your symptoms with more" \
+            fukuda_msg = "Your scores indicate that you may meet the Fukuda criteria for ME/CFS. To compare your symptoms with more" \
                          " ME/CFS case definitions, continue to the full DSQ-1 below (54 items total)"
         else:
             fukuda_msg = ""
@@ -225,6 +224,11 @@ def diagnose():
         sample_size = len(newdf.index)
 
         testAcc = round(np.mean(newdf['dx']==1), 2) * 100
+        if fatiguescore >= 2 and pemscore >= 2 and sleepscore >= 2 and cogscore >=2 and int(session['reduction']) == 1:
+            iom_msg="Your answers indicate you may meet the IOM Criteria for ME/CFS. To compare your scores with more" \
+                    " case definitions, continue to the next section"
+        else:
+            iom_msg=''
         if session["checkbox"] == "data":
             cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
                            (fatiguescore, pemscore, sleepscore, cogscore))
@@ -253,30 +257,16 @@ def diagnose():
             fig.add_hline(y=2)
             fig.update_polars(radialaxis=dict(range=[0, 4]))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-            """
-            categories = ['Fatigue', 'Post-exertional malaise', 'Sleep problems',
-                                                                        'Cognitive problems']
-            fig = go.Figure(
-                data=[
-                    go.Scatterpolar(r=probabilities.controlmean, theta=categories, fill='toself',
-                                    name="Average Healthy Control scores"),
-                    go.Scatterpolar(r=probabilities.combmean, theta=categories, fill='toself',
-                                    name="Average ME/CFS scores"),
-                    go.Scatterpolar(r=user_scores, theta=categories, fill='toself', name="Your scores")],
-                layout=go.Layout(
-                    title=go.layout.Title(text='Your scores compared with our dataset of 3,428 participants'),
-                    polar={'radialaxis': {'visible': True}},
-                    showlegend=True))
-            fig.update_polars(radialaxis=dict(range=[0, 4]))
-            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-            """
+
             print(session["checkbox"])
             if testAcc > 50.0:
-                return render_template("graph.html", probCFS=testAcc, sample_size=sample_size, full_DSQ="Because you scored 50% or higher, we recommend continuing to the full DSQ for further assessment",
-                                       next_link="Continue to full DSQ", graphJSON=graphJSON)
+                return render_template("graph.html", probCFS=testAcc, sample_size=sample_size, full_DSQ="Because you scored 50% or higher, we recommend continuing to the next section"
+                                                                                                        " for more detailed assessment",
+                                       next_link="Continue to full DSQ", graphJSON=graphJSON, iom_msg=iom_msg)
             else:
                 return render_template("graph.html", probCFS=testAcc, sample_size=sample_size, full_DSQ=
-                "Your scores suggest that you do not suffer from a fatigue-related illness", graphJSON=graphJSON)
+                "Your scores suggest that you do not suffer from a fatigue-related illness. To test more symptom domains, continue to the next section",
+                                       next_link="Continue to full DSQ", graphJSON=graphJSON, iom_msg=iom_msg)
             #pyo.plot(fig)
 
         except:
@@ -299,9 +289,9 @@ def diagnose2():
                        int(session['focuss']) + int(session['slowf']) + int(session['slows']) +
                        int(session['absentf']) + int(session['absents']) + int(session['visionf']) +
                        int(session['visions'])) / 16
-    pain_domainscore = (int(session['musclef']) + int(session['muscles']) + int(session['jointf']) +
-                        int(session['joints']) + int(session['eyepainf']) + int(session['eyepains']) +
-                        int(session['headachef']) + int(session['headaches'])) / 8
+    pain_domainscore = (int(session['musclef']) + int(session['muscles']) + int(session['jointpainf']) +
+                        int(session['jointpains']) + int(session['eyepainf']) + int(session['eyepains']) +
+                        int(session['headachesf']) + int(session['headachess'])) / 8
     gastro_domainscore = (int(session['bloatf']) + int(session['bloats']) + int(session['bowelf']) +
                           int(session['bowels']) + int(session['stomachf']) + int(session['stomachs']) +
                           int(session['bladderf']) + int(session['bladders'])) / 8
@@ -319,13 +309,13 @@ def diagnose2():
                           int(session['fevers']) + int(session['lymphnodesf']) + int(session['lymphnodess']) +
                           int(session['throatf']) + int(session['throats']) + int(session['hitempf']) +
                           int(session['hitemps'])) / 10
-    neuroen_domainscore = (int(session['smellsf']) + int(session['smellss']) + int(session['alcoholf']) +
+    neuroen_domainscore = (int(session['smellf']) + int(session['smells']) + int(session['alcoholf']) +
                            int(session['alcohols']) + int(session['twitchesf']) + int(session['twitchess']) +
                            int(session['noisef']) + int(session['noises']) + int(session['lightsf']) +
                            int(session['lightss']) + int(session['depthf']) + int(session['depthf'])) / 12
 
-    mecfs = ds.df['dx' == 1]
-    control = ds.df['dx' != 1]
+    mecfs = ds.df[(ds.df['dx'] == 1)]
+    control = ds.df[(ds.df['dx'] != 1)]
     user_scores = [(int(session['fatiguescoref']) + int(session['fatiguescores'])) /2,
                    pem_domainscore, sleep_domainscore, cog_domainscore, pain_domainscore, gastro_domainscore,
                    ortho_domainscore, circ_domainscore, immune_domainscore, neuroen_domainscore]
@@ -871,7 +861,7 @@ def headaches():
         headachess = request.form.get("headachess")
         if headachesf is not None and headachess is not None:
             session["headachesf"] = headachesf
-            session["stomachs"] = headachess
+            session["headachess"] = headachess
             session['pagenum'] += 1
             return redirect(url_for("twitches"))
         else:

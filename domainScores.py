@@ -17,6 +17,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from collections import Counter
+import plotly.graph_objects as go
+import plotly.express as px
+import plotly.offline as pyo
 
 pemdomain = ['minimum17f', 'soreness15f', 'drained18f', 'mental16f', 'heavy14f', 'weakness33f',
              'minimum17s', 'soreness15s', 'drained18s', 'mental16s', 'heavy14s', 'weakness33s']
@@ -61,7 +64,21 @@ df['circmean'] = np.mean(df[circdomain], axis=1)
 df['immunemean'] = np.mean(df[immunedomain], axis=1)
 df['neuroendomain'] = np.mean(df[neuroendomain], axis=1)
 
-
+'''
 test = df.iloc[:, 110:119]
 test2 = np.mean(test, axis=0)
 
+cfs = df[(df['dx']==1)]
+cfsdomain = np.mean(cfs.iloc[:, 110:120], axis=0)
+
+test3 = np.array(cfsdomain[:])
+
+categories = ['Fatigue', 'PEM', 'Sleep', 'Cognitive Problems', 'Pain', 'Gastro Problems',
+                  'Orthostatic Intolerance', 'Circulatory Problems', 'Immune System', 'Neuroendocrine Problems']
+
+fig = go.Figure(
+        data=[
+            go.Bar(y=cfsdomain)])
+
+pyo.plot(fig)
+'''

@@ -1,6 +1,6 @@
 body {
 
-  font-family: "Times New Roman", Times New Roman;
+  font-family:"Times New Roman",Times,serif;
   color: #444;
   background-color: hsl(0, 0%, 98%);
   align: center;
@@ -32,7 +32,21 @@ header h1.logo:hover {
  */
 .container {
   width: 100%;
+  text-align: center;
+}
 
+.container span {
+    margin-right: 10px;
+    margin-left: 10px;
+    display: inline-block;
+    position: relative;
+}
+.container div {
+
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 div.home {
   padding: 10px 0 30px 0;
@@ -59,7 +73,8 @@ a {
 
 }
 button {
-  font-size: 1.1em;
+  font-size: 1em;
+  font: Ariel;
   font-weight: 100;
   margin-top: 30px;
   margin-left: 65%;
@@ -67,11 +82,14 @@ button {
   letter-spacing: 0px;
   position: relative;
   padding: 20px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 
 }
-button: hover {
-  background-color: #9FB59E;
-
+button:hover {
+  background-color: transparent;
 }
 h2 {
   font-size: 2.2em;
@@ -87,7 +105,8 @@ h3 {
   margin-top: 30px;
   text-align: center;
   letter-spacing: -1px;
-
+  margin-left: 200px;
+  margin-right: 200px;
 }
 p {
   font-size: 1em;
@@ -102,6 +121,7 @@ p {
 span {
   margin-left: 200px;
   margin-right: 200px;
+  display: in-line block;
 }
 
 label {
@@ -159,8 +179,16 @@ text-decoration: underline;
   width: 10%;
   bottom: 0px;
   text-align:center;
-
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
+
+.button:hover{
+background-color: transparent;
+}
+
 /* The container must be positioned relative: */
 .custom-select {
   position: relative;
@@ -265,6 +293,118 @@ height:200px;
 
 }
 
+.layout-one {
+  height: 40px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  background-color: #9FB59E;
+  box-shadow:
+    inset 0 2px 9px  rgba(255,255,255,0.3),
+    inset 0 -2px 6px rgba(0,0,0,0.4);
+  position: relative;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: left;
+  vertical-align: middle;
+  width: 240px;
+  margin-top: auto;
+  overflow: hidden;
+}
+
+.layout-one:hover {
+    height:160px;
+    margin-top: auto;
+    vertical-align: top;
+    margin-bottom: -160px;
+}
+
+#stageone {
+background-color: #9FB59E;
+}
+
+#stagetwo {
+background-color: #9DA1B2;
+}
+#stagethree {
+background-color: #AF9CA1;
+}
+
+.layout-one a{
+  text-align: left;
+  vertical-align: middle;
+    display: flex;
+  position: relative;
+  vertical-align: center;
+  padding-top: 10px;
+  margin-bottom: -10px;
+}
+
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.arrow-long {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: scale(var(--ggs,1));
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+    box-shadow: inset 0 0 0 2px;
+    width: 24px;
+    height: 6px
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.meter {
+  height: 20px;  <em>/* Can be anything */</em>
+  position: relative;
+  background: #555;
+  border-radius: 25px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  bottom: 10px;
+  box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.meter > span {
+  margin-left: 0;
+  margin-right: 0;
+  display: block;
+  height: 100%;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  background-color: #9FB59E;
+  box-shadow:
+    inset 0 2px 9px  rgba(255,255,255,0.3),
+    inset 0 -2px 6px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+  animation: progress;
+  animation-duration: 0.5s;
+}
+
+.meter2span {
+    background-color: #9DA1B2 !important;
+}
+
+@keyframes progress {
+  from { width: var(--start);}
+  to { width: attr(data);}
+}
+
 .typed {
   text-align: center;
   animation: typing;
@@ -287,6 +427,7 @@ height:200px;
     opacity: 1;
   }
 }
+
 
 .unveiled {
   text-align: center;
