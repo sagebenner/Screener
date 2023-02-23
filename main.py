@@ -250,6 +250,7 @@ def diagnose():
                                                'with our dataset of 3,428 participants'),
                     #polar={'radialaxis': {'visible': True}},
                     showlegend=True))
+            fig.add_hline(y=2)
             fig.update_polars(radialaxis=dict(range=[0, 4]))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
             """
@@ -283,20 +284,76 @@ def diagnose():
 
 
 def diagnose2():
-    import probabilities
+    import domainScores as ds
     pem_domainscore = (int(session["minexf"]) + int(session["minexs"]) + int(session['soref']) + int(session['sores']) +
                 int(session['heavyf']) + int(session['heavys']) + int(session['drainedf']) + int(session['draineds']) +
-                int(session['mentalf']) + int(session['mentals']) + int(session['weakf']) + int(session['weaks']) / 12)
+                int(session['mentalf']) + int(session['mentals']) + int(session['weakf']) + int(session['weaks'])) / 12
 
     sleep_domainscore = (int(session["sleepf"]) + int(session["sleeps"]) + int(session['napf']) + int(session['naps']) +
                          int(session['fallf']) + int(session['falls']) + int(session['stayf']) + int(session['stays']) +
-                         int(session['earlyf']) + int(session['earlys']) + int(session['alldayf']) + int(session['alldays']) / 12)
+                         int(session['earlyf']) + int(session['earlys']) + int(session['alldayf']) + int(session['alldays'])) / 12
 
     cog_domainscore = (int(session["rememberf"]) + int(session["remembers"]) + int(session['attentionf']) +
-                       int(session['attentions']) ) / 2
+                       int(session['attentions']) + int(session['wordf']) + int(session['words']) +
+                       int(session['understandf']) + int(session['understands']) + int(session['focusf']) +
+                       int(session['focuss']) + int(session['slowf']) + int(session['slows']) +
+                       int(session['absentf']) + int(session['absents']) + int(session['visionf']) +
+                       int(session['visions'])) / 16
+    pain_domainscore = (int(session['musclef']) + int(session['muscles']) + int(session['jointf']) +
+                        int(session['joints']) + int(session['eyepainf']) + int(session['eyepains']) +
+                        int(session['headachef']) + int(session['headaches'])) / 8
+    gastro_domainscore = (int(session['bloatf']) + int(session['bloats']) + int(session['bowelf']) +
+                          int(session['bowels']) + int(session['stomachf']) + int(session['stomachs']) +
+                          int(session['bladderf']) + int(session['bladders'])) / 8
+    ortho_domainscore = (int(session['unsteadyf']) + int(session['unsteadys']) + int(session['chestpainf']) +
+                         int(session['chestpains']) + int(session['shortf']) + int(session['shorts']) +
+                         int(session['dizzyf']) + int(session['dizzys']) + int(session['heartf']) +
+                         int(session['hearts']) + int(session['nauseaf']) + int(session['nauseas'])) / 12
+    circ_domainscore = (int(session['limbsf']) + int(session['limbss']) + int(session['hotf']) +
+                        int(session['hots']) + int(session['lotempf']) + int(session['lotemps']) +
+                        int(session['sweatf']) + int(session['sweats']) + int(session['chillsf']) +
+                        int(session['chillss']) + int(session['weightf']) + int(session['weights']) +
+                        int(session['appetitef']) + int(session['appetites']) + int(session['nightf']) +
+                        int(session['nights'])) / 16
+    immune_domainscore = (int(session['fluf']) + int(session['flus']) + int(session['feverf']) +
+                          int(session['fevers']) + int(session['lymphnodesf']) + int(session['lymphnodess']) +
+                          int(session['throatf']) + int(session['throats']) + int(session['hitempf']) +
+                          int(session['hitemps'])) / 10
+    neuroen_domainscore = (int(session['smellsf']) + int(session['smellss']) + int(session['alcoholf']) +
+                           int(session['alcohols']) + int(session['twitchesf']) + int(session['twitchess']) +
+                           int(session['noisef']) + int(session['noises']) + int(session['lightsf']) +
+                           int(session['lightss']) + int(session['depthf']) + int(session['depthf'])) / 12
 
-    df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
+    mecfs = ds.df['dx' == 1]
+    control = ds.df['dx' != 1]
+    user_scores = [(int(session['fatiguescoref']) + int(session['fatiguescores'])) /2,
+                   pem_domainscore, sleep_domainscore, cog_domainscore, pain_domainscore, gastro_domainscore,
+                   ortho_domainscore, circ_domainscore, immune_domainscore, neuroen_domainscore]
+    cfsDomains = np.mean(mecfs.iloc[:, 110:120], axis=0)
+    conDomains = np.mean(control.iloc[:, 110:120], axis=0)
 
+    categories = ['Fatigue', 'PEM', 'Sleep', 'Cognitive Problems', 'Pain', 'Gastro Problems',
+                  'Orthostatic Intolerance', 'Circulatory Problems', 'Immune System', 'Neuroendocrine Problems']
+
+    fig = go.Figure(
+        data=[
+            go.Bar(y=conDomains, x=categories,
+                   name="Average Healthy Control scores"),
+            go.Bar(y=cfsDomains, x=categories,
+                   name="Average ME/CFS scores"),
+            go.Bar(y=user_scores, x=categories, name="Your scores")],
+        layout=go.Layout(
+            title=go.layout.Title(text='Your scores compared (average frequency and severity per symptom) '
+                                       'with our dataset of 3,428 participants'),
+            # polar={'radialaxis': {'visible': True}},
+            showlegend=True))
+    # fig.update_polars(radialaxis=dict(range=[0, 4]))
+    fig.add_hline(y=2)
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return render_template("graph3.html", probCFS=54, sample_size=670,
+                    full_DSQ="Because you scored 50% or higher, we recommend continuing to the full DSQ for further assessment",
+                    next_link="Continue to full DSQ", graphJSON=graphJSON)
 
 class FreVal:
     name = "Fatigue1"
@@ -729,17 +786,145 @@ def exsleep4():
                 session['sleepscores'] = int(alldays)
                 session['sleepscore'] = (int(session['alldayf']) + int(session['alldays'])) / 2
                 sleepname = 'allday24'
-                return redirect(url_for("excog2"))
+                return redirect(url_for("jointpain"))
             else:
                 sleepname = 'allday24'
                 session['sleepscoref'] = int(alldayf)
                 session['sleepscores'] = int(alldays)
-                session['sleepscore'] = (int(session['alldayf']) + int(session['alldays'])) / 2
-                return redirect(url_for("excog2"))
+                session['sleepscore'] = (int(session['jointpain']) + int(session['alldays'])) / 2
+                return redirect(url_for("jointpain"))
         else:
             return render_template("exsleep4.html", message=message, pagenum=session['pagenum'])
     return render_template("exsleep4.html", message='', pagenum=session['pagenum'])
 
+@app.route('/jointpain', methods=['post', 'get'])
+def jointpain():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        jointpainf  = request.form.get("jointpainf")
+        jointpains = request.form.get("jointpains")
+        if jointpainf is not None and jointpains is not None:
+            session["jointpainf"] = jointpainf
+            session["jointpains"] = jointpains
+            session['pagenum'] += 1
+            return redirect(url_for("eyepain"))
+        else:
+            return render_template("jointpain26.html", message=message, pagenum=session['pagenum'])
+    return render_template("jointpain26.html", message='', pagenum=session['pagenum'])
+
+@app.route('/eyepain', methods=['post', 'get'])
+def eyepain():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        eyepainf  = request.form.get("eyepainf")
+        eyepains = request.form.get("eyepains")
+        if eyepainf is not None and eyepains is not None:
+            session["eyepainf"] = eyepainf
+            session["eyepains"] = eyepains
+            session['pagenum'] += 1
+            return redirect(url_for("chestpain"))
+        else:
+            return render_template("eyepain27.html", message=message, pagenum=session['pagenum'])
+    return render_template("eyepain27.html", message='', pagenum=session['pagenum'])
+
+@app.route('/chestpain', methods=['post', 'get'])
+def chestpain():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        chestpainf  = request.form.get("chestpainf")
+        chestpains = request.form.get("chestpains")
+        if chestpainf is not None and chestpains is not None:
+            session["chestpainf"] = chestpainf
+            session["chestpains"] = chestpains
+            session['pagenum'] += 1
+            return redirect(url_for("stomach"))
+        else:
+            return render_template("chestpain28.html", message=message, pagenum=session['pagenum'])
+    return render_template("chestpain28.html", message='', pagenum=session['pagenum'])
+
+
+@app.route('/stomach', methods=['post', 'get'])
+def stomach():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        stomachf = request.form.get("stomachf")
+        stomachs = request.form.get("stomachs")
+        if stomachf is not None and stomachs is not None:
+            session["stomachf"] = stomachf
+            session["stomachs"] = stomachs
+            session['pagenum'] += 1
+            return redirect(url_for("headaches"))
+        else:
+            return render_template("stomach30.html", message=message, pagenum=session['pagenum'])
+    return render_template("stomach30.html", message='', pagenum=session['pagenum'])
+
+@app.route('/headaches', methods=['post', 'get'])
+def headaches():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        headachesf = request.form.get("headachesf")
+        headachess = request.form.get("headachess")
+        if headachesf is not None and headachess is not None:
+            session["headachesf"] = headachesf
+            session["stomachs"] = headachess
+            session['pagenum'] += 1
+            return redirect(url_for("twitches"))
+        else:
+            return render_template("headaches31.html", message=message, pagenum=session['pagenum'])
+    return render_template("headaches31.html", message='', pagenum=session['pagenum'])
+
+@app.route('/twitches', methods=['post', 'get'])
+def twitches():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        twitchesf = request.form.get("twitchesf")
+        twitchess = request.form.get("twitchess")
+        if twitchesf is not None and twitchess is not None:
+            session["twitchesf"] = twitchesf
+            session["twitchess"] = twitchess
+            session['pagenum'] += 1
+            return redirect(url_for("noise"))
+        else:
+            return render_template("twitches32.html", message=message, pagenum=session['pagenum'])
+    return render_template("twitches32.html", message='', pagenum=session['pagenum'])
+
+@app.route('/noise', methods=['post', 'get'])
+def noise():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        noisef = request.form.get("noisef")
+        noises = request.form.get("noises")
+        if noisef is not None and noises is not None:
+            session["noisef"] = noisef
+            session["noises"] = noises
+            session['pagenum'] += 1
+            return redirect(url_for("lights"))
+        else:
+            return render_template("noise34.html", message=message, pagenum=session['pagenum'])
+    return render_template("noise34.html", message='', pagenum=session['pagenum'])
+
+@app.route('/lights', methods=['post', 'get'])
+def lights():
+    global end
+    form = FlaskForm()
+    if request.method == "POST":
+        lightsf = request.form.get("lightsf")
+        lightss = request.form.get("lightss")
+        if lightsf is not None and lightss is not None:
+            session["lightsf"] = lightsf
+            session["lightss"] = lightss
+            session['pagenum'] += 1
+            return redirect(url_for("excog2"))
+        else:
+            return render_template("lights35.html", message=message, pagenum=session['pagenum'])
+    return render_template("lights35.html", message='', pagenum=session['pagenum'])
 
 @app.route('/attention', methods=['post', 'get'])
 def excog1():
@@ -1139,7 +1324,7 @@ def fever():
             session["feverf"] = feverf
             session["fevers"] = fevers
             session['pagenum'] += 1
-            return diagnose()
+            return diagnose2()
         else:
             return render_template("fever64.html", message=message, pagenum=session['pagenum'])
     return render_template("fever64.html", message='', pagenum=session['pagenum'])

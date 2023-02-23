@@ -50,6 +50,7 @@ neuroendomain = ['smells66f', 'alcohol61f', 'twitches32f', 'noise34f', 'lights35
 #Maybe change this to the imputed data:
 df = pd.read_csv('MECFS and Controls F+S Reduction.csv')
 
+df['fatigue'] = np.mean(df[['fatigue13f', 'fatigue13s']], axis=1)
 df['pemmean'] = np.mean(df[pemdomain], axis=1)
 df['sleepmean'] = np.mean(df[sleepdomain], axis=1)
 df['cogmean'] = np.mean(df[cogdomain], axis=1)
@@ -59,3 +60,8 @@ df['orthomean'] = np.mean(df[orthodomain], axis=1)
 df['circmean'] = np.mean(df[circdomain], axis=1)
 df['immunemean'] = np.mean(df[immunedomain], axis=1)
 df['neuroendomain'] = np.mean(df[neuroendomain], axis=1)
+
+
+test = df.iloc[:, 110:119]
+test2 = np.mean(test, axis=0)
+

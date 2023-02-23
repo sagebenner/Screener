@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<!doctype html>
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
+<html>
+<header>
+
+
+
+ <ul class="menu">
+  <li >
+   <a href="{{ url_for('home') }}">Home</a>
+  </li>
+  <li>
+   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Documents/DEPAUL%20SYMPTOM%20QUESTIONNAIRE%20with%20SF-36%20and%20MFI%20and%20SI%205-18-11.pdf"
+   target="_blank">
+    Full DSQ 1 (PDF)
+   </a>
+  </li>
+  <li>
+   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/media-links.aspx"
+   target="_blank">
+    More Information About ME/CFS
+   </a>
+  </li>
+    <li >
+   <a href="{{ url_for('about') }}">About This Screener</a>
+  </li>
+  <li>
+ </ul>
+
+</header>
+ <body >
+
+   <h3>Based on your answers, we estimate that your probability of having ME/CFS is<b> {{ probCFS }}%</b>, from a sample size of {{ sample_size }} from our dataset</h3>
+   <h3> <i> {{ full_DSQ }}</i> </h3>
+   <h3> <i> {{ caveat }}</i> </h3>
+   <h3> <i> {{ fukuda_msg }}</i> </h3>
+   <div class="instructions">
+   <b>
+    <a href="{{ url_for('expem3') }}">Continue to DSQ-1 Questions</a></b></div><br>
+      <figure  style="width: 30%; height: 200; border: none; align: center;">
+              <img src="{{url_for('static', filename='SCREENER STAGE 2.png')}}"  />
+      </figure><br>
+  <figure id='chart'  style="width: 70%; height: 600px; border: thin #c0c0c0 solid; align: center;"></figure>
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script type='text/javascript'>
+  var graphs = {{graphJSON | safe}};
+  Plotly.plot('chart',graphs,{});
+</script>
+
+
+</body>
+
+</html>
