@@ -29,24 +29,33 @@
 
 </header>
  <body >
-
-   <h3>Based on your answers, we estimate that your probability of having ME/CFS is<b> {{ probCFS }}%</b>, from a sample size of {{ sample_size }} from our dataset</h3>
-   <h3> <i> {{ full_DSQ }}</i> </h3>
-   <h3> <i> {{ fukuda_msg }}</i> </h3>
-   <h3> <i> {{ iom_msg }}</i> </h3>
-   <div class="instructions">
-   <b>
-    <a href="{{ url_for('expem1') }}">Continue to DSQ-SF Questions</a></b></div><br>
-   <div class="container" style="align: center;" >
-        <div id="stageone" style="font: Ariel;" class="layout-one"><a>Screener ✓</a></div><span class="arrow right"></span><div id="stagetwo" style="font: Ariel;" class="layout-one"><a>Short Form</a></div>
-       <span class="arrow right"></span><div id="stagethree" style="font: Ariel;" class="layout-one"><a>Full Questionnaire</a></div>
-    </div><br>
-  <figure id='chart'  style="width: 70%; height: 600px; border: thin #c0c0c0 solid; align: center;"></figure>
+   <h3>We estimate that your probability of having ME/CFS is<b> {{ probCFS }}%</b>, from a sample size of {{ sample_size }} from our dataset</h3><hr>
+   <div class="container" style="align: center; z-index:100; position: relative; " >
+        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener ✓</b></a></div><span class="arrow right"></span>
+       <div id="stagetwo" style="font: Ariel;" class="layout-one"><a href="{{ url_for('expem1') }}"><b>Short Form</b></a></div>
+       <span class="arrow right"></span><div id="stagethree" style="font: Ariel;" class="layout-one"><a><b>Full Questionnaire</b></a></div>
+    </div> <br>
+<br>
+    <div style="z-index: -1; width: 50%; height: 500px; border: thin #c0c0c0 solid; display: inline-block; float:left; margin-top: 20px;">
+  <figure id='chart'  ></figure>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script type='text/javascript'>
   var graphs = {{graphJSON | safe}};
   Plotly.plot('chart',graphs,{});
 </script>
+</div>
+
+   <div  style="background-color: #E8EAEF; width: 49%; height: 500px; border: thin #c0c0c0 solid; display: inline-block; margin-top: 20px; font: Arial; text-align: left;">
+    <h3>Case Definition Assessments</h3><hr>
+ <p> <b>{{ iom_msg }} </b></p><hr>
+   <p><b>  {{ full_DSQ }}</b> </p> <hr>
+
+   <p> </p>
+
+  <button onclick="window.location.href='{{ url_for('expem1') }}'">
+   <b>
+    <a >Continue</a></b></button><br>
+</div>
 
 
 </body>

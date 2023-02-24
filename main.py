@@ -251,9 +251,7 @@ def diagnose():
                     go.Bar(y=composite_scores, x=categories, name="Your scores")],
                 layout=go.Layout(
                     title=go.layout.Title(text='Your scores compared '
-                                               'with our dataset of 3,428 participants'),
-                    #polar={'radialaxis': {'visible': True}},
-                    showlegend=True))
+                                               'with our dataset of 3,428 participants'),showlegend=True, legend=dict(orientation="h")))
             fig.add_hline(y=2)
             fig.update_polars(radialaxis=dict(range=[0, 4]))
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)

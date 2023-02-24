@@ -31,7 +31,7 @@ header h1.logo:hover {
  * Centering the body content
  */
 .container {
-  width: 100%;
+  align: center;
   text-align: center;
 }
 
@@ -124,6 +124,11 @@ span {
   display: in-line block;
 }
 
+fieldset {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 label {
     white-space: normal;
 }
@@ -136,7 +141,14 @@ figure {
     margin: auto;
 }
 
-
+.background {
+    background-color: #DFE4ED;
+    width: 70%;
+    height: auto;
+    border: thin #c0c0c0 solid;
+    align: center;
+    font: Ariel;
+}
 
 .menu {
   text-align: center;
