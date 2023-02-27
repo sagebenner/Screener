@@ -310,7 +310,7 @@ def diagnose2():
     neuroen_domainscore = (int(session['smellf']) + int(session['smells']) + int(session['alcoholf']) +
                            int(session['alcohols']) + int(session['twitchesf']) + int(session['twitchess']) +
                            int(session['noisef']) + int(session['noises']) + int(session['lightsf']) +
-                           int(session['lightss']) + int(session['depthf']) + int(session['depthf'])) / 12
+                           int(session['lightss']) + int(session['depthf']) + int(session['depths'])) / 12
 
     mecfs = ds.df[(ds.df['dx'] == 1)]
     control = ds.df[(ds.df['dx'] != 1)]
@@ -322,6 +322,45 @@ def diagnose2():
 
     categories = ['Fatigue', 'PEM', 'Sleep', 'Cognitive Problems', 'Pain', 'Gastro Problems',
                   'Orthostatic Intolerance', 'Circulatory Problems', 'Immune System', 'Neuroendocrine Problems']
+
+
+    #ME-ICC
+    if int(session['reduction']==1):
+        ME_R=1
+    else:
+        ME_R=0
+
+    if (int(session['minexf'])>=2 and int(session['minexs'])>=2) or (int(session['heavyf'])>=2 and int(session['heavys'])>=2) or\
+        (int(session['soref'])>=2 and int(session['sores'])>=2) or (int(session['mentalf'])>=2 and int(session['mentals'])>=2) or\
+            (int(session['drainedf'])>=2 and int(session['draineds'])>=2):
+        ME_A = 1
+    else:
+        ME_A = 0
+
+    if (int(session['rememberf'])>=2 and int(session['remembers'])>=2) or (int(session['attentionf'])>=2 and int(session['attentions'])>=2) or\
+        (int(session['wordf'])>=2 and int(session['words'])>=2) or (int(session['understandf'])>=2 and int(session['understands'])>=2) or\
+            (int(session['focusf'])>=2 and int(session['focuss'])>=2) or  (int(session['visionf'])>=2 and int(session['visions'])>=2) or \
+            (int(session['depthf']) >= 2 and int(session['depths']) >= 2) or  (int(session['slowf'])>=2 and int(session['slows'])>=2) or \
+            (int(session['absentf']) >= 2 and int(session['absents']) >= 2):
+        ME_B1 = 1
+    else:
+        ME_B1 = 0
+
+    if (int(session['musclepainf'])>=2 and int(session['musclepains'])>=2) or (int(session['jointpainf'])>=2 and int(session['jointpains'])>=2) or\
+        (int(session['eyepainf'])>=2 and int(session['eyepains'])>=2) or (int(session['chestpainf'])>=2 and int(session['chestpains'])>=2) or\
+            (int(session['headachesf'])>=2 and int(session['headachess'])>=2):
+        ME_B2 = 1
+    else:
+        ME_B2 = 0
+
+    if (int(session['sleepf'])>=2 and int(session['sleeps'])>=2) or (int(session['napf'])>=2 and int(session['naps'])>=2) or\
+        (int(session['fallf'])>=2 and int(session['falls'])>=2) or (int(session['stayf'])>=2 and int(session['stays'])>=2) or\
+            (int(session['earlyf'])>=2 and int(session['earlys'])>=2) or (int(session['alldayf'])>=2 and int(session['alldays'])>=2):
+        ME_B3 = 1
+    else:
+        ME_B3 = 0
+
+
 
     fig = go.Figure(
         data=[
