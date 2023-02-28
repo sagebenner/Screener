@@ -440,6 +440,26 @@ background-color: #AF9CA1;
   }
 }
 
+.results {
+width: 49%;
+background-color: #E8EAEF;
+height: 500px;
+border: thin #c0c0c0 solid;
+display: inline-block;
+margin-top: 20px;
+font: Arial;
+text-align: left;
+}
+
+.chart-left {
+z-index: -1;
+width: 50%;
+height: 500px;
+border: thin #c0c0c0 solid;
+display: inline-block;
+float:left;
+margin-top: 20px;
+}
 
 .unveiled {
   text-align: center;
@@ -451,4 +471,63 @@ background-color: #AF9CA1;
 @keyframes unveil {
   from { opacity: 0% }
   to { opacity: 100% }
+}
+
+
+@media print {
+
+header, button {
+display: none;
+}
+
+.container {
+display: none;
+}
+
+body {
+max-width: 100%;
+}
+
+p, span, a {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+
+
+div {
+    width: 100%;
+    border: none;
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+div h3 {
+    width: 100%;
+    border: none;
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+#chart {
+display: block;
+position: absolute;
+bottom: 10px;
+filter: grayscale(100%);
+}
+
+.results {
+    width: 100%;
+    border: none;
+    display: block;
+    margin: auto;
+    align: center;
+    position: absolute;
+    top: 150px;
+}
+
+
+
 }

@@ -453,7 +453,6 @@ def diagnose2():
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template("graph3.html", probCFS=54, sample_size=670,
-                    full_DSQ="Because you scored 50% or higher, we recommend continuing to the full DSQ for further assessment",
                     next_link="Continue to full DSQ", graphJSON=graphJSON, me_icc=me_icc)
 
 class FreVal:
