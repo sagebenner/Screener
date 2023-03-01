@@ -50,8 +50,30 @@ immunedomain = ['flu65f', 'fever64f', 'lymphnodes63f', 'sorethroat62f', 'htemp59
 neuroendomain = ['smells66f', 'alcohol61f', 'twitches32f', 'noise34f', 'lights35f', 'depth42f',
          'smells66s', 'alcohol61s', 'twitches32s', 'noise34s', 'lights35s', 'depth42s']
 
+# domains for the short form:
+sf_pemdomain = ['minimum17f', 'soreness15f', 'minimum17s', 'soreness15s']
+
+
+sf_sleepdomain = ['unrefreshed19f', 'unrefreshed19s']
+
+sf_cogdomain = ['remember36f', 'difficulty37f', 'remember36s', 'difficulty37s']
+
+sf_paindomain = ['musclepain25f', 'musclepain25s']
+
+
+sf_gastrodomain = ['bloating29f', 'bowel46f', 'bloating29s', 'bowel46s']
+
+sf_orthodomain = ['unsteady48f', 'unsteady48s']
+
+sf_circdomain = ['limbs56f', 'hot58f', 'limbs56s', 'hot58s']
+
+sf_immunedomain = ['flu65f','flu65s']
+
+sf_neuroendomain = ['smells66f', 'smells66s']
 #Maybe change this to the imputed data:
 df = pd.read_csv('MECFS and Controls F+S Reduction.csv')
+
+sdf = df
 
 df['fatigue'] = np.mean(df[['fatigue13f', 'fatigue13s']], axis=1)
 df['pemmean'] = np.mean(df[pemdomain], axis=1)
@@ -63,6 +85,19 @@ df['orthomean'] = np.mean(df[orthodomain], axis=1)
 df['circmean'] = np.mean(df[circdomain], axis=1)
 df['immunemean'] = np.mean(df[immunedomain], axis=1)
 df['neuroendomain'] = np.mean(df[neuroendomain], axis=1)
+
+
+sdf['fatigue'] = np.mean(sdf[['fatigue13f', 'fatigue13s']], axis=1)
+sdf['pemmean'] = np.mean(sdf[sf_pemdomain], axis=1)
+sdf['sleepmean'] = np.mean(sdf[sf_sleepdomain], axis=1)
+sdf['cogmean'] = np.mean(sdf[sf_cogdomain], axis=1)
+sdf['painmean'] = np.mean(sdf[sf_paindomain], axis=1)
+sdf['gastromean'] = np.mean(sdf[sf_gastrodomain], axis=1)
+sdf['orthomean'] = np.mean(sdf[sf_orthodomain], axis=1)
+sdf['circmean'] = np.mean(sdf[sf_circdomain], axis=1)
+sdf['immunemean'] = np.mean(sdf[sf_immunedomain], axis=1)
+sdf['neuroendomain'] = np.mean(sdf[sf_neuroendomain], axis=1)
+
 
 '''
 test = df.iloc[:, 110:119]

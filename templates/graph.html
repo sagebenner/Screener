@@ -29,11 +29,17 @@
 
 </header>
  <body >
-   <h3 style="font: Arial;">We estimate that your probability of having ME/CFS is<b> {{ probCFS }}%</b>, from a sample size of {{ sample_size }} from our dataset</h3><hr>
+   <h3 class="ariel">Screener Results</h3>
+   <hr>
    <div class="container" style="align: center; z-index:100; position: relative; " >
-        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener ✓</b></a></div><span class="arrow right"></span>
-       <div id="stagetwo" style="font: Ariel;" class="layout-one"><a href="{{ url_for('expem1') }}"><b>Short Form</b></a></div>
-       <span class="arrow right"></span><div id="stagethree" style="font: Ariel;" class="layout-one"><a><b>Full Questionnaire</b></a></div>
+        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener ✓</b></a>
+        <ul><li>5 Questions</li><li>Estimates Probability of ME/CFS from your scores</li>
+            <li>Assesses IOM 2015 Case Definition</li></ul></div><span class="arrow right"></span>
+       <div id="stagetwo" style="font: Ariel;" class="layout-one"><a ><b>Short Form</b></a><ul><li>Optional</li>
+           <li>10 more questions</li><li>Assesses CCC Case Definition</li></ul></div>
+       <span class="arrow right"></span><div id="stagethree" style="font: Ariel;" class="layout-one"><a>
+       <b>Full Questionnaire</b></a><ul><li>Optional</li><li>40 more questions</li>
+       <li>Assesses IOM, Fukuda, CCC, and ME-ICC Case Definitions</li></ul></div>
     </div> <br>
 <br>
     <div class="chart-left" >
@@ -45,20 +51,27 @@
 </script>
 </div>
 
-   <div class="results" >
+<div class="results" >
 
-    <h3>Case Definition Assessments</h3><hr>
- <p> <b>{{ iom_msg }} </b></p><hr>
-   <p><b>  {{ full_DSQ }}</b> </p> <hr>
-
-   <p> </p>
-
-  <button onclick="window.location.href='{{ url_for('expem1') }}'">
+    <h3>Institute of Medicine (IOM) Case Definition Assessment</h3><hr>
+    <p> <b>{{ iom_msg }} </b></p><hr>
+       <p> <b> IOM Requirements Satisfied: <br> </b></p><ul><li> <b><u>{{ iomfatiguecheck }} </u></b> Fatigue that persists at least 6 months and causes a substantial
+   reduction in functioning </li><li> <b><u>{{ iompemcheck }}</u></b> Post-exertional malaise (PEM) </li>
+       <li> <b><u>{{ iomsleepcheck }} </u></b> Unrefreshing sleep </li> <li> <b><u>{{ iomcogcheck }} </u></b> Cognitive impairment </li></ul><hr>
+<div>
+<ul style="display: inline-block;"> <li style="display: inline-block;">
+  <button style="white-space: nowrap; margin-right: 150px;" onclick="window.print();return false;" >
    <b>
-    <a >Continue</a></b></button><br>
+    Print/Save PDF</b></button></li>
+  <li style="display: inline-block; "><button onclick="window.location.href='{{ url_for('expem1') }}'">
+   <b>
+    Continue</b></button></li>
+</ul>
 </div>
+</div>
+<div style="display: inline-block;">
 
-
+</div>
 </body>
 
 </html>

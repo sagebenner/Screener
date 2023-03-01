@@ -63,13 +63,31 @@ def diagnose():
         data = np.array([[fatiguescore, pemscore, sleepscore, cogscore]])
 
     if survey == "rf14":
-        #import randomForest
+        import domainScores as ds
         import probabilities
-        pemscore = (int(session["minexf"]) + int(session["minexs"])) / 2
+        pemscore = (int(session["minexf"]) + int(session["minexs"]) + int(session['soref']) + int(session['sores'])) / 4
         sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
-        cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
+        cogscore = (int(session["rememberf"]) + int(session["remembers"]) + int(session['attentionf']) +
+                    int(session['attentions'])) / 4
+        painscore = (int(session['musclef']) + int(session['muscles'])) / 2
+        gastroscore = (int(session['bloatf']) + int(session['bloats']) + int(session['bowelf']) +
+                       int(session['bowels'])) / 4
+        orthoscore = (int(session['unsteadyf']) + int(session['unsteadys'])) / 2
+        circscore = (int(session['limbsf']) + int(session['limbss']) + int(session['hotf']) + int(session['hots'])) / 4
+        immunescore = (int(session['fluf']) + int(session['flus'])) / 2
+        neuroenscore = (int(session['smellf']) + int(session['smells'])) / 2
 
-        df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
+
+
+
+        df = ds.sdf
+
+        mecfs = df[(df['dx'] == 1)]
+        controls = df[(df['dx'] != 1)]
+        cfsdomains = np.mean(mecfs.iloc[:,110:120], axis=0)
+
+        user_scores = [fatiguescore, pemscore, sleepscore, cogscore, painscore, gastroscore, orthoscore, circscore,
+                       immunescore, neuroenscore]
 
         #df = pd.read_csv('MECFS No Comorbidities vs All Others.csv')
         data = [fatiguescore, ((int(session["soref"]) + int(session["sores"])) / 2), pemscore,
@@ -84,6 +102,10 @@ def diagnose():
                           ((int(session["fluf"]) + int(session["flus"])) / 2),
                           ((int(session["smellf"]) + int(session["smells"])) / 2)]
 
+        pemsdomain = (pemscore + int(session['soref']) + int(session['sores'])) / 3
+        sleepdomain = sleepscore
+        cogdomain = (cogscore + int(session['attentionf']) + int(session['attentions'])) / 3
+        '''
         newdf = df[(df['fatigue13c'] >= (data[0] - 1)) &
                    (df['fatigue13c'] <= (data[0] + 1)) &
                    (df['soreness15c'] >= (data[1] - 1)) &
@@ -112,18 +134,19 @@ def diagnose():
                    (df['flu65c'] <= (data[12] + 1)) &
                    (df['smells66c'] >= (data[13] - 1)) &
                    (df['smells66c'] <= (data[13] + 1))]
+                   '''
         fukuda = 0
         for f in range(len(data)):
             if data[f] >= 2:
                 fukuda+=1
         if fukuda >= 4:
-            fukuda_msg = "Your scores indicate that you may meet the Fukuda criteria for ME/CFS. To compare your symptoms with more" \
+            fukuda_msg = "Your scores indicate that you may meet the Canadian Consensus Criteria (CCC) for ME/CFS. To compare your symptoms with more" \
                          " ME/CFS case definitions, continue to the full DSQ-1 below (54 items total)"
         else:
             fukuda_msg = ""
-        sample_size = len(newdf.index)
-        testAcc = round(np.mean(newdf['dx']==1), 2) * 100
-        user_scores = data
+        #sample_size = len(newdf.index)
+        #testAcc = round(np.mean(newdf['dx']==1), 2) * 100
+
         cursor = mysql.connection.cursor()
         if session["checkbox"] == "data":
             cursor.execute('INSERT INTO shortform VALUES (NULL, % s, % s, % s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
@@ -134,35 +157,36 @@ def diagnose():
         mecfs_selection = probabilities.mecfs[probabilities.shortform_items]
         mecfs_14mean = mecfs_selection.mean(axis=0)
         feature_list = np.array(mecfs_selection.columns)
-        categories = [*feature_list, feature_list[0]]
+        #categories = [*feature_list, feature_list[0]]
+        categories = ['Fatigue', 'PEM', 'Sleep', 'Cognitive Impairment', 'Pain', 'Gastro Problems',
+                      'Orthostatic Intolerance', 'Circulatory Problems', 'Immune System', 'Neuroendocrine Problems']
         print(categories)
         control_selection = probabilities.controls[probabilities.shortform_items]
         control_14mean = control_selection.mean(axis=0).drop(columns=['dx'])
-        try:
-            #probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
-            fig = go.Figure(
-                data=[
-                    go.Bar(y=control_14mean, x=categories,
-                                    name="Average Healthy Control scores"),
-                    go.Bar(y=mecfs_14mean, x=categories,
-                                    name="Average ME/CFS scores"),
-                    go.Bar(y=user_scores, x=categories, name="Your scores")],
-                layout=go.Layout(
-                    title=go.layout.Title(text='Your scores compared (average frequency and severity per symptom) '
-                                               'with our dataset of 3,428 participants'),
-                    #polar={'radialaxis': {'visible': True}},
-                    showlegend=True))
-            #fig.update_polars(radialaxis=dict(range=[0, 4]))
-            fig.add_hline(y=2)
-            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-            if sample_size < 100:
-                caveat = "*Your unique scores result in a small sample size, so be cautious interpreting results"
-            else:
-                caveat=''
-            return render_template("graph2.html", graphJSON=graphJSON, probCFS=testAcc, sample_size=sample_size, caveat=caveat, fukuda_msg=fukuda_msg)
 
-        except:
-            return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
+        #probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
+        fig = go.Figure(
+            data=[
+                go.Bar(y=user_scores, x=categories, name="Your scores"),
+                go.Bar(y=cfsdomains, x=categories,
+                                name="Average ME/CFS scores")],
+            layout=go.Layout(
+                title=go.layout.Title(text='Your scores compared'
+                                           ' with our dataset of 3,428 participants'),
+                #polar={'radialaxis': {'visible': True}},
+                showlegend=True, legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1)))
+        #fig.update_polars(radialaxis=dict(range=[0, 4]))
+        fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores')
+        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        return render_template("graph2.html", graphJSON=graphJSON, fukuda_msg=fukuda_msg)
+
+
     if survey == "classic":
         import probabilities
 
@@ -224,11 +248,28 @@ def diagnose():
         sample_size = len(newdf.index)
 
         testAcc = round(np.mean(newdf['dx']==1), 2) * 100
-        if fatiguescore >= 2 and pemscore >= 2 and sleepscore >= 2 and cogscore >=2 and int(session['reduction']) == 1:
-            iom_msg="Your answers indicate you may meet the IOM Criteria for ME/CFS. To compare your scores with more" \
-                    " case definitions, continue to the next section"
+        iomfatiguecheck= "_ ".ljust(1)
+        iompemcheck = "_ ".ljust(1)
+        iomsleepcheck = "_ ".ljust(1)
+        iomcogcheck = "_ ".ljust(1)
+        if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >=2 and int(session['reduction'])==1:
+            iomfatiguecheck = "✓"
+        if int(session['minexf']) >= 2 and int(session['minexs']) >= 2:
+            iompemcheck = "✓"
+        if int(session['sleepf']) >= 2 and int(session['sleeps']) >= 2:
+            iomsleepcheck = "✓"
+        if int(session['rememberf']) and int(session['remembers']) >= 2:
+            iomcogcheck = "✓"
+
+        if iomfatiguecheck =="✓" and iompemcheck =="✓" and iomsleepcheck =="✓" and iomcogcheck =="✓":
+            iom_msg = "Your answers indicate you may meet the IOM Criteria for ME/CFS. To compare your"\
+            " scores with more case definitions, continue to the next section"
+
         else:
-            iom_msg=''
+            iom_msg = 'Your responses do not meet the IOM Criteria for ME/CFS. To assess more case definitions, ' \
+                      'continue to the next section'
+
+
         if session["checkbox"] == "data":
             cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
                            (fatiguescore, pemscore, sleepscore, cogscore))
@@ -244,27 +285,23 @@ def diagnose():
 
             fig = go.Figure(
                 data=[
-                    go.Bar(y=np.mean(dfcon[(dfcon['dx'] != 1)], axis=0), x=categories,
-                                    name="Average Healthy Control scores"),
+                    go.Bar(y=composite_scores, x=categories, name="Your scores"),
                     go.Bar(y=np.mean(dfcon[(dfcon['dx']==1)], axis=0), x=categories,
-                                    name="Average ME/CFS scores"),
-                    go.Bar(y=composite_scores, x=categories, name="Your scores")],
+                                    name="Average ME/CFS scores")],
                 layout=go.Layout(
                     title=go.layout.Title(text='Your scores compared '
                                                'with our dataset of 3,428 participants'),showlegend=True, legend=dict(orientation="h")))
-            fig.add_hline(y=2)
-            fig.update_polars(radialaxis=dict(range=[0, 4]))
+            #fig.update_polars(radialaxis=dict(range=[0, 4]))
+            fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores')
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
             print(session["checkbox"])
-            if testAcc > 50.0:
-                return render_template("graph.html", probCFS=testAcc, sample_size=sample_size, full_DSQ="Because you scored 50% or higher, we recommend continuing to the next section"
-                                                                                                        " for more detailed assessment",
-                                       next_link="Continue to full DSQ", graphJSON=graphJSON, iom_msg=iom_msg)
-            else:
-                return render_template("graph.html", probCFS=testAcc, sample_size=sample_size, full_DSQ=
-                "Your scores suggest that you do not suffer from a fatigue-related illness. To test more symptom domains, continue to the next section",
-                                       next_link="Continue to full DSQ", graphJSON=graphJSON, iom_msg=iom_msg)
+
+            return render_template("graph.html", probCFS=testAcc, sample_size=sample_size,
+                                   iomfatiguecheck=iomfatiguecheck, iompemcheck=iompemcheck,
+                                   iomsleepcheck=iomsleepcheck, iomcogcheck=iomcogcheck,
+                                   next_link="Continue to full DSQ", graphJSON=graphJSON, iom_msg=iom_msg)
+
             #pyo.plot(fig)
 
         except:
@@ -438,8 +475,6 @@ def diagnose2():
 
     fig = go.Figure(
         data=[
-            go.Bar(y=conDomains, x=categories,
-                   name="Average Healthy Control scores"),
             go.Bar(y=cfsDomains, x=categories,
                    name="Average ME/CFS scores"),
             go.Bar(y=user_scores, x=categories, name="Your scores")],
@@ -449,7 +484,7 @@ def diagnose2():
             # polar={'radialaxis': {'visible': True}},
             showlegend=True))
     # fig.update_polars(radialaxis=dict(range=[0, 4]))
-    fig.add_hline(y=2)
+    #fig.add_hline(y=2)
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template("graph3.html", probCFS=54, sample_size=670,
