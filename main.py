@@ -1476,20 +1476,14 @@ def vision():
             session["visionf"] = visionf
             session["visions"] = visions
             session['pagenum']+=1
-            if int(session["visionf"]) >= 2 and int(session["visions"]) >= 2:
+            if int(session["visionf"]) >= 0 and int(session["visions"]) >= 0:
                 session['cogscoref'] = int(visionf)
                 session['cogscores'] = int(visions)
                 session['cogscore'] = (int(session['visionf']) + int(session['visions'])) / 2
                 #end = True
                 cogname = 'unable41'
                 return redirect(url_for('depth'))
-            else:
-                session['cogscoref'] = int(visionf)
-                session['cogscores'] = int(visions)
-                session['cogscore'] = (int(session['visionf']) + int(session['visions'])) / 2
-                # end = True
-                cogname = 'unable41'
-                return redirect(url_for('depth'))
+
         else:
             return render_template("vision41.html", message=message, pagenum=session['pagenum'])
     return render_template("vision41.html", message='', pagenum=session['pagenum'])
