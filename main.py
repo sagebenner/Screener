@@ -196,6 +196,7 @@ def diagnose():
 
         cogscore = session['cogscore']
 
+        reduction = session['reduction']
         cursor = mysql.connection.cursor()
 
         cursor.execute('SELECT fatigue, pem, sleep, cog FROM screen')
@@ -271,8 +272,8 @@ def diagnose():
 
 
         if session["checkbox"] == "data":
-            cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s)',
-                           (fatiguescore, pemscore, sleepscore, cogscore))
+            cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s, NULL, %s)',
+                           (fatiguescore, pemscore, sleepscore, cogscore, reduction))
             mysql.connection.commit()
 
         try:
@@ -538,6 +539,25 @@ def graph(graphJSON, probCFS, sample_size):
     return render_template("graph.html", graphJSON=graphJSON, probCFS=probCFS, sample_size=sample_size)
 
 @app.route('/', methods=['post', 'get'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['result'] == 'login':
+            firstname = request.form.get('firstname')
+            lastname = request.form.get('lastname')
+            email = request.form.get('email')
+            cursor = mysql.connection.cursor()
+
+            cursor.execute('INSERT INTO login VALUES (NULL, %s, %s, %s, NULL)', (firstname, lastname, email))
+            mysql.connection.commit()
+
+            return redirect(url_for('home'))
+        if request.form['result'] == "guest":
+            return redirect(url_for('home'))
+    return render_template('login.html', error=error)
+
+
+@app.route('/home', methods=['post', 'get'])
 def home():
     global pagenum
     global end

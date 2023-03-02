@@ -35,6 +35,22 @@ header h1.logo:hover {
   text-align: center;
 }
 
+.waterbackground {
+  background-image: url(../img/sky.png);
+  background-repeat: no-repeat;
+  background-position: 50% 0;
+  background-size: cover;
+  align: center;
+  text-align: center;
+
+
+}
+.waterbackground div {
+  margin-top: 10%;
+  font-family:"Times New Roman",Times,serif;
+
+}
+
 .container span {
     margin-right: 10px;
     margin-left: 10px;
@@ -115,6 +131,8 @@ h3 {
 
 h3.ariel {
 font-family: "Arial", Helvetica, sans-serif;
+margin: 21px auto;
+text-align: center;
 }
 
 p {
@@ -492,6 +510,27 @@ margin-top: 20px;
   animation-timing-function: steps(30, end);
 
 }
+
+.question {
+    color:#fff;
+    background-color:#002D62;
+    width:20px;
+    height:20px;
+    margin-left: 10px;
+    display:inline-block;
+    border-radius:100%;
+    font-size:20px;
+    text-align:center;
+    text-decoration:none;
+    -webkit-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+}
+
+.login {
+font-size: 1em;
+}
+
 @keyframes unveil {
   from { opacity: 0% }
   to { opacity: 100% }
@@ -539,7 +578,7 @@ div h3 {
 #chart {
 display: block;
 position: absolute;
-bottom: 200px;
+bottom: 20px;
 filter: grayscale(0%);
 }
 

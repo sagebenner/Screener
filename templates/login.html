@@ -10,35 +10,28 @@
     <title>About</title>
 </head>
 <header></header>
-<header>
-<ul class="menu">
-  <li >
-   <a href="{{ url_for('home') }}">Home</a>
-  </li>
-  <li>
-   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Documents/DEPAUL%20SYMPTOM%20QUESTIONNAIRE%20with%20SF-36%20and%20MFI%20and%20SI%205-18-11.pdf"
-   target="_blank">
-    Full DSQ 1 (PDF)
-   </a>
-  </li>
-  <li>
-   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/media-links.aspx"
-   target="_blank">
-    More Information About ME/CFS
-   </a>
-  </li>
-    <li >
-   <a href="{{ url_for('about') }}">About This Screener</a>
-  </li>
-  <li>
- </ul>
-</header>
-<body>
-<hr>
-<p>This screener is based on the DePaul Symptom Questionnaire, a validated instrument meant to assess
-ME/CFS Symptomatology. <br><br>
-    This online screener was created by Sage Benner at DePaul's Center for Community Research. To report technical issues or to
-    provide design-related feedback, contact Sage at sage.benner@gmail.com.
-</p>
-</body>
+
+<body class="waterbackground">
+    <div style="text-align: center; " >
+        <h2>Welcome to the online screener for Myalgic Encephalomyelitis/Chronic Fatigue Syndrome (ME/CFS)</h2>
+      <ul style="display: inline-block; text-align: center;"><li style="display: inline-block;"><h3 class="ariel">
+          <i>Please enter your registration information or continue as guest</i></h3></li>
+          <li style="display: inline-block;"><a class="question" title="
+          Entering your login information will allow you to compare your responses across time">?</a></li></ul>
+      <br>
+      <form class="login" action="" method="post">
+        <input class="login" type="text" placeholder="First name" name="firstname" value="{{
+          request.form.firstname }}">
+          <input class="login" type="text" placeholder="Last name" name="lastname" value="{{
+          request.form.lastname }}">
+         <input class="login" type="email" placeholder="Email" name="email" value="{{
+          request.form.email }}"><br><br>
+        <button style="margin: auto; " type="submit" name="result" value="login" >Login</button>
+         <button style="margin: auto;" type="submit" name="result" value="guest" >Continue as Guest</button>
+      </form>
+      {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}
+      {% endif %}
+    </div>
+  </body>
 </html>
