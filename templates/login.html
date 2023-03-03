@@ -27,11 +27,23 @@
          <input class="login" type="email" placeholder="Email" name="email" value="{{
           request.form.email }}"><br><br>
         <button style="margin: auto; " type="submit" name="result" value="login" >Login</button>
-         <button style="margin: auto;" type="submit" name="result" value="guest" >Continue as Guest</button>
-      </form>
+         <button style="margin: auto;" type="submit" name="result" value="guest" >{{ cont }}</button>
+          <br><br>
+           <ul style="display: inline-block; text-align: center;">
+               <li style="display: inline-block;"><input type="checkbox" id="checkbox" name="checkbox" value="data">
+    <label for="checkbox"
+           title="If you don't check this box, your answers will only be stored temporarily to give you
+a result, then erased once you close this webpage. ">
+        OPTIONAL: I agree to have my answers stored confidentially for analysis purposes.</label><br>
+   </li><li style="display: inline-block;"><a class="question" title="If you don't check this box, your answers will only be stored temporarily to give you
+a result, then erased once you close this webpage. ">?</a></li></ul>  </form>
+        <div class="message">
       {% if error %}
-        <p class="error"><strong>Error:</strong> {{ error }}
+        <p class="message"><strong>Error:</strong> {{ error }}
       {% endif %}
+            {% if mesg %}
+        <p ><strong></strong> {{ mesg }}
+      {% endif %}</div>
     </div>
   </body>
 </html>

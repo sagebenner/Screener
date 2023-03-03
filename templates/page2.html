@@ -14,23 +14,28 @@
         <legend><b>Frequency: </b>Throughout the past 6 months, how often have you had this symptom?</legend>
         <ol start="0">
             <li>
-                <input type="radio" id="f0" name="minex" value="0">
+                <input type="radio" id="f0" name="minex" value="0"
+                {% if selected_f == '0' %}checked{% endif %}>
                 <label for="f0">None of the time</label>
             </li>
             <li>
-                <input type="radio" id="f1" name="minex" value="1">
+                <input type="radio" id="f1" name="minex" value="1"
+                {% if selected_f == '1' %}checked{% endif %}>
                 <label for="f1">A little of the time</label>
             </li>
             <li>
-                <input type="radio" id="f2" name="minex" value="2">
+                <input type="radio" id="f2" name="minex" value="2"
+                {% if selected_f == '2' %}checked{% endif %}>
                 <label for="f2">About half the time</label>
             </li>
             <li>
-                <input type="radio" id="f3" name="minex" value="3">
+                <input type="radio" id="f3" name="minex" value="3"
+                {% if selected_f == '3' %}checked{% endif %}>
                 <label for="f3">Most of the time</label>
             </li>
             <li>
-                <input type="radio" id="f4" name="minex" value="4">
+                <input type="radio" id="f4" name="minex" value="4"
+                {% if selected_f == '4' %}checked{% endif %}>
                 <label for="f4">All of the time</label>
             </li>
 
@@ -48,23 +53,28 @@
         <legend><b>Severity: </b>Throughout the past 6 months, how much has this symptom bothered you? </legend>
         <ol start="0">
             <li>
-                <input type="radio" id="s0" name="minex_s" value="0">
+                <input type="radio" id="s0" name="minex_s" value="0"
+                {% if selected_s == '0' %}checked{% endif %}>
                 <label for="s0">Symptom not present</label>
             </li>
             <li>
-                <input type="radio" id="s1" name="minex_s" value="1">
+                <input type="radio" id="s1" name="minex_s" value="1"
+                {% if selected_s == '1' %}checked{% endif %}>
                 <label for="s1">Mild</label>
             </li>
             <li>
-                <input type="radio" id="s2" name="minex_s" value="2">
+                <input type="radio" id="s2" name="minex_s" value="2"
+                {% if selected_s == '2' %}checked{% endif %}>
                 <label for="s2">Moderate</label>
             </li>
             <li>
-                <input type="radio" id="s3" name="minex_s" value="3">
+                <input type="radio" id="s3" name="minex_s" value="3"
+                {% if selected_s == '3' %}checked{% endif %}>
                 <label for="s3">Severe</label>
             </li>
             <li>
-                <input type="radio" id="s4" name="minex_s" value="4">
+                <input type="radio" id="s4" name="minex_s" value="4"
+                {% if selected_s == '4' %}checked{% endif %}>
                 <label for="s4">Very severe</label>
             </li>
 
@@ -79,7 +89,9 @@
 </form>
 <div class="container">
 
-<p class="typed" > <i>{{ message }} </i></p>
+{% if error %}
+        <p class="message"><strong>Error:</strong> {{ error }}
+      {% endif %}
 </div>
 
 </body>

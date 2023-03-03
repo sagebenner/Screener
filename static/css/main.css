@@ -4,6 +4,8 @@ body {
   color: #444;
   background-color: hsl(0, 0%, 98%);
   align: center;
+  padding: 0;
+  margin: 0;
 }
 /*
  * Formatting the header area
@@ -14,6 +16,8 @@ header {
   text-align: center;
   text-transform: none;
   text-color: #444;
+  padding: 0;
+  margin: 0;
 }
 header h1.logo {
   margin: 0;
@@ -157,7 +161,8 @@ fieldset {
 }
 
 label {
-    white-space: normal;
+    white-space: nowrap;
+    margin: auto;
 }
 
 figure {
@@ -402,7 +407,14 @@ background-color: #AF9CA1;
   -webkit-transform: rotate(-45deg);
 }
 
+footer {
+position: fixed;
+bottom: 10px;
+width: 100%;
+padding: 20px;
+}
 .meter {
+
   height: 20px;  <em>/* Can be anything */</em>
   position: relative;
   background: #555;
@@ -411,7 +423,8 @@ background-color: #AF9CA1;
   border-bottom-right-radius: 8px;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
-  bottom: 10px;
+  width: 98%;
+  box-sizing: border-box;
   box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.3);
 }
 
@@ -428,7 +441,7 @@ background-color: #AF9CA1;
   box-shadow:
     inset 0 2px 9px  rgba(255,255,255,0.3),
     inset 0 -2px 6px rgba(0,0,0,0.4);
-  position: relative;
+
   overflow: hidden;
   animation: progress;
   animation-duration: 0.5s;
@@ -453,6 +466,15 @@ background-color: #AF9CA1;
   animation-duration: 0.5s;
   animation-timing-function: steps(30, end);
 
+}
+
+.message {
+font-size: 1em;
+font-family: "Arial", Helvetica, sans-serif;
+text-align: center;
+  animation: typing;
+  animation-duration: 0.5s;
+  animation-timing-function: steps(30, end);
 }
 
 
@@ -512,23 +534,26 @@ margin-top: 20px;
 }
 
 .question {
-    color:#fff;
-    background-color:#002D62;
-    width:20px;
-    height:20px;
+    color: #fff;
+    background-color: #002D62;
+    width: 20px;
+    height: 20px;
     margin-left: 10px;
-    display:inline-block;
-    border-radius:100%;
-    font-size:20px;
-    text-align:center;
-    text-decoration:none;
-    -webkit-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
-    -moz-box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
-    box-shadow: inset -1px -1px 1px 0px rgba(0,0,0,0.25);
+    display: inline-block;
+    border-radius: 100%;
+    font-size: 20px;
+    text-align: center;
+    text-decoration: none;
+    line-height: 20px;
+    -webkit-box-shadow: inset -1px -1px 1px 0px rgba(0, 0, 0, 0.25);
+    -moz-box-shadow: inset -1px -1px 1px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: inset -1px -1px 1px 0px rgba(0, 0, 0, 0.25);
 }
+
 
 .login {
 font-size: 1em;
+padding: 10px;
 }
 
 @keyframes unveil {
@@ -549,6 +574,8 @@ display: none;
 
 body {
 max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 p, span, a {

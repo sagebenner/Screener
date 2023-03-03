@@ -14,23 +14,28 @@
         <legend><b>Frequency: </b>Throughout the past 6 months, how often have you had this symptom?</legend>
         <ol start="0">
             <li>
-                <input type="radio" id="f0" name="sleepf" value="0">
+                <input type="radio" id="f0" name="sleepf" value="0"
+                {% if sleepf == '0' %}checked{% endif %}>
                 <label for="f0">None of the time</label>
             </li>
             <li>
-                <input type="radio" id="f1" name="sleepf" value="1">
+                <input type="radio" id="f1" name="sleepf" value="1"
+                {% if sleepf == '1' %}checked{% endif %}>
                 <label for="f1">A little of the time</label>
             </li>
             <li>
-                <input type="radio" id="f2" name="sleepf" value="2">
+                <input type="radio" id="f2" name="sleepf" value="2"
+                {% if sleepf == '2' %}checked{% endif %}>
                 <label for="f2">About half the time</label>
             </li>
             <li>
-                <input type="radio" id="f3" name="sleepf" value="3">
+                <input type="radio" id="f3" name="sleepf" value="3"
+                {% if sleepf == '3' %}checked{% endif %}>
                 <label for="f3">Most of the time</label>
             </li>
             <li>
-                <input type="radio" id="f4" name="sleepf" value="4">
+                <input type="radio" id="f4" name="sleepf" value="4"
+                {% if sleepf == '4' %}checked{% endif %}>
                 <label for="f4">All of the time</label>
             </li>
 
@@ -48,23 +53,28 @@
         <legend><b>Severity: </b>Throughout the past 6 months, how much has this symptom bothered you? </legend>
         <ol start="0">
             <li>
-                <input type="radio" id="s0" name="sleeps" value="0">
+                <input type="radio" id="s0" name="sleeps" value="0"
+                {% if sleeps == '0' %}checked{% endif %}>
                 <label for="s0">Symptom not present</label>
             </li>
             <li>
-                <input type="radio" id="s1" name="sleeps" value="1">
+                <input type="radio" id="s1" name="sleeps" value="1"
+                {% if sleeps == '1' %}checked{% endif %}>
                 <label for="s1">Mild</label>
             </li>
             <li>
-                <input type="radio" id="s2" name="sleeps" value="2">
+                <input type="radio" id="s2" name="sleeps" value="2"
+                {% if sleeps == '2' %}checked{% endif %}>
                 <label for="s2">Moderate</label>
             </li>
             <li>
-                <input type="radio" id="s3" name="sleeps" value="3">
+                <input type="radio" id="s3" name="sleeps" value="3"
+                {% if sleeps == '3' %}checked{% endif %}>
                 <label for="s3">Severe</label>
             </li>
             <li>
-                <input type="radio" id="s4" name="sleeps" value="4">
+                <input type="radio" id="s4" name="sleeps" value="4"
+                {% if sleeps == '4' %}checked{% endif %}>
                 <label for="s4">Very severe</label>
             </li>
 

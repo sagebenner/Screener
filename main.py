@@ -199,9 +199,10 @@ def diagnose():
         reduction = session['reduction']
         cursor = mysql.connection.cursor()
 
-        cursor.execute('SELECT fatigue, pem, sleep, cog FROM screen')
+        cursor.execute('SELECT id FROM login ORDER BY id DESC LIMIT 1')
 
-        results = cursor.fetchall()
+        results = cursor.fetchone()
+        new_user = results[0]
 
         re_array = np.array(results)
         number_users = len(re_array)
@@ -249,10 +250,10 @@ def diagnose():
         sample_size = len(newdf.index)
 
         testAcc = round(np.mean(newdf['dx']==1), 2) * 100
-        iomfatiguecheck= "_ ".ljust(1)
-        iompemcheck = "_ ".ljust(1)
-        iomsleepcheck = "_ ".ljust(1)
-        iomcogcheck = "_ ".ljust(1)
+        iomfatiguecheck= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        iompemcheck = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        iomsleepcheck = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        iomcogcheck = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
         if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >=2 and int(session['reduction'])==1:
             iomfatiguecheck = "✓"
         if int(session['minexf']) >= 2 and int(session['minexs']) >= 2:
@@ -272,8 +273,8 @@ def diagnose():
 
 
         if session["checkbox"] == "data":
-            cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s, NULL, %s)',
-                           (fatiguescore, pemscore, sleepscore, cogscore, reduction))
+            cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s, %s)',
+                           (fatiguescore, pemscore, sleepscore, cogscore, new_user))
             mysql.connection.commit()
 
         try:
@@ -541,20 +542,28 @@ def graph(graphJSON, probCFS, sample_size):
 @app.route('/', methods=['post', 'get'])
 def login():
     error = None
+    mesg = None
+    cont = "Continue as Guest"
     if request.method == 'POST':
         if request.form['result'] == 'login':
             firstname = request.form.get('firstname')
             lastname = request.form.get('lastname')
             email = request.form.get('email')
-            cursor = mysql.connection.cursor()
+            if firstname != "" and lastname != "" and email != "":
+                print(firstname, lastname, email)
+                cursor = mysql.connection.cursor()
 
-            cursor.execute('INSERT INTO login VALUES (NULL, %s, %s, %s, NULL)', (firstname, lastname, email))
-            mysql.connection.commit()
+                cursor.execute('INSERT INTO login VALUES (NULL, %s, %s, %s, NULL)', (firstname, lastname, email))
+                session['user_id'] = cursor.lastrowid
+                mysql.connection.commit()
+                mesg = "Successfully logged in. Please continue."
+                cont = "Continue"
+            else:
+                error = "Please fill out all login information or click Continue as Guest"
 
-            return redirect(url_for('home'))
         if request.form['result'] == "guest":
             return redirect(url_for('home'))
-    return render_template('login.html', error=error)
+    return render_template('login.html', error=error, mesg=mesg, cont=cont)
 
 
 @app.route('/home', methods=['post', 'get'])
@@ -582,10 +591,12 @@ def page1():
     global end
     global FdataMatrix
     global SdataMatrix
+    error = None
     form = FlaskForm()
 
     if request.method == "POST":
-
+        selected_radio = request.form.get('fatigue')
+        selected_severity = request.form.get('severity')
         fatiguescoref = request.form.get("fatigue")
         fatiguescores = request.form.get("severity")
         if fatiguescores is not None and fatiguescoref is not None:
@@ -604,10 +615,10 @@ def page1():
             else:
                 return redirect(url_for("page2"))
         else:
-            flash(message)
-            return render_template("result.html", message=message, pagenum=session['pagenum'])
-
-    return render_template("result.html", message='', pagenum=session['pagenum'])
+            error=message
+            return render_template("result.html", error=message, pagenum=session['pagenum'],
+                                   selected_radio=selected_radio, selected_severity=selected_severity)
+    return render_template("result.html", error=error, pagenum=session['pagenum'])
 
 
 @app.route('/minimum', methods=["post", "get"])
@@ -615,6 +626,9 @@ def page2():
     # fatiguescore = session["fatiguescore"]
     form = FlaskForm()
     global pemname
+    selected_f = request.form.get('minex')
+    selected_s = request.form.get('minex_s')
+    error = None
     if request.method == "POST":
         minexf = request.form.get("minex")
         minexs = request.form.get("minex_s")
@@ -637,9 +651,10 @@ def page2():
                 if survey == "rf4":
                     return redirect(url_for("page3"))
         else:
-            return render_template("page2.html", pagenum=session['pagenum'], message=message)
+            return render_template("page2.html", pagenum=session['pagenum'], error=message,
+                                   selected_s=selected_s, selected_f=selected_f)
     else:
-        return render_template("page2.html", pagenum=session['pagenum'])
+        return render_template("page2.html", error=error, pagenum=session['pagenum'])
 
 
 @app.route('/unrefreshed', methods=['post', 'get'])
@@ -668,7 +683,8 @@ def page3():
                 if survey == "rf4":
                     return redirect(url_for("page4"))
         else:
-            return render_template("page3.html", pagenum=session['pagenum'], message=message)
+            return render_template("page3.html", pagenum=session['pagenum'], message=message,
+                                   sleepf=sleepf, sleeps=sleeps)
     return render_template("page3.html", pagenum=session['pagenum'], message='')
 
 
@@ -700,7 +716,8 @@ def page4():
                     if survey == "classic":
                         return diagnose()
         else:
-            return render_template("page4.html", pagenum=session['pagenum'], message=message)
+            return render_template("page4.html", pagenum=session['pagenum'], message=message,
+                                   rememberf=rememberf, remembers=remembers)
     return render_template("page4.html", pagenum=session['pagenum'], message='')
 
 

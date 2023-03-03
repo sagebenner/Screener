@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
 
 
@@ -16,24 +17,24 @@
         <legend><b>Frequency: </b>Throughout the past 6 months, how often have you had this symptom?</legend>
         <ol start="0">
             <li>
-                <input type="radio" id="f0" name="fatigue" value="0">
-                <label for="f0">None of the time</label>
+<input type="radio" id="f0" name="fatigue" value="0" {% if selected_radio == '0' %}checked{% endif %}>
+<label for="f0">None of the time</label>
             </li>
             <li>
-                <input type="radio" id="f1" name="fatigue" value="1">
-                <label for="f1">A little of the time</label>
+<input type="radio" id="f1" name="fatigue" value="1" {% if selected_radio == '1' %}checked{% endif %}>
+<label for="f1">A little of the time</label>
             </li>
             <li>
-                <input type="radio" id="f2" name="fatigue" value="2">
-                <label for="f2">About half the time</label>
+<input type="radio" id="f2" name="fatigue" value="2" {% if selected_radio == '2' %}checked{% endif %}>
+<label for="f2">About half the time</label>
             </li>
             <li>
-                <input type="radio" id="f3" name="fatigue" value="3">
-                <label for="f3">Most of the time</label>
+<input type="radio" id="f3" name="fatigue" value="3" {% if selected_radio == '3' %}checked{% endif %}>
+<label for="f3">Most of the time</label>
             </li>
             <li>
-                <input type="radio" id="f4" name="fatigue" value="4">
-                <label for="f4">All of the time</label>
+<input type="radio" id="f4" name="fatigue" value="4" {% if selected_radio == '4' %}checked{% endif %}>
+<label for="f4">All of the time</label>
             </li>
 
         </ol>
@@ -50,23 +51,28 @@
         <legend><b>Severity: </b>Throughout the past 6 months, how much has this symptom bothered you? </legend>
         <ol start="0">
             <li>
-                <input type="radio" id="s0" name="severity" value="0">
+                <input type="radio" id="s0" name="severity" value="0"
+                {% if selected_severity == '0' %}checked{% endif %}>
                 <label for="s0">Symptom not present</label>
             </li>
             <li>
-                <input type="radio" id="s1" name="severity" value="1">
+                <input type="radio" id="s1" name="severity" value="1"
+                {% if selected_severity == '1' %}checked{% endif %}>
                 <label for="s1">Mild</label>
             </li>
             <li>
-                <input type="radio" id="s2" name="severity" value="2">
+                <input type="radio" id="s2" name="severity" value="2"
+                {% if selected_severity == '2' %}checked{% endif %}>
                 <label for="s2">Moderate</label>
             </li>
             <li>
-                <input type="radio" id="s3" name="severity" value="3">
+                <input type="radio" id="s3" name="severity" value="3"
+                {% if selected_severity == '3' %}checked{% endif %}>
                 <label for="s3">Severe</label>
             </li>
             <li>
-                <input type="radio" id="s4" name="severity" value="4">
+                <input type="radio" id="s4" name="severity" value="4"
+                {% if selected_severity == '4' %}checked{% endif %}>
                 <label for="s4">Very severe</label>
             </li>
 
@@ -80,13 +86,16 @@
 
 <div class="container">
 
-<p class="typed" > <i>{{ message }} </i></p>
+{% if error %}
+        <p class="message"><strong>Error:</strong> {{ error }}
+      {% endif %}
 </div>
 
 
-
-</body>
+<footer style="">
 <div class="meter">
   <span style="--start:0%; width: 20%;" ></span>
-</div>
+</div></footer>
+</body>
+
 
