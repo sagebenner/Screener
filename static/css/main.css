@@ -46,6 +46,7 @@ header h1.logo:hover {
   background-size: cover;
   align: center;
   text-align: center;
+  #2f2f2f;
 
 
 }
@@ -187,7 +188,7 @@ figure {
   height: 45px;
   width: 100%;
   background-color: #0057B7;
-  overflow: hidden;
+
   margin-top: auto;
   padding: 0;
 }
@@ -206,13 +207,85 @@ figure {
   text-decoration: none;
   color: white;
   font-size: 1.1em;
-
-
-
 }
+.menu li:hover .submenu {
+  display: block;
+  overflow: visible;
+}
+
+.menu li:hover .submenu2 {
+  display: block;
+  overflow: visible;
+}
+
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 999;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  background-color: #0057B7;
+  border: none;
+}
+
+.submenu2 {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 999;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  background-color: #0057B7;
+  border: none;
+}
+.submenu li {
+  display: block;
+}
+
+.submenu li + li {
+  margin: 0;
+}
+
+.submenu li a {
+  display: block;
+  padding: 5px;
+  text-decoration: none;
+}
+
+.submenu li:hover {
+  background-color: #00336b;
+}
+.submenu2 li {
+  display: block;
+}
+
+.submenu2 li + li {
+  margin: 0;
+}
+
+.submenu2 li a {
+  display: block;
+  padding: 5px;
+  text-decoration: none;
+}
+
+.submenu2 li:hover {
+  background-color: #00336b;
+}
+.gear: hover {
+  background-color: #00336b;
+  height: 50px;
+  padding: 3px;
+  overflow: visible;
+}
+
 li a:hover {
 text-decoration: underline;
-
 
 }
 .parent{
@@ -228,8 +301,17 @@ text-decoration: underline;
   border-bottom-left-radius: 8px;
 }
 
-.button:hover{
-background-color: transparent;
+.button-home {
+  width: 10%;
+  bottom: 0px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  margin-right: auto;
+  margin-left: auto;
+  position: relative;
+  align: center;
 }
 
 /* The contaner must be positioned relative: */
@@ -383,12 +465,7 @@ background-color: #AF9CA1;
   margin-bottom: -10px;
 }
 
-.arrow {
-  border: solid black;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: 3px;
-}
+
 
 .arrow-long {
     box-sizing: border-box;
@@ -401,11 +478,36 @@ background-color: #AF9CA1;
     width: 24px;
     height: 6px
 }
+  /*  border: solid black;
+  border-width: 0 3px 3px 0; */
+/* to position the pseudo-element
+    transform: rotate(-45deg);  padding: 4px;
+  -webkit-transform: rotate(-45deg);*/
 
-.right {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
+.arrow {
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 15px solid #444;
+  display: inline-block;
+    top: 4px;
+  position: relative;
 }
+.arrow::before {
+  content: "";
+  position: absolute;
+  	border-top: 1px solid transparent;
+	border-bottom: 1px solid transparent;
+	border-left: 3px solid #444;
+  top: -4.5px;
+  left: -18px; /* adjust this value to align the line with the arrow */
+  width: 1px;
+  height: 7px;
+  background-color: #444;
+    transform: rotate(90deg);
+}
+
+
+
 
 footer {
 position: fixed;
@@ -477,7 +579,19 @@ text-align: center;
   animation-timing-function: steps(30, end);
 }
 
+.message2 {
+font-size: 1em;
+position: absolute;
+  overflow: hidden;
+  margin:0;
+font-family: "Arial", Helvetica, sans-serif;
+box-sizing: border-box;
+animation: typewrite 4s steps(30) forwards;
+}
 
+.message2 span {
+margin: 0;
+}
 @keyframes typing {
   0% {
     opacity: 1;
@@ -491,6 +605,12 @@ text-align: center;
     opacity: 1;
   }
 }
+
+@keyframes typewrite {
+from { width: 0; }
+  to { width: 100%; }
+}
+
 
 .results {
 width: 49%;
@@ -556,6 +676,7 @@ font-size: 1em;
 padding: 10px;
 }
 
+
 @keyframes unveil {
   from { opacity: 0% }
   to { opacity: 100% }
@@ -605,7 +726,9 @@ div h3 {
 #chart {
 display: block;
 position: absolute;
-bottom: 20px;
+height: auto;
+margin-top: 5px;
+bottom: 10px;
 filter: grayscale(0%);
 }
 
@@ -616,11 +739,15 @@ filter: grayscale(0%);
     margin: auto;
     align: center;
     position: absolute;
-    top: 150px;
+    top: 100px;
+    margin-bottom: 5px;
 }
 
 .chart-left {
 border: none;
+height: auto;
+width: auto;
+margin-top: 5px;
 }
 
 button {

@@ -16,38 +16,44 @@
   <li>
    <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Documents/DEPAUL%20SYMPTOM%20QUESTIONNAIRE%20with%20SF-36%20and%20MFI%20and%20SI%205-18-11.pdf"
    target="_blank">
-    Full DSQ 1 (PDF)
+    Full DSQ
    </a>
   </li>
   <li>
-   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/media-links.aspx"
-   target="_blank">
-    More Information About ME/CFS
-   </a>
+   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/media-links.aspx" target="_blank">About</a><ul class="submenu2">
+      <li><a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/media-links.aspx" target="_blank">
+          About ME/CFS</a></li>
+      <li><a href="{{ url_for('about') }}">About This Screener</a></li>
+    </ul>
   </li>
-    <li >
-   <a href="{{ url_for('about') }}">About This Screener</a>
-  </li>
-  <li>
+        <li class = "gear" > <a  href="{{ url_for('login') }}">&#9881;</a>
+        <ul class="submenu">
+      <li><a href="{{ url_for('login') }}">Logout</a></li>
+      <li><a href="#">My Previous Scores</a></li>
+      <li><a href="#">Admin</a></li>
+    </ul></li>
  </ul>
 </header>
 <h2>Welcome to the online screener for Myalgic Encephalomyelitis/Chronic Fatigue Syndrome (ME/CFS)</h2>
 <p><h3></h3><hr><br>
 <div class="div">
+        <div class="container" style="align: center;" >
+        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener</b></a>
+        <ul><li>5 Questions</li><li>Estimates Probability of ME/CFS from your scores</li><li>Assesses IOM 2015 Case Definition</li></ul></div>
+        <span class="arrow "></span><div id="stagetwo" style="font: Ariel;" class="layout-one"><a><b>Short Form</b></a>
+        <ul><li>Optional</li><li>10 more questions</li><li>Assesses CCC Case Definition</li></ul></div>
+       <span class="arrow "></span><div id="stagethree" style="font: Ariel;" class="layout-one"><a><b>Full Questionnaire</b></a>
+        <ul><li>Optional</li><li>40 more questions</li><li>Assesses IOM, Fukuda, CCC, and ME-ICC Case Definitions</li></ul></div>
+    </div><br>
+    <div style="font-family: 'Arial', Helvetica, sans-serif;">
 <p>This online screener is based on the DePaul Symptom Questionnaire (DSQ), a validated instrument for assessing
   ME/CFS Symptom burden. <br> <br> The online screener asks 5 questions. It compares your answers with domain scores from over 3,000 responses, and provides you the
 proportion of ME/CFS participants with similar scores. After the screener, you have the option of answering additional questions for more detailed results. A layout of each step is shown below.
     For more information, follow one of the links above.</p><br>
-    <div class="container" style="align: center;" >
-        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener</b></a>
-        <ul><li>5 Questions</li><li>Estimates Probability of ME/CFS from your scores</li><li>Assesses IOM 2015 Case Definition</li></ul></div>
-        <span class="arrow right"></span><div id="stagetwo" style="font: Ariel;" class="layout-one"><a><b>Short Form</b></a>
-        <ul><li>Optional</li><li>10 more questions</li><li>Assesses CCC Case Definition</li></ul></div>
-       <span class="arrow right"></span><div id="stagethree" style="font: Ariel;" class="layout-one"><a><b>Full Questionnaire</b></a>
-        <ul><li>Optional</li><li>40 more questions</li><li>Assesses IOM, Fukuda, CCC, and ME-ICC Case Definitions</li></ul></div>
-    </div><br>
+       <p>Disclaimer: This screener is not meant to provide medical diagnoses. Please consult with your physician for diagnostic concerns.</p>
+</div>
 
-    <p><br>Disclaimer: This screener is for educational purposes only, and is not meant to provide medical diagnoses.</p>
+
 
 
     <form method="post">
@@ -68,8 +74,8 @@ while keeping the same number of domains as the full DSQ.">
 //-->
     <br>
       <br>
-
-    <button class="button" style="align:center;" type="submit" name="result" value="result" >Continue to screener</button>
+<div class="container">
+    <button class="button-home"  type="submit" name="result" value="result" >Begin screener</button></div>
   </form>
 <!a  style="display:inline-block; width:20%; float:center;"
    href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/measures.aspx"

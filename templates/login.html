@@ -30,20 +30,23 @@
          <button style="margin: auto;" type="submit" name="result" value="guest" >{{ cont }}</button>
           <br><br>
            <ul style="display: inline-block; text-align: center;">
-               <li style="display: inline-block;"><input type="checkbox" id="checkbox" name="checkbox" value="data">
+               <li style="display: inline-block;"><input type="checkbox" id="checkbox" name="checkbox" value="data" checked >
     <label for="checkbox"
            title="If you don't check this box, your answers will only be stored temporarily to give you
 a result, then erased once you close this webpage. ">
-        OPTIONAL: I agree to have my answers stored confidentially for analysis purposes.</label><br>
+        I agree to have my answers stored confidentially for analysis purposes.</label><br>
    </li><li style="display: inline-block;"><a class="question" title="If you don't check this box, your answers will only be stored temporarily to give you
 a result, then erased once you close this webpage. ">?</a></li></ul>  </form>
-        <div class="message">
+        <div style="position: relative; bottom: 50px;">
       {% if error %}
         <p class="message"><strong>Error:</strong> {{ error }}
       {% endif %}
-            {% if mesg %}
-        <p ><strong></strong> {{ mesg }}
-      {% endif %}</div>
+      {% if mesg %}
+       <div style="text-align: center; box-sizing: border-box; margin: 0;"><p class="message">
+            Successfully logged in! Please continue.
+      {% endif %}
+        </p>
+        </div>
     </div>
-  </body>
+</body>
 </html>

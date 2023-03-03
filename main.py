@@ -144,6 +144,76 @@ def diagnose():
                          " ME/CFS case definitions, continue to the full DSQ-1 below (54 items total)"
         else:
             fukuda_msg = ""
+
+        ccc_dx = False
+
+        if int(session['fatiguescoref']) >=2 and int(session['fatiguescores']) >= 2 and int(session['reduction']) ==1:
+            ccc_fatigue = 1
+            ccc_fatiguecheck = "✓"
+        else:
+            ccc_fatigue = 0
+            ccc_fatiguecheck = ""
+        if int(session['musclef']) >= 2 and int(session['muscles']) >= 2:
+            ccc_pain = 1
+            ccc_paincheck = "✓"
+        else:
+            ccc_pain = 0
+            ccc_paincheck = ""
+        if int(session['sleepf']) >= 2 and int(session['sleeps']) >= 2:
+            ccc_sleep = 1
+            ccc_sleepcheck = "✓"
+        else:
+            ccc_sleep = 0
+            ccc_sleepcheck = ""
+        if (int(session['minexf']) >= 2 and int(session['minexs']) >= 2) or (
+                int(session['soref']) >= 2 and int(session['sores']) >= 2):
+            ccc_pem = 1
+            ccc_pemcheck = "✓"
+        else:
+            ccc_pem = 0
+            ccc_pemcheck = ""
+        if (int(session['rememberf']) >= 2 and int(session['remembers']) >= 2) and (
+                int(session['attentionf']) >= 2 and int(session['attentions']) >= 2):
+            ccc_cog = 1
+            ccc_cogcheck = "✓"
+        else:
+            ccc_cog = 0
+            ccc_cogcheck = ""
+
+        if (int(session['unsteadyf']) >= 2 and int(session['unsteadys']) >= 2) or (
+                int(session['nauseaf']) >= 2 and int(session['nauseas']) >= 2) or (
+                int(session['bowelf']) >= 2 and int(session['bowels']) >= 2) or (
+                int(session['bladderf']) >= 2 and int(session['bladders']) >= 2):
+            ccc_auto = 1
+            ccc_autocheck = "✓"
+        else:
+            ccc_auto = 0
+            ccc_autocheck = ""
+        if (int(session['limbsf']) >= 2 and int(session['limbss']) >= 2) or (
+                int(session['hotf']) >= 2 and int(session['hots']) >= 2):
+            ccc_neuro = 1
+            ccc_neurocheck = "✓"
+        else:
+            ccc_neuro = 0
+            ccc_neurocheck = ""
+        if (int(session['fluf']) >= 2 and int(session['flus']) >= 2) or (
+                int(session['smellf']) >= 2 and int(session['smells']) >= 2):
+            ccc_immune = 1
+            ccc_immunecheck = "✓"
+        else:
+            ccc_immune = 0
+            ccc_immunecheck = ""
+        ccc_poly = np.sum([ccc_auto, ccc_neuro, ccc_immune])
+
+        if np.sum([ccc_fatigue, ccc_pem, ccc_sleep, ccc_pain, ccc_cog]) >= 5 and ccc_poly >= 2:
+            ccc_dx = True
+            ccc_msg = "Your responses suggest that you meet the Canadian Consensus Criteria for ME/CFS. " \
+                      "To compare your symptoms with more case definitions, click Continue."
+        else:
+            ccc_dx = False
+            ccc_msg = "Your responses do not meet the Canadian Consensus Criteria for ME/CFS. " \
+                      "To compare your symptoms with more case definitions, click Continue."
+
         #sample_size = len(newdf.index)
         #testAcc = round(np.mean(newdf['dx']==1), 2) * 100
 
@@ -184,7 +254,10 @@ def diagnose():
         fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores')
         graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-        return render_template("graph2.html", graphJSON=graphJSON, fukuda_msg=fukuda_msg)
+        return render_template("graph2.html", graphJSON=graphJSON, ccc_msg=ccc_msg, ccc_fatiguecheck=ccc_fatiguecheck,
+                               ccc_pemcheck=ccc_pemcheck, ccc_paincheck=ccc_paincheck, ccc_sleepcheck=ccc_sleepcheck,
+                               ccc_cogcheck=ccc_cogcheck, ccc_autocheck=ccc_autocheck, ccc_immunecheck=ccc_immunecheck,
+                               ccc_neurocheck=ccc_neurocheck)
 
 
     if survey == "classic":
@@ -544,6 +617,7 @@ def login():
     error = None
     mesg = None
     cont = "Continue as Guest"
+    session.clear()
     if request.method == 'POST':
         if request.form['result'] == 'login':
             firstname = request.form.get('firstname')

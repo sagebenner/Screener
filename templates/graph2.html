@@ -33,10 +33,10 @@
    <h3 class="ariel">Short Form Questionnaire Results</h3>
    <hr>
       <div class="container" style="align: center; z-index:100; position: relative; " >
-        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener ✓</b></a>
+        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener <u>✓</u></b></a>
         <ul><li>5 Questions</li><li>Estimates Probability of ME/CFS from your scores</li>
             <li>Assesses IOM 2015 Case Definition</li></ul></div><span class="arrow right"></span>
-       <div id="stagetwo" style="font: Ariel;" class="layout-one"><a ><b>Short Form ✓</b></a><ul><li>Optional</li>
+       <div id="stagetwo" style="font: Ariel;" class="layout-one"><a ><b>Short Form <u>✓</u></b></a><ul><li>Optional</li>
            <li>10 more questions</li><li>Assesses CCC Case Definition</li></ul></div>
        <span class="arrow right"></span><div id="stagethree" style="font: Ariel;" class="layout-one"><a>
        <b>Full Questionnaire</b></a><ul><li>Optional</li><li>40 more questions</li>
@@ -54,17 +54,17 @@
 
    <div class="results" style="height: 650px;">
 
-    <h3>Canadian Consensus Criteria (CCC) Assessment</h3><hr>
-    <p> <b>{{ fukuda_msg }} </b></p><hr>
-       <p> <b> CCC Requirements Satisfied: <br> </b></p><ul><li> <b><u>{{ cccfatigue }} </u>
+    <h3 style="margin: 0;">Canadian Consensus Criteria (CCC) Assessment</h3><hr>
+    <p> <b>{{ ccc_msg }} </b></p><hr>
+       <p> <b> CCC Requirements Satisfied: <br> </b></p><ul style="list-style-type: none;"><li> <b><u>{{ ccc_fatiguecheck }} </u>
    </b>Fatigue of new onset, unexplained, persistent, and causes a substantial reduction in functioning </li>
-       <li><b><u>{{ cccpem }}</u></b> Post-Exertional Malaise (PEM) </li>
-       <li> <b><u>{{ cccsleep }} </u></b> Sleep dysfunction </li>
-       <li><b><u>{{ cccpain }}</u></b> Post-Exertional Malaise (PEM) </li>
-       <li> <b><u>{{ ccccog }} </u></b> Cognitive impairment </li>
-       <li><b><u>{{ cccpersists }}</u></b> The illness persists for at least six months </li>
-       <li><b><u>{{ cccother }}</u></b> At least one symptom from two of the following three categories:
-       (a) Autonomic Manifestations, (b) Neuroendocrine Manifestations, and/or (c) Immune Manifestations</b></li>
+       <li><b><u>{{ ccc_pemcheck }}</u></b> Post-Exertional Malaise (PEM) </li>
+       <li> <b><u>{{ ccc_sleepcheck }} </u></b> Sleep dysfunction </li>
+       <li><b><u>{{ ccc_paincheck }}</u></b> Pain </li>
+       <li> <b><u>{{ ccc_cogcheck }} </u></b> At least two cognitive impairment symptoms</li>
+       <li><br> At least one symptom in two of the following three categories: <br>
+       <b><u>{{ccc_autocheck}}</u></b> (a) Autonomic Manifestations, <br><b><u>{{ccc_neurocheck}}</u></b> (b) Neuroendocrine Manifestations, and/or
+           <br><b><u>{{ccc_immunecheck}}</u></b> (c) Immune Manifestations</li>
 
    </ul><hr>
 <div>
