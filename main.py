@@ -42,7 +42,7 @@ pemdomain = 0
 sleepdomain = 0
 cogdomain = 0
 survey = 'classic'
-message = "*Please enter a response for both frequency and severity before continuing"
+message = "Please enter a response for both frequency and severity before continuing"
 composite = 0
 pemname = str
 sleepname = str
@@ -604,7 +604,6 @@ class SimpleForm(FlaskForm):
     ], coerce=int)
 
 
-
 @app.route('/graph')
 def graph(graphJSON, probCFS, sample_size):
     graphJSON = graphJSON
@@ -617,14 +616,17 @@ def login():
     error = None
     mesg = None
     cont = "Continue as Guest"
-    session.clear()
+
     if request.method == 'POST':
         if request.form['result'] == 'login':
             firstname = request.form.get('firstname')
             lastname = request.form.get('lastname')
             email = request.form.get('email')
+            session["checkbox"] = request.form.get("checkbox")
             if firstname != "" and lastname != "" and email != "":
                 print(firstname, lastname, email)
+                session['user'] = str(firstname)
+                print(session['user'])
                 cursor = mysql.connection.cursor()
 
                 cursor.execute('INSERT INTO login VALUES (NULL, %s, %s, %s, NULL)', (firstname, lastname, email))
@@ -632,11 +634,14 @@ def login():
                 mysql.connection.commit()
                 mesg = "Successfully logged in. Please continue."
                 cont = "Continue"
+                return redirect(url_for('home'))
             else:
                 error = "Please fill out all login information or click Continue as Guest"
-
+                session['user'] = "guest"
         if request.form['result'] == "guest":
-            return redirect(url_for('home'))
+                session.clear()
+                session['user'] = 'guest'
+                return redirect(url_for('home'))
     return render_template('login.html', error=error, mesg=mesg, cont=cont)
 
 
@@ -645,17 +650,32 @@ def home():
     global pagenum
     global end
     form = FlaskForm()
+    print(session)
     global survey
-    session.clear()
     session["pagenum"] = 0
     survey='classic'
     if request.method == "POST":
         #session["dropdown"] = str(request.form.get("survey"))
         #survey = session["dropdown"]
-        session["checkbox"] = request.form.get("checkbox")
+
         session["pagenum"] += 1
         return redirect(url_for("page1"))
     return render_template("home.html")
+
+
+@app.route('/scores')
+def scores():
+    name = session['user']
+    if name == "guest":
+        user_message = "You are using the screener as a guest, and do not have data stored. " \
+                       " To track your data over time, please login."
+    else:
+        if session['checkbox'] != "data":
+            user_message = "You logged in, but chose not to have your data stored, " \
+                           " so no information is available to report."
+        else:
+            user_message = "You have data available from 3 sessions. A graph of your responses is shown below."
+    return render_template('scores.html', name=name, user_message=user_message)
 
 
 @app.route('/fatigue', methods=['post', 'get'])
