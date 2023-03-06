@@ -3,52 +3,98 @@
 <!doctype html>
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
 
-<header>
-
-
-
- <ul class="menu">
-  <li >
-   <a href="{{ url_for('home') }}">Home</a>
-  </li>
-  <li>
-   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Documents/DEPAUL%20SYMPTOM%20QUESTIONNAIRE%20with%20SF-36%20and%20MFI%20and%20SI%205-18-11.pdf"
-   target="_blank">
-    Full DSQ 1 (PDF)
-   </a>
-  </li>
-  <li>
-   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/media-links.aspx"
-   target="_blank">
-    More Information About ME/CFS
-   </a>
-  </li>
-    <li >
-   <a href="{{ url_for('about') }}">About This Screener</a>
-  </li>
-  <li>
- </ul>
-
-</header>
  <body >
 
-   <h3>Based on your answers, we estimate that your probability of having ME/CFS is<b> {{ probCFS }}%</b>, from a sample size of {{ sample_size }} from our dataset</h3>
-   <h3> <i> {{ full_DSQ }}</i> </h3>
-   <h3> <i> {{ caveat }}</i> </h3>
-   <h3> <i> {{ me_icc }}</i> </h3>
-   <div class="instructions">
-   <b>
-    <a href="{{ url_for('expem3') }}">Continue to DSQ-1 Questions</a></b></div><br>
-      <figure  style="width: 30%; height: 200; border: none; align: center;">
-              <img src="{{url_for('static', filename='SCREENER STAGE layout.png')}}"  />
-      </figure><br>
-  <figure id='chart'  style="width: 70%; height: 600px; border: thin #c0c0c0 solid; align: center;"></figure>
+<header >
+    <ul class="menu">
+    <li >
+    <a href="{{ url_for('home') }}">Home</a>
+     </li>
+  <li>
+   <a href="{{ url_for('aboutmecfs')}}">About</a><ul class="submenu2">
+      <li><a href="{{ url_for('aboutmecfs')}}">
+          About ME/CFS</a></li>
+      <li><a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/measures.aspx"
+      target="_blank">
+          About the DSQ</a></li>
+      <li><a href="{{ url_for('about') }}">About This Screener</a></li>
+    </ul>
+  </li>
+        <li > <a  href="{{ url_for('scores') }}">Account</a>
+        <ul class="submenu">
+      {% if session.logged_in %}
+            <li><a href="{{ url_for('login') }}">Logout</a></li>
+        {% else %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+        {% endif %}
+      <li><a href="{{ url_for('scores') }}">My Data</a></li>
+
+    </ul></li>
+ </ul>
+</header>
+ <h3 class="ariel">Full Questionnaire Results</h3>
+   <hr>
+      <div class="container" style="align: center; z-index:100; position: relative; " >
+        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener <u>✓</u></b></a>
+        <ul><li>5 Questions</li><li>Estimates Probability of ME/CFS from your scores</li>
+            <li>Assesses IOM 2015 Case Definition</li></ul></div><span class="arrow right"></span>
+       <div id="stagetwo" style="font: Ariel;" class="layout-one"><a ><b>Short Form <u>✓</u></b></a><ul><li>Optional</li>
+           <li>10 more questions</li><li>Assesses CCC Case Definition</li></ul></div>
+       <span class="arrow right"></span><div id="stagethree" style="font: Ariel;" class="layout-one"><a>
+       <b>Full Questionnaire <u>✓</u></b></a><ul><li>Optional</li><li>40 more questions</li>
+       <li>Assesses ME-ICC Case Definition</li></ul></div>
+    </div> <br>
+
+    <div class="chart-left" >
+  <figure id="chart"  ></figure>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script type='text/javascript'>
   var graphs = {{graphJSON | safe}};
   Plotly.plot('chart',graphs,{});
 </script>
+</div>
 
+<div class="results" style="height: 650px;">
+
+    <h3 style="margin: 0;">ME-ICC Assessment</h3><hr>
+    <p> <b>{{ me_icc }} </b></p><hr>
+       <p> <b> ME-ICC Requirements Satisfied: <br> </b></p><ul style="list-style-type: none;">
+    <li> <b><u>{{ meicc_pemcheck }} </u> </b> (A) Post-Exertional Malaise (PEM)</li>
+    <li><br><b> (B) One symptom in at least three of the following categories:</b> <br>
+        <ol>
+        <li> <b><u>{{meicc_cogcheck}}</u></b> Neurocognitive Impairments </li>
+        <li> <b><u>{{meicc_paincheck}}</u></b> Pain </li>
+        <li> <b><u>{{meicc_sleepcheck}}</u></b> Sleep disturbance </li>
+        <li> <b><u>{{meicc_motorcheck}}</u></b> Neurosensory, perceptual and motor disturbances </li>
+    </ol></li>
+        <li><br><b> (C) One symptom in at least three of the following categories:</b> <br>
+        <ol>
+        <li> <b><u>{{meicc_flucheck}}</u></b> Flu-like symptoms </li>
+        <li> <b><u>{{meicc_viralcheck}}</u></b> Susceptibility to viral infections with prolonged recovery periods </li>
+        <li> <b><u>{{meicc_gastrocheck}}</u></b> Gastro-intestinal tract disturbances </li>
+        <li> <b><u>{{meicc_bladdercheck}}</u></b> Genitourinary disturbances </li>
+        <li> <b><u>{{meicc_sensitivitycheck}}</u></b> Sensitivities to food, medications, odors, or chemicals </li>
+    </ol></li>
+        <li><br><b> (D) At least one symptom from the following categories:</b> <br>
+        <ol>
+        <li> <b><u>{{meicc_cardiocheck}}</u></b> Cardiovascular </li>
+        <li> <b><u>{{meicc_respiratorycheck}}</u></b> Respiratory </li>
+        <li> <b><u>{{meicc_thermocheck}}</u></b> Loss of thermostatic stability </li>
+        <li> <b><u>{{meicc_tempcheck}}</u></b> Intolerance of extremes of temperature </li>
+    </ol></li>
+
+   </ul><hr>
+<div>
+<ul style="display: inline-block;"> <li style="display: inline-block;">
+  <button style="white-space: nowrap; margin-right: 150px;" onclick="window.print();return false;" >
+   <b>
+    Print/Save PDF</b></button></li>
+
+</ul>
+</div>
+    <p><i>Note: this is not a medical diagnosis. We advise you to consult with your physician or seek an ME/CFS specialist
+if you think you may be suffering from ME/CFS.</i></p>
+</div>
 
 </body>
 

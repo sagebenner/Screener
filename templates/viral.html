@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="en">
 
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
 
@@ -8,30 +9,27 @@
 <div >
     <p class="instructions"><i>For the following question, please select the choice that best fits your experience.
     </i></p>
-    <h3> {{ pagenum }}. Since the onset of your problems with fatigue / energy, have your symptoms caused a 50% or greater reduction in your activity level?</h3>
+    <h3> {{ pagenum }}. Do you experience frequent viral infections with prolonged recovery periods?</h3>
 </div  >
     <div style="display:height:200px;">
  <fieldset style="align:center; padding-left: 5%;">
 
         <ol  start="0">
             <li>
-                <input type="radio" id="f0" name="reduction" value="0">
+                <input type="radio" id="f0" name="viral" value="0">
                 <label for="f0">No</label>
             </li>
             <li>
-                <input type="radio" id="f1" name="reduction" value="1">
+                <input type="radio" id="f1" name="viral" value="1">
                 <label for="f1">Yes</label>
             </li>
-            <li>
-                <input type="radio" id="f2" name="reduction" value="2">
-                <label for="f2">Not having a problem with fatigue/energy</label>
-            </li>
+
 
         </ol>
     </fieldset>
 </div>
 
- <button type="submit" name="result" value="result">Submit</button>
+ <button type="submit" name="result" value="result">Next</button>
 
 </form>
 
@@ -39,7 +37,9 @@
 <p class="typed" > <i>{{ message }} </i></p>
 </div>
 <footer style="">
-<div class="meter">
-  <span style="--start:75%; width: 100%;" ></span>
-</div></footer>
+    <div class="meter">
+  <span class="meter3span" style="--start: 0%; width:1%;"></span>
+</div>
+</footer>
+
 </body>

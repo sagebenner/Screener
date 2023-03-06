@@ -1,35 +1,35 @@
 <!doctype html>
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
 <html>
-<header>
 
-
-
- <ul class="menu">
-  <li >
-   <a href="{{ url_for('home') }}">Home</a>
-  </li>
-  <li>
-   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Documents/DEPAUL%20SYMPTOM%20QUESTIONNAIRE%20with%20SF-36%20and%20MFI%20and%20SI%205-18-11.pdf"
-   target="_blank">
-    Full DSQ 1 (PDF)
-   </a>
-  </li>
-  <li>
-   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/media-links.aspx"
-   target="_blank">
-    More Information About ME/CFS
-   </a>
-  </li>
-    <li >
-   <a href="{{ url_for('about') }}">About This Screener</a>
-  </li>
-  <li>
- </ul>
-
-</header>
  <body >
+<header >
+    <ul class="menu">
+    <li >
+    <a href="{{ url_for('home') }}">Home</a>
+     </li>
+  <li>
+   <a href="{{ url_for('aboutmecfs')}}">About</a><ul class="submenu2">
+      <li><a href="{{ url_for('aboutmecfs')}}">
+          About ME/CFS</a></li>
+      <li><a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/measures.aspx"
+      target="_blank">
+          About the DSQ</a></li>
+      <li><a href="{{ url_for('about') }}">About This Screener</a></li>
+    </ul>
+  </li>
+        <li > <a  href="{{ url_for('scores') }}">Account</a>
+        <ul class="submenu">
+      {% if session.logged_in %}
+            <li><a href="{{ url_for('login') }}">Logout</a></li>
+        {% else %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+        {% endif %}
+      <li><a href="{{ url_for('scores') }}">My Data</a></li>
 
+    </ul></li>
+ </ul>
+</header>
    <h3 class="ariel">Short Form Questionnaire Results</h3>
    <hr>
       <div class="container" style="align: center; z-index:100; position: relative; " >
@@ -62,7 +62,7 @@
        <li> <b><u>{{ ccc_sleepcheck }} </u></b> Sleep dysfunction </li>
        <li><b><u>{{ ccc_paincheck }}</u></b> Pain </li>
        <li> <b><u>{{ ccc_cogcheck }} </u></b> At least two cognitive impairment symptoms</li>
-       <li><br> At least one symptom in two of the following three categories: <br>
+       <li><br><b> At least one symptom in two of the following three categories:</b> <br>
        <b><u>{{ccc_autocheck}}</u></b> (a) Autonomic Manifestations, <br><b><u>{{ccc_neurocheck}}</u></b> (b) Neuroendocrine Manifestations, and/or
            <br><b><u>{{ccc_immunecheck}}</u></b> (c) Immune Manifestations</li>
 
@@ -72,7 +72,7 @@
   <button style="white-space: nowrap; margin-right: 150px;" onclick="window.print();return false;" >
    <b>
     Print/Save PDF</b></button></li>
-  <li style="display: inline-block; "><button onclick="window.location.href='{{ url_for('expem3') }}'">
+  <li style="display: inline-block; "><button onclick="window.location.href='{{ url_for('viral') }}'">
    <b>
     Continue</b></button></li>
 </ul>

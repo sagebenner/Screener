@@ -181,9 +181,8 @@ def diagnose():
             ccc_cogcheck = ""
 
         if (int(session['unsteadyf']) >= 2 and int(session['unsteadys']) >= 2) or (
-                int(session['nauseaf']) >= 2 and int(session['nauseas']) >= 2) or (
                 int(session['bowelf']) >= 2 and int(session['bowels']) >= 2) or (
-                int(session['bladderf']) >= 2 and int(session['bladders']) >= 2):
+                int(session['bloatf']) >= 2 and int(session['bloats']) >= 2):
             ccc_auto = 1
             ccc_autocheck = "✓"
         else:
@@ -219,10 +218,17 @@ def diagnose():
 
         cursor = mysql.connection.cursor()
         if session["checkbox"] == "data":
+            cursor.execute("""
+                            INSERT INTO domains (fatigue, pem, sleep, cog, pain, gastro, ortho, circ, immune, 
+                            neurendocrine, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (fatiguescore, pemscore, sleepscore, cogscore, painscore, gastroscore, orthoscore, circscore,
+                   immunescore, neuroenscore, int(session['user_id'])))
+            mysql.connection.commit()
+            """
             cursor.execute('INSERT INTO shortform VALUES (NULL, % s, % s, % s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
                            , (data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9],
                             data[10], data[11], data[12], data[13]))
-            mysql.connection.commit()
+            mysql.connection.commit()"""
 
         mecfs_selection = probabilities.mecfs[probabilities.shortform_items]
         mecfs_14mean = mecfs_selection.mean(axis=0)
@@ -242,16 +248,15 @@ def diagnose():
                                 name="Average ME/CFS scores")],
             layout=go.Layout(
                 title=go.layout.Title(text='Your scores compared'
-                                           ' with our dataset of 3,428 participants'),
-                #polar={'radialaxis': {'visible': True}},
+                                           ' with our dataset of 2,402 participants'),
                 showlegend=True, legend=dict(
                 orientation="h",
                 yanchor="bottom",
                 y=1.02,
                 xanchor="right",
                 x=1)))
-        #fig.update_polars(radialaxis=dict(range=[0, 4]))
-        fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores')
+        fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores',
+                          xaxis_title='Symptom Domains')
         graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
         return render_template("graph2.html", graphJSON=graphJSON, ccc_msg=ccc_msg, ccc_fatiguecheck=ccc_fatiguecheck,
@@ -323,10 +328,10 @@ def diagnose():
         sample_size = len(newdf.index)
 
         testAcc = round(np.mean(newdf['dx']==1), 2) * 100
-        iomfatiguecheck= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-        iompemcheck = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-        iomsleepcheck = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-        iomcogcheck = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        iomfatiguecheck= ""
+        iompemcheck = ""
+        iomsleepcheck = ""
+        iomcogcheck = ""
         if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >=2 and int(session['reduction'])==1:
             iomfatiguecheck = "✓"
         if int(session['minexf']) >= 2 and int(session['minexs']) >= 2:
@@ -344,11 +349,29 @@ def diagnose():
             iom_msg = 'Your responses do not meet the IOM Criteria for ME/CFS. To assess more case definitions, ' \
                       'continue to the next section'
 
-
         if session["checkbox"] == "data":
-            cursor.execute('INSERT INTO screen VALUES (NULL, % s, % s, % s, %s, %s)',
-                           (fatiguescore, pemscore, sleepscore, cogscore, new_user))
-            mysql.connection.commit()
+            user_id = int(session['user_id'])
+            print(user_id)
+            cursor = mysql.connection.cursor()
+            if session['logged_in'] == True:
+                cursor.execute("""
+                               INSERT INTO screen (fatigue13f, fatigue13s, minimum17f, minimum17s, unrefreshed19f, 
+                               unrefreshed19s, remember36f, remember36s, reduction, login_id) 
+                               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                               """,
+                               (int(session['fatiguescoref']), int(session['fatiguescores']), int(session['minexf']),
+                                int(session['minexs']), int(session['sleepf']), int(session['sleeps']),
+                                int(session['rememberf']), int(session['remembers']),
+                                int(session['reduction']), user_id))
+                mysql.connection.commit()
+            else:
+
+                cursor.execute('INSERT INTO screen VALUES (NULL, %s, %s, %s, %s, %s, %s, %s, %s, NULL)',
+                       (int(session['fatiguescoref']), int(session['fatiguescores']), int(session['minexf']),
+                        int(session['minexs']), int(session['sleepf']), int(session['sleeps']),
+                        int(session['rememberf']), int(session['remembers']),
+                        int(session['reduction'])))
+                mysql.connection.commit()
 
         try:
             composite_scores = [fatiguescore, pemscore, sleepscore, cogscore]
@@ -364,10 +387,16 @@ def diagnose():
                     go.Bar(y=np.mean(dfcon[(dfcon['dx']==1)], axis=0), x=categories,
                                     name="Average ME/CFS scores")],
                 layout=go.Layout(
-                    title=go.layout.Title(text='Your scores compared '
-                                               'with our dataset of 3,428 participants'),showlegend=True, legend=dict(orientation="h")))
-            #fig.update_polars(radialaxis=dict(range=[0, 4]))
-            fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores')
+                    title=go.layout.Title(text='Your scores compared'
+                                               ' with our dataset of 2,402 participants'),
+                    showlegend=True, legend=dict(
+                        orientation="h",
+                        yanchor="bottom",
+                        y=1.02,
+                        xanchor="right",
+                        x=1)))
+            fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores',
+                              xaxis_title='Symptom Domains')
             graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
             print(session["checkbox"])
@@ -446,8 +475,10 @@ def diagnose2():
         (int(session['soref'])>=2 and int(session['sores'])>=2) or (int(session['mentalf'])>=2 and int(session['mentals'])>=2) or\
             (int(session['drainedf'])>=2 and int(session['draineds'])>=2):
         ME_A = 1
+        meicc_pemcheck = "✓"
     else:
         ME_A = 0
+        meicc_pemcheck = ""
     print(ME_A)
     if (int(session['rememberf'])>=2 and int(session['remembers'])>=2) or (int(session['attentionf'])>=2 and int(session['attentions'])>=2) or\
         (int(session['wordf'])>=2 and int(session['words'])>=2) or (int(session['understandf'])>=2 and int(session['understands'])>=2) or\
@@ -455,29 +486,37 @@ def diagnose2():
             (int(session['depthf']) >= 2 and int(session['depths']) >= 2) or  (int(session['slowf'])>=2 and int(session['slows'])>=2) or \
             (int(session['absentf']) >= 2 and int(session['absents']) >= 2):
         ME_B1 = 1
+        meicc_cogcheck = "✓"
     else:
         ME_B1 = 0
+        meicc_cogcheck = ""
     print(ME_B1)
     if (int(session['musclef'])>=2 and int(session['muscles'])>=2) or (int(session['jointpainf'])>=2 and int(session['jointpains'])>=2) or\
         (int(session['eyepainf'])>=2 and int(session['eyepains'])>=2) or (int(session['chestpainf'])>=2 and int(session['chestpains'])>=2) or\
             (int(session['headachesf'])>=2 and int(session['headachess'])>=2):
         ME_B2 = 1
+        meicc_paincheck = "✓"
     else:
         ME_B2 = 0
+        meicc_paincheck = ""
     print(ME_B2)
     if (int(session['sleepf'])>=2 and int(session['sleeps'])>=2) or (int(session['napf'])>=2 and int(session['naps'])>=2) or\
         (int(session['fallf'])>=2 and int(session['falls'])>=2) or (int(session['stayf'])>=2 and int(session['stays'])>=2) or\
             (int(session['earlyf'])>=2 and int(session['earlys'])>=2) or (int(session['alldayf'])>=2 and int(session['alldays'])>=2):
         ME_B3 = 1
+        meicc_sleepcheck = "✓"
     else:
         ME_B3 = 0
+        meicc_sleepcheck = ""
     print(ME_B3)
     if (int(session['twitchesf'])>=2 and int(session['twitchess'])>=2) or (int(session['weakf'])>=2 and int(session['weaks'])>=2) or\
         (int(session['noisef'])>=2 and int(session['noises'])>=2) or (int(session['lightsf'])>=2 and int(session['lightss'])>=2) or\
             (int(session['unsteadyf'])>=2 and int(session['unsteadys'])>=2):
         ME_B4 = 1
+        meicc_motorcheck = "✓"
     else:
         ME_B4 = 0
+        meicc_motorcheck = ""
     print(ME_B4)
     if (ME_B1+ ME_B2 + ME_B3 + ME_B4) >= 3:
         ME_B = 1
@@ -487,29 +526,42 @@ def diagnose2():
     if (int(session['throatf'])>=2 and int(session['throats'])>=2) or (int(session['lymphnodesf'])>=2 and int(session['lymphnodess'])>=2) or\
         (int(session['feverf'])>=2 and int(session['fevers'])>=2) or (int(session['fluf'])>=2 and int(session['flus'])>=2):
         ME_C1 = 1
+        meicc_flucheck = "✓"
     else:
         ME_C1 = 0
+        meicc_flucheck = ""
     print(ME_C1)
     # Missing Viral121 Question here, which corresponds to C2
-
+    if int(session['viral']) == 1:
+        ME_C2 = 1
+        meicc_viralcheck = "✓"
+    else:
+        ME_C2 = 0
+        meicc_viralcheck = ""
     if (int(session['bloatf'])>=2 and int(session['bloats'])>=2) or (int(session['stomachf'])>=2 and int(session['stomachs'])>=2) or\
         (int(session['bowelf'])>=2 and int(session['bowels'])>=2) or (int(session['nauseaf'])>=2 and int(session['nauseas'])>=2):
         ME_C3 = 1
+        meicc_gastrocheck = "✓"
     else:
         ME_C3 = 0
+        meicc_gastrocheck = ""
     print(ME_C3)
     if int(session['bladderf']) >=2 and int(session['bladders']) >= 2:
         ME_C4 = 1
+        meicc_bladdercheck = "✓"
     else:
         ME_C4 = 0
+        meicc_bladdercheck = "✓"
     print(ME_C4)
     if (int(session['alcoholf']) >= 2 and int(session['alcohols']) >= 2) or (
             int(session['smellf']) >= 2 and int(session['smells']) >= 2):
         ME_C5 = 1
+        meicc_sensitivitycheck = "✓"
     else:
         ME_C5 = 0
+        meicc_sensitivitycheck = ""
     print(ME_C5)
-    if (ME_C1 + ME_C3 + ME_C4 + ME_C5) >= 3:
+    if (ME_C1 + ME_C2 + ME_C3 + ME_C4 + ME_C5) >= 3:
         ME_C = 1
     else:
         ME_C = 0
@@ -517,22 +569,30 @@ def diagnose2():
     if (int(session['dizzyf']) >= 2 and int(session['dizzys']) >= 2) or (
             int(session['heartf']) >= 2 and int(session['hearts']) >= 2):
         ME_D1 = 1
+        meicc_cardiocheck = "✓"
     else:
         ME_D1 = 0
+        meicc_cardiocheck = ""
     print(ME_D1)
     if int(session['shortf']) >=2 and int(session['shorts']) >= 2:
         ME_D2 = 1
+        meicc_respiratorycheck = "✓"
     else:
         ME_D2 = 0
+        meicc_respiratorycheck = ""
     print(ME_D2)
     if (int(session['sweatf'])>=2 and int(session['sweats'])>=2) or (int(session['nightf'])>=2 and int(session['nights'])>=2) or\
-        (int(session['limbf'])>=2 and int(session['limbs'])>=2) or (int(session['chillf'])>=2 and int(session['chills'])>=2) or\
+        (int(session['limbsf'])>=2 and int(session['limbss'])>=2) or (int(session['chillsf'])>=2 and int(session['chillss'])>=2) or\
             (int(session['hotf'])>=2 and int(session['hots'])>=2) or  (int(session['hitempf'])>=2 and int(session['hitemps'])>=2) or \
             (int(session['lotempf']) >= 2 and int(session['lotemps']) >= 2) or  (int(session['slowf'])>=2 and int(session['slows'])>=2) or \
             (int(session['absentf']) >= 2 and int(session['absents']) >= 2):
         ME_D3 = 1
+        meicc_thermocheck = "✓"
+        meicc_tempcheck = "✓"
     else:
         ME_D3 = 0
+        meicc_thermocheck = ""
+        meicc_tempcheck = ""
     print(ME_D3)
     if (ME_D1 + ME_D2 + ME_D3) >= 1:
         ME_D = 1
@@ -554,16 +614,29 @@ def diagnose2():
                    name="Average ME/CFS scores"),
             go.Bar(y=user_scores, x=categories, name="Your scores")],
         layout=go.Layout(
-            title=go.layout.Title(text='Your scores compared (average frequency and severity per symptom) '
-                                       'with our dataset of 3,428 participants'),
-            # polar={'radialaxis': {'visible': True}},
-            showlegend=True))
-    # fig.update_polars(radialaxis=dict(range=[0, 4]))
+            title=go.layout.Title(text='Your scores compared'
+                                       ' with our dataset of 2,402 participants'),
+            showlegend=True, legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1)))
+    fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores',
+                      xaxis_title='Symptom Domains')
     #fig.add_hline(y=2)
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     return render_template("graph3.html", probCFS=54, sample_size=670,
-                    next_link="Continue to full DSQ", graphJSON=graphJSON, me_icc=me_icc)
+                    next_link="Continue to full DSQ", graphJSON=graphJSON, me_icc=me_icc, meicc_pemcheck=meicc_pemcheck,
+                           meicc_cogcheck=meicc_cogcheck, meicc_paincheck=meicc_paincheck,
+                           meicc_sleepcheck=meicc_sleepcheck,
+                           meicc_motorcheck=meicc_motorcheck, meicc_flucheck=meicc_flucheck,
+                           meicc_viralcheck=meicc_viralcheck, meicc_gastrocheck=meicc_gastrocheck,
+                           meicc_bladdercheck=meicc_bladdercheck,
+                           meicc_sensitivitycheck=meicc_sensitivitycheck, meicc_respiratorycheck=meicc_respiratorycheck,
+                           meicc_cardiocheck=meicc_cardiocheck, meicc_thermocheck=meicc_thermocheck,
+                           meicc_tempcheck=meicc_tempcheck)
 
 class FreVal:
     name = "Fatigue1"
@@ -618,29 +691,41 @@ def login():
     cont = "Continue as Guest"
 
     if request.method == 'POST':
+        session["checkbox"] = request.form.get("checkbox")
         if request.form['result'] == 'login':
             firstname = request.form.get('firstname')
             lastname = request.form.get('lastname')
-            email = request.form.get('email')
-            session["checkbox"] = request.form.get("checkbox")
+            email = str(request.form.get('email'))
+
             if firstname != "" and lastname != "" and email != "":
                 print(firstname, lastname, email)
                 session['user'] = str(firstname)
                 print(session['user'])
+                email = str(request.form.get('email'))
                 cursor = mysql.connection.cursor()
 
-                cursor.execute('INSERT INTO login VALUES (NULL, %s, %s, %s, NULL)', (firstname, lastname, email))
+                cursor.execute('SELECT id FROM login WHERE email = %s', (email,))
+                row = cursor.fetchone()
+
+                if row:
+                    session['user_id'] = cursor.lastrowid
+                else:
+                    cursor.execute('INSERT INTO login (firstname, lastname, email) VALUES ( %s, %s, %s)',
+                                   (firstname, lastname, email))
                 session['user_id'] = cursor.lastrowid
                 mysql.connection.commit()
                 mesg = "Successfully logged in. Please continue."
-                cont = "Continue"
+                session['logged_in'] = True
                 return redirect(url_for('home'))
             else:
                 error = "Please fill out all login information or click Continue as Guest"
                 session['user'] = "guest"
         if request.form['result'] == "guest":
                 session.clear()
+                session["checkbox"] = request.form.get("checkbox")
                 session['user'] = 'guest'
+                session.pop('logged_in', None)
+                session['logged_in'] = False
                 return redirect(url_for('home'))
     return render_template('login.html', error=error, mesg=mesg, cont=cont)
 
@@ -660,12 +745,70 @@ def home():
 
         session["pagenum"] += 1
         return redirect(url_for("page1"))
-    return render_template("home.html")
+    return render_template("home.html", session=session)
 
 
 @app.route('/scores')
 def scores():
     name = session['user']
+    user_id = int(session['user_id'])
+    if session['checkbox']=='data':
+        cursor = mysql.connection.cursor()
+        cursor.execute("""
+            SELECT fatigue, pem, sleep, cog, pain, gastro, ortho, circ, immune, neurendocrine 
+            FROM domains
+            JOIN login ON domains.user_id = login.id
+            WHERE login.id = %s
+        """, user_id)
+        results = cursor.fethcall()
+        array = np.array(results)
+
+        timestamps = []
+        fatigue_values = []
+        pem_values = []
+        sleep_values = []
+        cog_values = []
+        pain_values = []
+        gastro_values = []
+        ortho_values = []
+        circ_values = []
+        immune_values = []
+        neurendocrine_values = []
+        for row in results:
+            fatigue_values.append(row[0])
+            pem_values.append(row[1])
+            sleep_values.append(row[2])
+            cog_values.append(row[3])
+            pain_values.append(row[4])
+            gastro_values.append(row[5])
+            ortho_values.append(row[6])
+            circ_values.append(row[7])
+            immune_values.append(row[8])
+            neurendocrine_values.append(row[9])
+
+        length = len(results)
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=length, y=fatigue_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=length, y=pem_values, mode='lines', name='PEM'))
+        fig.add_trace(go.Scatter(x=length, y=sleep_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=length, y=cog_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=length, y=pain_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=length, y=gastro_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=length, y=ortho_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=length, y=circ_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=length, y=immune_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=length, y=neurendocrine_values, mode='lines', name='Fatigue'))
+
+        fig.update_layout(title='Your domain scores over time', xaxis_title='Times you took screener',
+                          yaxis_title='Domain scores')
+
+        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+        """
+
+        user_scores = [np.mean(array[:, 0]), np.mean(array[:, 1]), np.mean(array[:, 2]), np.mean(array[:, 3]),
+                       np.mean(array[:, 4]), np.mean(array[:, 5]), np.mean(array[:, 1]),]"""
     if name == "guest":
         user_message = "You are using the screener as a guest, and do not have data stored. " \
                        " To track your data over time, please login."
@@ -675,7 +818,7 @@ def scores():
                            " so no information is available to report."
         else:
             user_message = "You have data available from 3 sessions. A graph of your responses is shown below."
-    return render_template('scores.html', name=name, user_message=user_message)
+    return render_template('scores.html', name=name, user_message=user_message, graphJSON=graphJSON)
 
 
 @app.route('/fatigue', methods=['post', 'get'])
@@ -885,6 +1028,19 @@ def expem2():
             return render_template("expem2.html", pagenum=session['pagenum'], message=message)
     return render_template("expem2.html", pagenum=session['pagenum'], message='')
 
+@app.route('/viral', methods=['post', 'get'])
+def viral():
+    form = FlaskForm()
+    msg_viral = "Please select one of the options before continuing"
+    if request.method == 'POST':
+        viral = request.form.get('viral')
+        if viral is not None:
+            session['viral'] = viral
+            session['pagenum'] += 1
+            return redirect(url_for('expem3'))
+        else:
+            return render_template("viral.html", message=msg_viral, pagenum=session['pagenum'])
+    return render_template('viral.html', message='', pagenum=session['pagenum'])
 
 @app.route('/heavy', methods=['post', 'get'])
 def expem3():
@@ -893,10 +1049,11 @@ def expem3():
     if request.method == "POST":
         heavyf = request.form.get("heavyf")
         heavys = request.form.get("heavys")
-        session['pagenum'] += 1
+
         if heavyf is not None and heavys is not None:
             session["heavyf"] = heavyf
             session["heavys"] = heavys
+            session['pagenum'] += 1
             if int(session["heavyf"]) >= 0 and int(session["heavys"]) >= 0:
                 session['pemscoref'] = session['heavyf']
                 session['pemscores'] = session['heavys']
@@ -1806,6 +1963,10 @@ def end():
 @app.route('/about', methods=['post', 'get'])
 def about():
     return render_template('about.html')
+
+@app.route('/aboutmecfs', methods=['post', 'get'])
+def aboutmecfs():
+    return render_template('aboutmecfs.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

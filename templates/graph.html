@@ -1,38 +1,41 @@
 <!doctype html>
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
 <html>
-<header>
 
 
-
- <ul class="menu">
-  <li >
-   <a href="{{ url_for('home') }}">Home</a>
-  </li>
-  <li>
-   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Documents/DEPAUL%20SYMPTOM%20QUESTIONNAIRE%20with%20SF-36%20and%20MFI%20and%20SI%205-18-11.pdf"
-   target="_blank">
-    Full DSQ 1 (PDF)
-   </a>
-  </li>
-  <li>
-   <a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/media-links.aspx"
-   target="_blank">
-    More Information About ME/CFS
-   </a>
-  </li>
-    <li >
-   <a href="{{ url_for('about') }}">About This Screener</a>
-  </li>
-  <li>
- </ul>
-
-</header>
  <body >
+
+<header >
+    <ul class="menu">
+    <li >
+    <a href="{{ url_for('home') }}">Home</a>
+     </li>
+  <li>
+   <a href="{{ url_for('aboutmecfs')}}">About</a><ul class="submenu2">
+      <li><a href="{{ url_for('aboutmecfs')}}">
+          About ME/CFS</a></li>
+      <li><a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/measures.aspx"
+      target="_blank">
+          About the DSQ</a></li>
+      <li><a href="{{ url_for('about') }}">About This Screener</a></li>
+    </ul>
+  </li>
+        <li > <a  href="{{ url_for('scores') }}">Account</a>
+        <ul class="submenu">
+      {% if session.logged_in %}
+            <li><a href="{{ url_for('login') }}">Logout</a></li>
+        {% else %}
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+        {% endif %}
+      <li><a href="{{ url_for('scores') }}">My Data</a></li>
+
+    </ul></li>
+ </ul>
+</header>
    <h3 class="ariel">Screener Results</h3>
    <hr>
    <div class="container" style="align: center; z-index:100; position: relative; " >
-        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener ✓</b></a>
+        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener <u>✓</u></b></a>
         <ul><li>5 Questions</li><li>Estimates Probability of ME/CFS from your scores</li>
             <li>Assesses IOM 2015 Case Definition</li></ul></div><span class="arrow right"></span>
        <div id="stagetwo" style="font: Ariel;" class="layout-one"><a ><b>Short Form</b></a><ul><li>Optional</li>
@@ -70,8 +73,9 @@
 </ul>
 </div>
 </div>
-<div style="display: inline-block;">
-
+<div style="display: inline-block; ">
+<p class="disclaimer"><i>Note: this is not a medical diagnosis. We advise you to consult with your physician or seek an ME/CFS specialist
+if you think you may be suffering from ME/CFS.</i></p>
 </div>
 </body>
 

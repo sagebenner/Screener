@@ -254,6 +254,7 @@ figure {
 .submenu li a {
   display: block;
   padding: 5px;
+  padding-top: 0;
   text-decoration: none;
 }
 
@@ -271,6 +272,7 @@ figure {
 .submenu2 li a {
   display: block;
   padding: 5px;
+  padding-top: 0;
   text-decoration: none;
 }
 
@@ -744,6 +746,7 @@ filter: grayscale(0%);
 }
 
 .chart-left {
+position: relative;
 border: none;
 height: auto;
 width: auto;
@@ -752,6 +755,10 @@ margin-top: 5px;
 
 button {
 display: none !important;
+}
+
+.disclaimer {
+display: none;
 }
 
 }
