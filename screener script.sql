@@ -19,13 +19,19 @@ mono INT,
 mono2 INT
 );
 
-USE DSQ;
+USE dsq_screener;
 CREATE TABLE screen (
 id INT NOT NULL AUTO_INCREMENT,
-fatigue INT,
-minex INT,
-sleep INT,
-cog INT,
+fatigue13f INT,
+fatigue13s INT,
+minimum17f INT,
+minimum17s INT,
+unrefreshed19f INT,
+unrefreshed19s INT,
+remember36f INT,
+remember36s INT,
+reduction INT,
+login_id INT,
 PRIMARY KEY(id),
 FOREIGN KEY (login_id) REFERENCES login(id)
 );
@@ -61,7 +67,21 @@ smells INT,
 PRIMARY KEY(id)
 );
 
-SELECT * FROM login;
+SELECT * FROM domains;
+
+SELECT id FROM login WHERE email = 'sage.benner@gmail.com';
+INSERT INTO screen (fatigue13f, fatigue13s, minimum17f, minimum17s, unrefreshed19f, unrefreshed19s, remember36f, remember36s, reduction, login_id) 
+VALUES (0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+
+SELECT *
+FROM domains
+LEFT JOIN login ON domains.login_id = login.id
+WHERE domains.login_id IS NULL OR login.id IS NULL;
+
+SELECT s.login_id, l.id 
+FROM screen s
+LEFT JOIN login l ON s.login_id = l.id
+WHERE l.id IS NULL OR s.login_id IS NULL OR s.login_id <> l.id;
 
 DELETE FROM login;
 DELETE FROM screen WHERE login_id IS NOT NULL;
@@ -79,10 +99,9 @@ ortho INT,
 circ INT,
 immune INT, 
 neurendocrine INT,
-user_id INT,
+login_id INT,
 PRIMARY KEY (id),
-FOREIGN KEY (user_id) REFERENCES login(id)
-
+FOREIGN KEY (login_id) REFERENCES login(id)
 );
 
 ALTER TABLE screen ADD COLUMN remember36s INT;
