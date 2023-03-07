@@ -26,7 +26,7 @@ app.config['SECRET_KEY'] = 'development'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'dsq'
+app.config['MYSQL_DB'] = 'dsq_screener'
 
 
 mysql = MySQL(app)
@@ -47,6 +47,54 @@ composite = 0
 pemname = str
 sleepname = str
 cogname = str
+
+
+@app.route('/', methods=['post', 'get'])
+def login():
+    error = None
+    mesg = None
+    cont = "Continue as Guest"
+
+    if request.method == 'POST':
+        session["checkbox"] = request.form.get("checkbox")
+        if request.form['result'] == 'login':
+            firstname = request.form.get('firstname')
+            lastname = request.form.get('lastname')
+            email = str(request.form.get('email'))
+
+            if firstname != "" and lastname != "" and email != "":
+                print(firstname, lastname, email)
+                session['user'] = str(firstname)
+                print(session['user'])
+                email = str(request.form.get('email'))
+                cursor = mysql.connection.cursor()
+
+                cursor.execute('SELECT id FROM login WHERE email = %s', (email,))
+                row = cursor.fetchone()
+                print("row",row)
+                print(row[0])
+                if row:
+                    session['user_id'] = row[0]
+                else:
+                    cursor.execute('INSERT INTO login (firstname, lastname, email) VALUES ( %s, %s, %s)',
+                                   (firstname, lastname, email))
+                    session['user_id'] = cursor.lastrowid
+                mysql.connection.commit()
+
+                mesg = "Successfully logged in. Please continue."
+                session['logged_in'] = True
+                return redirect(url_for('home'))
+            else:
+                error = "Please fill out all login information or click Continue as Guest"
+                session['user'] = "guest"
+        if request.form['result'] == "guest":
+                session.clear()
+                session["checkbox"] = request.form.get("checkbox")
+                session['user'] = 'guest'
+                session.pop('logged_in', None)
+                session['logged_in'] = False
+                return redirect(url_for('home'))
+    return render_template('login.html', error=error, mesg=mesg, cont=cont)
 
 #@app.route('/graph', methods=['post'])
 def diagnose():
@@ -220,7 +268,7 @@ def diagnose():
         if session["checkbox"] == "data":
             cursor.execute("""
                             INSERT INTO domains (fatigue, pem, sleep, cog, pain, gastro, ortho, circ, immune, 
-                            neurendocrine, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            neurendocrine, login_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (fatiguescore, pemscore, sleepscore, cogscore, painscore, gastroscore, orthoscore, circscore,
                    immunescore, neuroenscore, int(session['user_id'])))
             mysql.connection.commit()
@@ -275,6 +323,8 @@ def diagnose():
         cogscore = session['cogscore']
 
         reduction = session['reduction']
+
+
         cursor = mysql.connection.cursor()
 
         cursor.execute('SELECT id FROM login ORDER BY id DESC LIMIT 1')
@@ -354,23 +404,29 @@ def diagnose():
             print(user_id)
             cursor = mysql.connection.cursor()
             if session['logged_in'] == True:
-                cursor.execute("""
-                               INSERT INTO screen (fatigue13f, fatigue13s, minimum17f, minimum17s, unrefreshed19f, 
-                               unrefreshed19s, remember36f, remember36s, reduction, login_id) 
-                               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                               """,
-                               (int(session['fatiguescoref']), int(session['fatiguescores']), int(session['minexf']),
-                                int(session['minexs']), int(session['sleepf']), int(session['sleeps']),
-                                int(session['rememberf']), int(session['remembers']),
-                                int(session['reduction']), user_id))
-                mysql.connection.commit()
-            else:
+                if 'user_id' in session:
+                    login_id = session['user_id']
+                else:
+                    # get the next auto-increment id value from the login table
+                    cursor.execute(
+                        "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'dsq_screener' AND TABLE_NAME = 'login'")
+                    result = cursor.fetchone()
+                    login_id = result[0]
 
-                cursor.execute('INSERT INTO screen VALUES (NULL, %s, %s, %s, %s, %s, %s, %s, %s, NULL)',
-                       (int(session['fatiguescoref']), int(session['fatiguescores']), int(session['minexf']),
-                        int(session['minexs']), int(session['sleepf']), int(session['sleeps']),
-                        int(session['rememberf']), int(session['remembers']),
-                        int(session['reduction'])))
+                    # insert a new row into the login table to reserve the id value
+                    cursor.execute("INSERT INTO login (id) VALUES (NULL)")
+                    mysql.connection.commit()
+
+                # insert the values into the screen table with the appropriate login_id
+                cursor.execute("""
+                    INSERT INTO screen (fatigue13f, fatigue13s, minimum17f, minimum17s, unrefreshed19f, unrefreshed19s,
+                                        remember36f, remember36s, reduction, login_id)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (int(session['fatiguescoref']), int(session['fatiguescores']), int(session['minexf']),
+                          int(session['minexs']),
+                          int(session['sleepf']), int(session['sleeps']), int(session['rememberf']),
+                          int(session['remembers']),
+                          int(session['reduction']), login_id))
                 mysql.connection.commit()
 
         try:
@@ -684,51 +740,6 @@ def graph(graphJSON, probCFS, sample_size):
     sample_size = sample_size
     return render_template("graph.html", graphJSON=graphJSON, probCFS=probCFS, sample_size=sample_size)
 
-@app.route('/', methods=['post', 'get'])
-def login():
-    error = None
-    mesg = None
-    cont = "Continue as Guest"
-
-    if request.method == 'POST':
-        session["checkbox"] = request.form.get("checkbox")
-        if request.form['result'] == 'login':
-            firstname = request.form.get('firstname')
-            lastname = request.form.get('lastname')
-            email = str(request.form.get('email'))
-
-            if firstname != "" and lastname != "" and email != "":
-                print(firstname, lastname, email)
-                session['user'] = str(firstname)
-                print(session['user'])
-                email = str(request.form.get('email'))
-                cursor = mysql.connection.cursor()
-
-                cursor.execute('SELECT id FROM login WHERE email = %s', (email,))
-                row = cursor.fetchone()
-
-                if row:
-                    session['user_id'] = cursor.lastrowid
-                else:
-                    cursor.execute('INSERT INTO login (firstname, lastname, email) VALUES ( %s, %s, %s)',
-                                   (firstname, lastname, email))
-                session['user_id'] = cursor.lastrowid
-                mysql.connection.commit()
-                mesg = "Successfully logged in. Please continue."
-                session['logged_in'] = True
-                return redirect(url_for('home'))
-            else:
-                error = "Please fill out all login information or click Continue as Guest"
-                session['user'] = "guest"
-        if request.form['result'] == "guest":
-                session.clear()
-                session["checkbox"] = request.form.get("checkbox")
-                session['user'] = 'guest'
-                session.pop('logged_in', None)
-                session['logged_in'] = False
-                return redirect(url_for('home'))
-    return render_template('login.html', error=error, mesg=mesg, cont=cont)
-
 
 @app.route('/home', methods=['post', 'get'])
 def home():
@@ -751,19 +762,21 @@ def home():
 @app.route('/scores')
 def scores():
     name = session['user']
-    user_id = int(session['user_id'])
+    user_id = session['user_id']
+    print(['user id', user_id])
     if session['checkbox']=='data':
         cursor = mysql.connection.cursor()
         cursor.execute("""
             SELECT fatigue, pem, sleep, cog, pain, gastro, ortho, circ, immune, neurendocrine 
             FROM domains
-            JOIN login ON domains.user_id = login.id
+            JOIN login ON domains.login_id = login.id
             WHERE login.id = %s
-        """, user_id)
-        results = cursor.fethcall()
+        """, (user_id,))
+        results = cursor.fetchall()
+
         array = np.array(results)
 
-        timestamps = []
+        timestamps = [1]
         fatigue_values = []
         pem_values = []
         sleep_values = []
@@ -786,7 +799,8 @@ def scores():
             immune_values.append(row[8])
             neurendocrine_values.append(row[9])
 
-        length = len(results)
+        #length = len(results)
+        length = timestamps
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=length, y=fatigue_values, mode='lines', name='Fatigue'))
