@@ -48,7 +48,8 @@ pemname = str
 sleepname = str
 cogname = str
 
-
+# Default url is the login page.
+# Eventually,  visiting the login page should be required, and you can't access any other url unless you have
 @app.route('/', methods=['post', 'get'])
 def login():
     error = None
@@ -72,8 +73,9 @@ def login():
                 cursor.execute('SELECT id FROM login WHERE email = %s', (email,))
                 row = cursor.fetchone()
                 print("row",row)
-                print(row[0])
+
                 if row:
+                    print(row[0])
                     session['user_id'] = row[0]
                 else:
                     cursor.execute('INSERT INTO login (firstname, lastname, email) VALUES ( %s, %s, %s)',
@@ -96,20 +98,15 @@ def login():
                 return redirect(url_for('home'))
     return render_template('login.html', error=error, mesg=mesg, cont=cont)
 
-#@app.route('/graph', methods=['post'])
+# The first core diagnosis function, for the screener and short form.
 def diagnose():
     global end
+    # Imports data from participants to compare with user-entered responses
     df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
 
     fatiguescore = (int(session["fatiguescoref"]) + int(session["fatiguescores"])) / 2
 
-    if survey == "rf4":
-        import probabilities
-        pemscore = (int(session["minexf"]) + int(session["minexf"])) / 2
-        sleepscore = (int(session["sleepf"]) + int(session["sleeps"])) / 2
-        cogscore = (int(session["rememberf"]) + int(session["remembers"])) / 2
-        data = np.array([[fatiguescore, pemscore, sleepscore, cogscore]])
-
+    # If we have just finished the short form:
     if survey == "rf14":
         import domainScores as ds
         import probabilities
@@ -137,7 +134,7 @@ def diagnose():
         user_scores = [fatiguescore, pemscore, sleepscore, cogscore, painscore, gastroscore, orthoscore, circscore,
                        immunescore, neuroenscore]
 
-        #df = pd.read_csv('MECFS No Comorbidities vs All Others.csv')
+        # Creates a list of all the scores for the shortform
         data = [fatiguescore, ((int(session["soref"]) + int(session["sores"])) / 2), pemscore,
                           ((int(session["sleepf"]) + int(session["sleeps"])) / 2),
                           ((int(session["musclef"]) + int(session["muscles"])) / 2),
@@ -153,36 +150,8 @@ def diagnose():
         pemsdomain = (pemscore + int(session['soref']) + int(session['sores'])) / 3
         sleepdomain = sleepscore
         cogdomain = (cogscore + int(session['attentionf']) + int(session['attentions'])) / 3
-        '''
-        newdf = df[(df['fatigue13c'] >= (data[0] - 1)) &
-                   (df['fatigue13c'] <= (data[0] + 1)) &
-                   (df['soreness15c'] >= (data[1] - 1)) &
-                   (df['soreness15c'] <= (data[1] + 1)) &
-                   (df['minimum17c'] >= (data[2] - 1)) &
-                   (df['minimum17c'] <= (data[2] + 1)) &
-                   (df['unrefreshed19c'] >= (data[3] - 1)) &
-                   (df['unrefreshed19c'] <= (data[3] + 1)) &
-                   (df['musclepain25c'] >= (data[4] - 1)) &
-                   (df['musclepain25c'] <= (data[4] + 1)) &
-                   (df['bloating29c'] >= (data[5] - 1)) &
-                   (df['bloating29c'] <= (data[5] + 1)) &
-                   (df['remember36c'] <= (data[6] + 1)) &
-                   (df['remember36c'] >= (data[6] - 1)) &
-                   (df['difficulty37c'] >= (data[7] - 1)) &
-                   (df['difficulty37c'] <= (data[7] + 1)) &
-                   (df['bowel46c'] >= (data[8] - 1)) &
-                   (df['bowel46c'] <= (data[8] + 1)) &
-                   (df['unsteady48c'] >= (data[9] - 1)) &
-                   (df['unsteady48c'] <= (data[9] + 1)) &
-                   (df['limbs56c'] >= (data[10] - 1)) &
-                   (df['limbs56c'] <= (data[10] + 1)) &
-                   (df['hot58c'] >= (data[11] - 1)) &
-                   (df['hot58c'] <= (data[11] + 1)) &
-                   (df['flu65c'] >= (data[12] - 1)) &
-                   (df['flu65c'] <= (data[12] + 1)) &
-                   (df['smells66c'] >= (data[13] - 1)) &
-                   (df['smells66c'] <= (data[13] + 1))]
-                   '''
+
+    # This assesses the Fukuda case definition. Dr. Jason doesn't like the Fukuda criteria, so it's not in use atm
         fukuda = 0
         for f in range(len(data)):
             if data[f] >= 2:
@@ -193,10 +162,13 @@ def diagnose():
         else:
             fukuda_msg = ""
 
+    # This assesses the Canadian Consensus Criteria, one of the three major case definitions we use
+
         ccc_dx = False
 
         if int(session['fatiguescoref']) >=2 and int(session['fatiguescores']) >= 2 and int(session['reduction']) ==1:
             ccc_fatigue = 1
+            # These checkmarks will be passed to the HTML page to put a checkmark next to relevant symptoms:
             ccc_fatiguecheck = "✓"
         else:
             ccc_fatigue = 0
@@ -251,7 +223,7 @@ def diagnose():
             ccc_immune = 0
             ccc_immunecheck = ""
         ccc_poly = np.sum([ccc_auto, ccc_neuro, ccc_immune])
-
+        # most of the symptoms are required, but there is one polythetic criteria, shown here by ccc_poly
         if np.sum([ccc_fatigue, ccc_pem, ccc_sleep, ccc_pain, ccc_cog]) >= 5 and ccc_poly >= 2:
             ccc_dx = True
             ccc_msg = "Your responses suggest that you meet the Canadian Consensus Criteria for ME/CFS. " \
@@ -261,10 +233,9 @@ def diagnose():
             ccc_msg = "Your responses do not meet the Canadian Consensus Criteria for ME/CFS. " \
                       "To compare your symptoms with more case definitions, click Continue."
 
-        #sample_size = len(newdf.index)
-        #testAcc = round(np.mean(newdf['dx']==1), 2) * 100
-
+        # Insert the user domain scores into relevant columns in the Domains table
         cursor = mysql.connection.cursor()
+        # Make sure user consented to having their data stored
         if session["checkbox"] == "data":
             cursor.execute("""
                             INSERT INTO domains (fatigue, pem, sleep, cog, pain, gastro, ortho, circ, immune, 
@@ -288,7 +259,7 @@ def diagnose():
         control_selection = probabilities.controls[probabilities.shortform_items]
         control_14mean = control_selection.mean(axis=0).drop(columns=['dx'])
 
-        #probCFS = (np.mean(newdf.dx == 1).round(decimals=1)) * 100
+        # Creates a figure using the plotly library, which can be dynamically embedded in the HTML page
         fig = go.Figure(
             data=[
                 go.Bar(y=user_scores, x=categories, name="Your scores"),
@@ -305,6 +276,8 @@ def diagnose():
                 x=1)))
         fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores',
                           xaxis_title='Symptom Domains')
+
+        # This converts to figure fig to a JSON object so it can be dynamically rendered with javascript on the page
         graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
         return render_template("graph2.html", graphJSON=graphJSON, ccc_msg=ccc_msg, ccc_fatiguecheck=ccc_fatiguecheck,
@@ -312,7 +285,7 @@ def diagnose():
                                ccc_cogcheck=ccc_cogcheck, ccc_autocheck=ccc_autocheck, ccc_immunecheck=ccc_immunecheck,
                                ccc_neurocheck=ccc_neurocheck)
 
-
+    # This is for the screener 5-question diagnosis
     if survey == "classic":
         import probabilities
 
@@ -520,8 +493,7 @@ def diagnose2():
     categories = ['Fatigue', 'PEM', 'Sleep', 'Cognitive Problems', 'Pain', 'Gastro Problems',
                   'Orthostatic Intolerance', 'Circulatory Problems', 'Immune System', 'Neuroendocrine Problems']
 
-
-    #ME-ICC
+    # ME-ICC assessment starts here, the longest and most complicated assessment
     if int(session['reduction'])==1:
         ME_R=1
     else:
@@ -587,7 +559,7 @@ def diagnose2():
         ME_C1 = 0
         meicc_flucheck = ""
     print(ME_C1)
-    # Missing Viral121 Question here, which corresponds to C2
+
     if int(session['viral']) == 1:
         ME_C2 = 1
         meicc_viralcheck = "✓"
@@ -680,11 +652,10 @@ def diagnose2():
                 x=1)))
     fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores',
                       xaxis_title='Symptom Domains')
-    #fig.add_hline(y=2)
+
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    return render_template("graph3.html", probCFS=54, sample_size=670,
-                    next_link="Continue to full DSQ", graphJSON=graphJSON, me_icc=me_icc, meicc_pemcheck=meicc_pemcheck,
+    return render_template("graph3.html", graphJSON=graphJSON, me_icc=me_icc, meicc_pemcheck=meicc_pemcheck,
                            meicc_cogcheck=meicc_cogcheck, meicc_paincheck=meicc_paincheck,
                            meicc_sleepcheck=meicc_sleepcheck,
                            meicc_motorcheck=meicc_motorcheck, meicc_flucheck=meicc_flucheck,
@@ -694,44 +665,6 @@ def diagnose2():
                            meicc_cardiocheck=meicc_cardiocheck, meicc_thermocheck=meicc_thermocheck,
                            meicc_tempcheck=meicc_tempcheck)
 
-class FreVal:
-    name = "Fatigue1"
-    fatigue = int
-
-
-
-
-
-class SimpleForm(FlaskForm):
-    f_options1 = RadioField('activity', choices=[
-        (0, '0: none of the time'), (1, '1: a little of the time'), (2, '2: about half the time'),
-        (3, '3: most of the time'), (4, '4:all of the time')],
-                            coerce=int, id="todo")
-    s_options1 = RadioField('s_activity', choices=[
-        (0, "0:symptom not present"), (1, '1: mild'), (2, '2:moderate'), (3, '3: severe'), (4, '4:very severe')
-    ], coerce=int, id="todo")
-    f_options2 = RadioField('activity2', choices=[
-        (0, '0: none of the time'), (1, '1: a little of the time'), (2, '2: about half the time'),
-        (3, '3: most of the time'), (4, '4:all of the time')],
-                            coerce=int)
-    s_options2 = RadioField('s_activity2', choices=[
-        (0, "0:symptom not present"), (1, '1: mild'), (2, '2:moderate'), (3, '3: severe'), (4, '4:very severe')
-    ], coerce=int)
-    f_options3 = RadioField('activity3', choices=[
-        (0, '0: none of the time'), (1, '1: a little of the time'), (2, '2: about half the time'),
-        (3, '3: most of the time'), (4, '4:all of the time')],
-                            coerce=int, id="todo")
-    s_options3 = RadioField('s_activity3', choices=[
-        (0, "0:symptom not present"), (1, '1: mild'), (2, '2:moderate'), (3, '3: severe'), (4, '4:very severe')
-    ], coerce=int)
-    f_options4 = RadioField('activity4', choices=[
-        (0, '0: none of the time'), (1, '1: a little of the time'), (2, '2: about half the time'),
-        (3, '3: most of the time'), (4, '4:all of the time')],
-                            coerce=int)
-    s_options4 = RadioField('s_activity4', choices=[
-        (0, "0:symptom not present"), (1, '1: mild'), (2, '2:moderate'), (3, '3: severe'), (4, '4:very severe')
-    ], coerce=int)
-
 
 @app.route('/graph')
 def graph(graphJSON, probCFS, sample_size):
@@ -740,7 +673,7 @@ def graph(graphJSON, probCFS, sample_size):
     sample_size = sample_size
     return render_template("graph.html", graphJSON=graphJSON, probCFS=probCFS, sample_size=sample_size)
 
-
+# homepage
 @app.route('/home', methods=['post', 'get'])
 def home():
     global pagenum
@@ -751,14 +684,12 @@ def home():
     session["pagenum"] = 0
     survey='classic'
     if request.method == "POST":
-        #session["dropdown"] = str(request.form.get("survey"))
-        #survey = session["dropdown"]
 
         session["pagenum"] += 1
         return redirect(url_for("page1"))
     return render_template("home.html", session=session)
 
-
+# This is the function for the page when you click "My Data" from the submenu
 @app.route('/scores')
 def scores():
     name = session['user']
@@ -773,9 +704,9 @@ def scores():
             WHERE login.id = %s
         """, (user_id,))
         results = cursor.fetchall()
-
-        array = np.array(results)
-
+        print('results', type(results))
+        array = np.array(results[0, ])
+        print(array)
         timestamps = [1]
         fatigue_values = []
         pem_values = []
@@ -787,32 +718,32 @@ def scores():
         circ_values = []
         immune_values = []
         neurendocrine_values = []
-        for row in results:
-            fatigue_values.append(row[0])
-            pem_values.append(row[1])
-            sleep_values.append(row[2])
-            cog_values.append(row[3])
-            pain_values.append(row[4])
-            gastro_values.append(row[5])
-            ortho_values.append(row[6])
-            circ_values.append(row[7])
-            immune_values.append(row[8])
-            neurendocrine_values.append(row[9])
 
+        fatigue_values = [4]
+        pem_values = [4]
+        sleep_values = [4]
+        cog_values = [4]
+        pain_values = [4]
+        gastro_values = [4,4,4]
+        ortho_values = [4,4,4]
+        circ_values = [4,4,4]
+        immune_values = [4,4,4]
+        neurendocrine_values = [4,4,4]
+        print('array', array[0])
         #length = len(results)
         length = timestamps
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=length, y=fatigue_values, mode='lines', name='Fatigue'))
-        fig.add_trace(go.Scatter(x=length, y=pem_values, mode='lines', name='PEM'))
-        fig.add_trace(go.Scatter(x=length, y=sleep_values, mode='lines', name='Fatigue'))
-        fig.add_trace(go.Scatter(x=length, y=cog_values, mode='lines', name='Fatigue'))
-        fig.add_trace(go.Scatter(x=length, y=pain_values, mode='lines', name='Fatigue'))
-        fig.add_trace(go.Scatter(x=length, y=gastro_values, mode='lines', name='Fatigue'))
-        fig.add_trace(go.Scatter(x=length, y=ortho_values, mode='lines', name='Fatigue'))
-        fig.add_trace(go.Scatter(x=length, y=circ_values, mode='lines', name='Fatigue'))
-        fig.add_trace(go.Scatter(x=length, y=immune_values, mode='lines', name='Fatigue'))
-        fig.add_trace(go.Scatter(x=length, y=neurendocrine_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=[1], y=fatigue_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=[1], y=pem_values, mode='lines', name='PEM'))
+        fig.add_trace(go.Scatter(x=[1], y=sleep_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=[1], y=cog_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=[1], y=pain_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=[1], y=gastro_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=[1], y=ortho_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=[1], y=circ_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=[1], y=immune_values, mode='lines', name='Fatigue'))
+        fig.add_trace(go.Scatter(x=[1], y=neurendocrine_values, mode='lines', name='Fatigue'))
 
         fig.update_layout(title='Your domain scores over time', xaxis_title='Times you took screener',
                           yaxis_title='Domain scores')
@@ -834,7 +765,7 @@ def scores():
             user_message = "You have data available from 3 sessions. A graph of your responses is shown below."
     return render_template('scores.html', name=name, user_message=user_message, graphJSON=graphJSON)
 
-
+# First symptom question
 @app.route('/fatigue', methods=['post', 'get'])
 def page1():
     global process

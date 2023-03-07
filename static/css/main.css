@@ -412,6 +412,14 @@ text-decoration: underline;
     max-width: 220px;
 
     }
+.chart2 {
+    border: thin #c0c0c0 solid;
+    padding: 5px;
+    max-width: 500px;
+    align: center;
+    }
+
+
 
 .symptom {
 display: inline-block;
@@ -730,7 +738,7 @@ display: block;
 position: absolute;
 height: auto;
 margin-top: 5px;
-bottom: 10px;
+bottom: 0px;
 filter: grayscale(0%);
 }
 
@@ -746,7 +754,7 @@ filter: grayscale(0%);
 }
 
 .chart-left {
-position: relative;
+position: absolute;
 border: none;
 height: auto;
 width: auto;
