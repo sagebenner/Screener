@@ -12,7 +12,7 @@ from io import BytesIO
 import json
 # from wtforms.validators import InputRequired
 from flask_mysqldb import MySQL
-import probabilities
+
 
 import MySQLdb.cursors
 import re
@@ -49,7 +49,7 @@ sleepname = str
 cogname = str
 
 # Default url is the login page.
-# Eventually,  visiting the login page should be required, and you can't access any other url unless you have
+# Eventually,  visiting the login page should be required, so you can't access any other url unless you have done so
 @app.route('/', methods=['post', 'get'])
 def login():
     error = None
@@ -98,15 +98,172 @@ def login():
                 return redirect(url_for('home'))
     return render_template('login.html', error=error, mesg=mesg, cont=cont)
 
-# The first core diagnosis function, for the screener and short form.
+# The first main diagnosis function, for the screener and short form.
 def diagnose():
     global end
     # Imports data from participants to compare with user-entered responses
-    df = pd.read_csv('MECFS VS OTHERS BINARY.csv')
+
 
     fatiguescore = (int(session["fatiguescoref"]) + int(session["fatiguescores"])) / 2
 
-    # If we have just finished the short form:
+    # This is for the screener 5-question diagnosis
+    if survey == "classic":
+        import probabilities
+
+        pemscore = session['pemscore']
+
+        sleepscore = session['sleepscore']
+
+        cogscore = session['cogscore']
+
+        reduction = session['reduction']
+
+        cursor = mysql.connection.cursor()
+
+        cursor.execute('SELECT id FROM login ORDER BY id DESC LIMIT 1')
+
+        results = cursor.fetchone()
+        new_user = results[0]
+
+        re_array = np.array(results)
+        number_users = len(re_array)
+        mean_array = np.mean(re_array, axis=0)
+        print(mean_array)
+        session['pagenum']+=1
+        # see if we want to treat data as separate f and s or composite scores:
+        if composite == 1:
+            df = pd.read_csv('MECFS COMPOSITE DATA.csv')
+            # new row of responses to make categorical bins:
+            # this is not currently in use, but I'm keeping it in case we want to bring it back
+            user_scores = [fatiguescore, pemscore, sleepscore, cogscore]
+            responses = [fatiguescore, pemscore, sleepscore, cogscore]
+            newdf = df[(df['fatigue13c'] >= (responses[0]-0.5)) &
+               (df['fatigue13c'] <= (responses[0] + 0.5)) &
+               (df['minimum17c'] >= (responses[1] - 0.5)) &
+               (df['minimum17c'] <= (responses[1] + 0.5)) &
+               (df['unrefreshed19c'] >= (responses[2] - 0.5)) &
+               (df['unrefreshed19c'] <= (responses[2] + 0.5)) &
+               (df['remember36c'] <= (responses[3] + 0.5)) &
+               (df['remember36c'] >= (responses[3] - 0.5))]
+        else:
+            df = pd.read_csv("MECFS DATA.csv")
+            dfcon = pd.read_csv("MECFS CONTROLS 1.17.23 COMP.csv")
+            user_scores = [int(session['fatiguescoref']), int(session['fatiguescores']), int(session['pemscoref']),
+                           int(session['pemscores']), int(session['sleepscoref']), int(session['sleepscores']),
+                           int(session['cogscoref']), int(session['cogscores'])]
+
+            responses = user_scores
+
+            # Creating the categorical bins again, still not in use as of March 2023.
+            newdf = df[(df['fatigue13f'] >= (responses[0]-1)) &
+               (df['fatigue13f'] <= (responses[0] + 1)) &
+                (df['fatigue13s'] >= (responses[1] - 1)) &
+                (df['fatigue13s'] <= (responses[1] + 1)) &
+               (df[(pemname + 'f')] >= (responses[2] - 1)) &
+               (df[(pemname + 'f')] <= (responses[2] + 1)) &
+                (df[(pemname + 's')] >= (responses[3] - 1)) &
+                (df[(pemname + 's')] <= (responses[3] + 1)) &
+               (df[(sleepname + 'f')] >= (responses[4] - 1)) &
+               (df[(sleepname + 'f')] <= (responses[4] + 1)) &
+                (df[(sleepname + 's')] >= (responses[5] - 1)) &
+                (df[(sleepname + 's')] <= (responses[5] + 1)) &
+               (df[(cogname + 'f')] <= (responses[6] + 1)) &
+               (df[(cogname + 'f')] >= (responses[6] - 1)) &
+                (df[(cogname + 's')] <= (responses[7] + 1)) &
+                (df[(cogname + 's')] >= (responses[7] - 1))]
+
+        sample_size = len(newdf.index)
+
+        testAcc = round(np.mean(newdf['dx']==1), 2) * 100
+        iomfatiguecheck= ""
+        iompemcheck = ""
+        iomsleepcheck = ""
+        iomcogcheck = ""
+        if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >=2 and int(session['reduction'])==1:
+            iomfatiguecheck = "✓"
+        if int(session['minexf']) >= 2 and int(session['minexs']) >= 2:
+            iompemcheck = "✓"
+        if int(session['sleepf']) >= 2 and int(session['sleeps']) >= 2:
+            iomsleepcheck = "✓"
+        if int(session['rememberf']) and int(session['remembers']) >= 2:
+            iomcogcheck = "✓"
+
+        if iomfatiguecheck =="✓" and iompemcheck =="✓" and iomsleepcheck =="✓" and iomcogcheck =="✓":
+            iom_msg = "Your answers indicate you may meet the IOM Criteria for ME/CFS. To compare your"\
+            " scores with more case definitions, continue to the next section"
+
+        else:
+            iom_msg = 'Your responses do not meet the IOM Criteria for ME/CFS. To assess more case definitions, ' \
+                      'continue to the next section'
+
+        if session["checkbox"] == "data":
+            user_id = int(session['user_id'])
+            print(user_id)
+            cursor = mysql.connection.cursor()
+            if session['logged_in'] == True:
+                if 'user_id' in session:
+                    login_id = session['user_id']
+                else:
+                    # get the next auto-increment id value from the login table
+                    cursor.execute(
+                        "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'dsq_screener' AND TABLE_NAME = 'login'")
+                    result = cursor.fetchone()
+                    login_id = result[0]
+
+                    # insert a new row into the login table to reserve the id value
+                    cursor.execute("INSERT INTO login (id) VALUES (NULL)")
+                    mysql.connection.commit()
+
+                # insert the values into the screen table with the appropriate login_id
+                cursor.execute("""
+                    INSERT INTO screen (fatigue13f, fatigue13s, minimum17f, minimum17s, unrefreshed19f, unrefreshed19s,
+                                        remember36f, remember36s, reduction, login_id)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (int(session['fatiguescoref']), int(session['fatiguescores']), int(session['minexf']),
+                          int(session['minexs']),
+                          int(session['sleepf']), int(session['sleeps']), int(session['rememberf']),
+                          int(session['remembers']),
+                          int(session['reduction']), login_id))
+                mysql.connection.commit()
+
+        try:
+            composite_scores = [fatiguescore, pemscore, sleepscore, cogscore]
+            categories = ['Fatigue', 'Post-exertional malaise', 'Sleep problems',
+                          'Cognitive problems']
+
+            select_list = ['fatigue13c', (pemname + 'c'), (cogname + 'c'), (sleepname + 'c'), 'dx']
+            dfcon = dfcon[select_list]
+
+            fig = go.Figure(
+                data=[
+                    go.Bar(y=composite_scores, x=categories, name="Your scores"),
+                    go.Bar(y=np.mean(dfcon[(dfcon['dx']==1)], axis=0), x=categories,
+                                    name="Average ME/CFS scores")],
+                layout=go.Layout(
+                    title=go.layout.Title(text='Your scores compared'
+                                               ' with our dataset of 2,402 participants'),
+                    showlegend=True, legend=dict(
+                        orientation="h",
+                        yanchor="bottom",
+                        y=1.02,
+                        xanchor="right",
+                        x=1)))
+            fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores',
+                              xaxis_title='Symptom Domains')
+            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+            print(session["checkbox"])
+
+            return render_template("graph.html", probCFS=testAcc, sample_size=sample_size,
+                                   iomfatiguecheck=iomfatiguecheck, iompemcheck=iompemcheck,
+                                   iomsleepcheck=iomsleepcheck, iomcogcheck=iomcogcheck,
+                                   next_link="Continue to full DSQ", graphJSON=graphJSON, iom_msg=iom_msg)
+
+
+        except:
+            return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
+
+    # If users have just finished the short form:
     if survey == "rf14":
         import domainScores as ds
         import probabilities
@@ -151,7 +308,7 @@ def diagnose():
         sleepdomain = sleepscore
         cogdomain = (cogscore + int(session['attentionf']) + int(session['attentions'])) / 3
 
-    # This assesses the Fukuda case definition. Dr. Jason doesn't like the Fukuda criteria, so it's not in use atm
+    # This assesses the Fukuda case definition. Dr. Jason doesn't like the Fukuda criteria, so it's not used as much
         fukuda = 0
         for f in range(len(data)):
             if data[f] >= 2:
@@ -285,160 +442,6 @@ def diagnose():
                                ccc_cogcheck=ccc_cogcheck, ccc_autocheck=ccc_autocheck, ccc_immunecheck=ccc_immunecheck,
                                ccc_neurocheck=ccc_neurocheck)
 
-    # This is for the screener 5-question diagnosis
-    if survey == "classic":
-        import probabilities
-
-        pemscore = session['pemscore']
-
-        sleepscore = session['sleepscore']
-
-        cogscore = session['cogscore']
-
-        reduction = session['reduction']
-
-
-        cursor = mysql.connection.cursor()
-
-        cursor.execute('SELECT id FROM login ORDER BY id DESC LIMIT 1')
-
-        results = cursor.fetchone()
-        new_user = results[0]
-
-        re_array = np.array(results)
-        number_users = len(re_array)
-        mean_array = np.mean(re_array, axis=0)
-        print(mean_array)
-        session['pagenum']+=1
-        # see if we want to treat data as separate f and s or composite scores:
-        if composite == 1:
-            # new row of responses to make categorical bins:
-            user_scores = [fatiguescore, pemscore, sleepscore, cogscore]
-            responses = [fatiguescore, pemscore, sleepscore, cogscore]
-            newdf = df[(df['fatigue13c'] >= (responses[0]-0.5)) &
-               (df['fatigue13c'] <= (responses[0] + 0.5)) &
-               (df['minimum17c'] >= (responses[1] - 0.5)) &
-               (df['minimum17c'] <= (responses[1] + 0.5)) &
-               (df['unrefreshed19c'] >= (responses[2] - 0.5)) &
-               (df['unrefreshed19c'] <= (responses[2] + 0.5)) &
-               (df['remember36c'] <= (responses[3] + 0.5)) &
-               (df['remember36c'] >= (responses[3] - 0.5))]
-        else:
-            df = pd.read_csv("MECFS No Comorbidities vs All Others3.csv")
-            dfcon = pd.read_csv("MECFS CONTROLS 1.17.23 COMP.csv")
-            user_scores = [int(session['fatiguescoref']), int(session['fatiguescores']), int(session['pemscoref']),
-                           int(session['pemscores']), int(session['sleepscoref']), int(session['sleepscores']),
-                           int(session['cogscoref']), int(session['cogscores'])]
-
-            responses = user_scores
-            newdf = df[(df['fatigue13f'] >= (responses[0]-1)) &
-               (df['fatigue13f'] <= (responses[0] + 1)) &
-                (df['fatigue13s'] >= (responses[1] - 1)) &
-                (df['fatigue13s'] <= (responses[1] + 1)) &
-               (df[(pemname + 'f')] >= (responses[2] - 1)) &
-               (df[(pemname + 'f')] <= (responses[2] + 1)) &
-                (df[(pemname + 's')] >= (responses[3] - 1)) &
-                (df[(pemname + 's')] <= (responses[3] + 1)) &
-               (df[(sleepname + 'f')] >= (responses[4] - 1)) &
-               (df[(sleepname + 'f')] <= (responses[4] + 1)) &
-                (df[(sleepname + 's')] >= (responses[5] - 1)) &
-                (df[(sleepname + 's')] <= (responses[5] + 1)) &
-               (df[(cogname + 'f')] <= (responses[6] + 1)) &
-               (df[(cogname + 'f')] >= (responses[6] - 1)) &
-                (df[(cogname + 's')] <= (responses[7] + 1)) &
-                (df[(cogname + 's')] >= (responses[7] - 1))]
-
-        sample_size = len(newdf.index)
-
-        testAcc = round(np.mean(newdf['dx']==1), 2) * 100
-        iomfatiguecheck= ""
-        iompemcheck = ""
-        iomsleepcheck = ""
-        iomcogcheck = ""
-        if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >=2 and int(session['reduction'])==1:
-            iomfatiguecheck = "✓"
-        if int(session['minexf']) >= 2 and int(session['minexs']) >= 2:
-            iompemcheck = "✓"
-        if int(session['sleepf']) >= 2 and int(session['sleeps']) >= 2:
-            iomsleepcheck = "✓"
-        if int(session['rememberf']) and int(session['remembers']) >= 2:
-            iomcogcheck = "✓"
-
-        if iomfatiguecheck =="✓" and iompemcheck =="✓" and iomsleepcheck =="✓" and iomcogcheck =="✓":
-            iom_msg = "Your answers indicate you may meet the IOM Criteria for ME/CFS. To compare your"\
-            " scores with more case definitions, continue to the next section"
-
-        else:
-            iom_msg = 'Your responses do not meet the IOM Criteria for ME/CFS. To assess more case definitions, ' \
-                      'continue to the next section'
-
-        if session["checkbox"] == "data":
-            user_id = int(session['user_id'])
-            print(user_id)
-            cursor = mysql.connection.cursor()
-            if session['logged_in'] == True:
-                if 'user_id' in session:
-                    login_id = session['user_id']
-                else:
-                    # get the next auto-increment id value from the login table
-                    cursor.execute(
-                        "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'dsq_screener' AND TABLE_NAME = 'login'")
-                    result = cursor.fetchone()
-                    login_id = result[0]
-
-                    # insert a new row into the login table to reserve the id value
-                    cursor.execute("INSERT INTO login (id) VALUES (NULL)")
-                    mysql.connection.commit()
-
-                # insert the values into the screen table with the appropriate login_id
-                cursor.execute("""
-                    INSERT INTO screen (fatigue13f, fatigue13s, minimum17f, minimum17s, unrefreshed19f, unrefreshed19s,
-                                        remember36f, remember36s, reduction, login_id)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """, (int(session['fatiguescoref']), int(session['fatiguescores']), int(session['minexf']),
-                          int(session['minexs']),
-                          int(session['sleepf']), int(session['sleeps']), int(session['rememberf']),
-                          int(session['remembers']),
-                          int(session['reduction']), login_id))
-                mysql.connection.commit()
-
-        try:
-            composite_scores = [fatiguescore, pemscore, sleepscore, cogscore]
-            categories = ['Fatigue', 'Post-exertional malaise', 'Sleep problems',
-                          'Cognitive problems']
-            #dfcon['dx'] = dfcon['type.labels']
-            select_list = ['fatigue13c', (pemname + 'c'), (cogname + 'c'), (sleepname + 'c'), 'dx']
-            dfcon = dfcon[select_list]
-
-            fig = go.Figure(
-                data=[
-                    go.Bar(y=composite_scores, x=categories, name="Your scores"),
-                    go.Bar(y=np.mean(dfcon[(dfcon['dx']==1)], axis=0), x=categories,
-                                    name="Average ME/CFS scores")],
-                layout=go.Layout(
-                    title=go.layout.Title(text='Your scores compared'
-                                               ' with our dataset of 2,402 participants'),
-                    showlegend=True, legend=dict(
-                        orientation="h",
-                        yanchor="bottom",
-                        y=1.02,
-                        xanchor="right",
-                        x=1)))
-            fig.update_layout(yaxis_title='Averaged Frequency and Severity Scores',
-                              xaxis_title='Symptom Domains')
-            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-            print(session["checkbox"])
-
-            return render_template("graph.html", probCFS=testAcc, sample_size=sample_size,
-                                   iomfatiguecheck=iomfatiguecheck, iompemcheck=iompemcheck,
-                                   iomsleepcheck=iomsleepcheck, iomcogcheck=iomcogcheck,
-                                   next_link="Continue to full DSQ", graphJSON=graphJSON, iom_msg=iom_msg)
-
-            #pyo.plot(fig)
-
-        except:
-            return "<h1>Unfortunately, your scores are not represented in our dataset.</h1>"
 
 
 def diagnose2():
@@ -689,7 +692,7 @@ def home():
         return redirect(url_for("page1"))
     return render_template("home.html", session=session)
 
-# This is the function for the page when you click "My Data" from the submenu
+# This is the view function for the scores page when you click "My Data" from the submenu
 @app.route('/scores')
 def scores():
     name = session['user']
