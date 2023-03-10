@@ -625,12 +625,40 @@ from { width: 0; }
 .results {
 width: 49%;
 height: 500px;
-border: thin #c0c0c0 solid;
+/*
+border: thin #c0c0c0 solid;  */
+
 display: inline-block;
 margin-top: 20px;
 font: Arial;
 text-align: left;
 }
+
+.results ul {
+list-style-type: none;
+padding: 0;
+margin: 0;
+}
+.results li {
+border: 1px solid black;
+padding: 10px;
+}
+
+.symptoms {
+display: flex;
+flex-wrap: nowrap;
+}
+
+.left-column {
+flex: 1;
+}
+
+.right-column {
+text-align: left;
+align: left;
+flex: 1;
+}
+
 
 .results p {
 text-align: left;
@@ -745,13 +773,30 @@ filter: grayscale(0%);
 .results {
     width: 100%;
     border: none;
-    display: block;
     margin: auto;
     align: center;
     position: absolute;
     top: 100px;
     margin-bottom: 5px;
 }
+
+.symptoms {
+display: inline-block;
+flex-wrap: nowrap;
+}
+
+.left-column {
+display: inline-block;
+width: 50%;
+float: left;
+}
+
+.right-column {
+display: inline-block;
+width: 50%;
+float: right;
+}
+
 
 .chart-left {
 position: absolute;

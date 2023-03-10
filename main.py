@@ -155,6 +155,7 @@ def diagnose():
             responses = user_scores
 
             # Creating the categorical bins again, still not in use as of March 2023.
+            """
             newdf = df[(df['fatigue13f'] >= (responses[0]-1)) &
                (df['fatigue13f'] <= (responses[0] + 1)) &
                 (df['fatigue13s'] >= (responses[1] - 1)) &
@@ -171,32 +172,36 @@ def diagnose():
                (df[(cogname + 'f')] >= (responses[6] - 1)) &
                 (df[(cogname + 's')] <= (responses[7] + 1)) &
                 (df[(cogname + 's')] >= (responses[7] - 1))]
-
         sample_size = len(newdf.index)
+        testAcc = round(np.mean(newdf['dx']==1), 2) * 100"""
 
-        testAcc = round(np.mean(newdf['dx']==1), 2) * 100
-        iomfatiguecheck= ""
-        iompemcheck = ""
-        iomsleepcheck = ""
-        iomcogcheck = ""
-        if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >=2 and int(session['reduction'])==1:
-            iomfatiguecheck = "✓"
+        iomfatiguecheck= "No"
+        iomreductioncheck = "No"
+        iompemcheck = "No"
+        iomsleepcheck = "No"
+        iomcogcheck = "No"
+        if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >=2:
+            iomfatiguecheck = "Yes"
+        if int(session['reduction'])==1:
+            iomreductioncheck = "Yes"
         if int(session['minexf']) >= 2 and int(session['minexs']) >= 2:
-            iompemcheck = "✓"
+            iompemcheck = "Yes"
         if int(session['sleepf']) >= 2 and int(session['sleeps']) >= 2:
-            iomsleepcheck = "✓"
+            iomsleepcheck = "Yes"
         if int(session['rememberf']) and int(session['remembers']) >= 2:
-            iomcogcheck = "✓"
+            iomcogcheck = "Yes"
 
-        if iomfatiguecheck =="✓" and iompemcheck =="✓" and iomsleepcheck =="✓" and iomcogcheck =="✓":
+        if iomfatiguecheck =="Yes" and iomreductioncheck=="Yes" and iompemcheck =="Yes" and iomsleepcheck =="Yes" and iomcogcheck =="Yes":
             iom_msg = "Your answers indicate you may meet the IOM Criteria for ME/CFS. To compare your"\
             " scores with more case definitions, continue to the next section"
+            iomdxcheck = "Met"
 
         else:
             iom_msg = 'Your responses do not meet the IOM Criteria for ME/CFS. To assess more case definitions, ' \
                       'continue to the next section'
+            iomdxcheck = "Not met"
 
-        if session["checkbox"] == "data":
+        if session["checkbox"] == "data" and session['logged_in']:
             user_id = int(session['user_id'])
             print(user_id)
             cursor = mysql.connection.cursor()
@@ -254,8 +259,9 @@ def diagnose():
 
             print(session["checkbox"])
 
-            return render_template("graph.html", probCFS=testAcc, sample_size=sample_size,
-                                   iomfatiguecheck=iomfatiguecheck, iompemcheck=iompemcheck,
+            return render_template("graph.html",
+                                   iomfatiguecheck=iomfatiguecheck, iomreductioncheck=iomreductioncheck,
+                                   iompemcheck=iompemcheck, iomdxcheck=iomdxcheck,
                                    iomsleepcheck=iomsleepcheck, iomcogcheck=iomcogcheck,
                                    next_link="Continue to full DSQ", graphJSON=graphJSON, iom_msg=iom_msg)
 

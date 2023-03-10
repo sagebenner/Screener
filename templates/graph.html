@@ -44,7 +44,7 @@
        <b>Full Questionnaire</b></a><ul><li>Optional</li><li>40 more questions</li>
        <li>Assesses IOM, Fukuda, CCC, and ME-ICC Case Definitions</li></ul></div>
     </div> <br>
-<br>
+
     <div class="chart-left" >
   <figure id="chart"  ></figure>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
@@ -56,13 +56,36 @@
 
 <div class="results" >
 
-    <h3 style="margin:0;">Institute of Medicine (IOM) Case Definition Assessment</h3><hr>
-    <p> <b>{{ iom_msg }} </b></p><hr>
-       <p> <b> IOM Requirements Satisfied: <br> </b></p>
-    <ul ><li> <b>{% if iomfatiguecheck == '✓' %}{{ iomfatiguecheck }}{% else %}<u>&nbsp;&nbsp;&nbsp;</u>{% endif %}</b> Fatigue that persists at least 6 months and causes a substantial
-   reduction in functioning </li><li> <b>{% if iompemcheck == '✓' %}{{ iompemcheck }}{% else %}<u>&nbsp;&nbsp;&nbsp;</u>{% endif %}</b> Post-exertional malaise (PEM) </li>
-       <li> <b><u>{{ iomsleepcheck }} </u></b> Unrefreshing sleep </li> <li> <b><u>{{ iomcogcheck }} </u></b> Cognitive impairment </li></ul><hr>
-<div>
+        <h3 style="margin:0;">Institute of Medicine (IOM) Case Definition Assessment</h3><hr>
+            <p><b>{{ iom_msg }} </b></p><hr>
+                <p> <b> IOM Requirements Satisfied:  </b></p>
+        <div class="symptoms">
+            <div class="left-column">
+                    <ul >
+                        <li>Fatigue that persists at least 6 months </li>
+                        <li>50% or more reduction in functioning</li>
+                        <li>Post-exertional malaise (PEM) </li>
+                        <li>Unrefreshing sleep </li>
+                        <li>Cognitive impairment </li>
+                        <li><b>Diagnosis:</b></li>
+
+                    </ul>
+            </div>
+                    <div class="right-column">
+                      <ul>
+                        <li {% if iomfatiguecheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iomfatiguecheck }}</li>
+                        <li {% if iomreductioncheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iomreductioncheck }}</li>
+                        <li {% if iompemcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iompemcheck }}</li>
+                        <li {% if iomsleepcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iomsleepcheck }}</li>
+                        <li {% if iomcogcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iomcogcheck }}</li>
+                        <li><b>{{ iomdxcheck }}</b></li>
+                      </ul>
+                    </div>
+    </div>
+</div>
+
+    <div>
+
 <ul style="display: inline-block;"> <li style="display: inline-block;">
   <button style="white-space: nowrap; margin-right: 150px;" onclick="window.print();return false;" >
    <b>
@@ -72,7 +95,7 @@
     Continue</b></button></li>
 </ul>
 </div>
-</div>
+
 <div style="display: inline-block; ">
 <p class="disclaimer"><i>Note: this is not a medical diagnosis. We advise you to consult with your physician or seek an ME/CFS specialist
 if you think you may be suffering from ME/CFS.</i></p>
