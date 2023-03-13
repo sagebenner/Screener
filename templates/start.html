@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
+
+<head>
+    <meta charset="UTF-8">
+    <title>start</title>
+</head>
+<body class="waterbackground">
+    <div style="text-align: center">
+                <h2>Welcome to the online screener for Chronic Fatigue Syndrome (CFS) and Myalgic Encephalomyelitis (ME)</h2>
+        <ul style="display: inline-block; text-align: center;"><li style="display: inline-block;"><h3 class="ariel">
+          <i>Are you a researcher, clinician, or guest?</i></h3></li>
+          <li style="display: inline-block;"><a class="question" title="
+          Entering your login information will allow you to compare your responses across time">?</a></li></ul>
+      <br>
+        <form class="login" method="post">
+             <label for="survey" style=""></label>
+          <select name="survey" id="survey" title =  "">
+            <option value="classic">- Please select one -</option>
+            <option value="research">Researcher</option>
+            <option value="clinical">Clinician, patient, or guest</option>
+
+          </select>
+                <button style="margin: auto; " type="submit" name="result" value="continue" >Continue</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -173,7 +173,14 @@ figure {
     padding: 5px;
     margin: auto;
 }
-
+select {
+font-size: 1.1em;
+justify: center;
+}
+.firstoption {
+font-style: italic;
+color: gray;
+}
 .background {
     background-color: #DFE4ED;
     width: 70%;
@@ -712,6 +719,8 @@ margin-top: 20px;
 .login {
 font-size: 1em;
 padding: 10px;
+text-align: center;
+justify: center;
 }
 
 
