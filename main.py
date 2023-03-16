@@ -74,7 +74,9 @@ def register():
             return redirect(url_for('start'))
     return render_template('register.html')
 # Default url is the login page.
-# Eventually,  visiting the login page should be required, so you can't access any other url unless you have done so
+# Eventually,  visiting the login page should be required, 
+# so you can't access any other url unless you have done so.
+
 @app.route('/login', methods=['post', 'get'])
 def login():
     error = None
@@ -110,7 +112,7 @@ def login():
 
                 mesg = "Successfully logged in. Please continue."
                 session['logged_in'] = True
-                return redirect(url_for('home'))
+                return redirect(url_for('consent'))
             else:
                 error = "Please fill out all login information or click Continue as Guest"
                 session['user'] = "guest"
@@ -122,6 +124,12 @@ def login():
                 session['logged_in'] = False
                 return redirect(url_for('home'))
     return render_template('login.html', error=error, mesg=mesg, cont=cont)
+
+@app.route('/consent', methods=['post', 'get'])
+def consent():
+    if request.method=='POST':
+        return redirect(url_for('home'))
+    return render_template('consent.html')
 
 # The first main diagnosis function, for the screener and short form.
 def diagnose():
