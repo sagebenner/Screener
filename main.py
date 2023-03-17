@@ -1,6 +1,7 @@
 import numpy as np
 import plotly.utils
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask_session import Session
 from flask_wtf import FlaskForm
 from wtforms import RadioField, SubmitField
 import pandas as pd
@@ -17,10 +18,12 @@ import MySQLdb.cursors
 import re
 from os import path
 
-# imports the flask app we configured in the application folder:
-from website import create_app
+
+
+# imports the flask app we configured in the websites folder:
+from website import create_app, mysql
 app = create_app()
-app.config['SECRET_KEY'] = 'development'
+
 
 
 
@@ -41,7 +44,7 @@ cogname = str
 # Default url is the login page.
 # Eventually,  visiting the login page should be required, 
 # so you can't access any other url unless you have done so.
-
+"""
 @app.route('/login', methods=['post', 'get'])
 def login():
     error = None
@@ -88,11 +91,9 @@ def login():
                 session.pop('logged_in', None)
                 session['logged_in'] = False
                 return redirect(url_for('home'))
-    return render_template('login.html', error=error, mesg=mesg, cont=cont)
+    return render_template('login.html', error=error, mesg=mesg, cont=cont)"""
 
-app.route('/consent', methods=['post', 'get'])
-def consent():
-    return render_template('consent.html')
+
 
 # The first main diagnosis function, for the screener and short form.
 def diagnose():
@@ -679,6 +680,7 @@ def graph(graphJSON, probCFS, sample_size):
     return render_template("graph.html", graphJSON=graphJSON, probCFS=probCFS, sample_size=sample_size)
 
 # homepage
+"""
 @app.route('/home', methods=['post', 'get'])
 def home():
     global pagenum
@@ -692,7 +694,7 @@ def home():
 
         session["pagenum"] += 1
         return redirect(url_for("page1"))
-    return render_template("home.html", session=session)
+    return render_template("home.html", session=session)"""
 
 # This is the view function for the scores page when you click "My Data" from the submenu
 @app.route('/scores')
@@ -780,7 +782,7 @@ def page1():
     global SdataMatrix
     error = None
     form = FlaskForm()
-
+    session['pagenum'] = 1
     if request.method == "POST":
         selected_radio = request.form.get('fatigue')
         selected_severity = request.form.get('severity')

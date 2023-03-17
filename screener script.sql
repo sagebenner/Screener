@@ -2,7 +2,7 @@ CREATE DATABASE dsq_screener;
 
 USE dsq_screener;
 
-# This is only stores data from the first 5 questions
+# This only stores data from the first 5 questions
 CREATE TABLE screen (
 id INT NOT NULL AUTO_INCREMENT,
 fatigue13f INT,
