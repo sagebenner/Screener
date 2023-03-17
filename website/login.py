@@ -29,6 +29,8 @@ def research():
     if request.method=='POST':
         if request.form['result']=='back':
             return redirect(url_for('login.start'))
+        else:
+            return redirect(url_for('research_views.dashboard'))
     return render_template('research.html')
 
 @login.route('/register', methods=['post', 'get'])

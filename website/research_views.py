@@ -7,3 +7,8 @@ import numpy as np
 
 research_views = Blueprint('research_views', __name__)
 
+@research_views.route('/dashboard', methods=['post', 'get'])
+def dashboard():
+
+    return render_template('dashboard.html')
+
