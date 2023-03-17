@@ -4,12 +4,13 @@ import json
 import plotly.graph_objects as go
 import plotly.utils
 import numpy as np
+
 screener_views = Blueprint('screener_views', __name__)
 
 from website import mysql
 message = "Please enter a response for both frequency and severity before continuing"
 
-@screener_views.route('/home', methods=['post', 'get'])
+@screener_views.route('/', methods=['post', 'get'])
 def home():
     session["pagenum"] = 0
     survey = 'classic'

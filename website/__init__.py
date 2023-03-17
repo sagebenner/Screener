@@ -17,8 +17,10 @@ def create_app():
     
     from .screener_views import screener_views
     from .login import login
-    app.register_blueprint(screener_views, url_prefix='/screener/')
+    from .research_views import research_views
     app.register_blueprint(login, url_prefix='/')
+    app.register_blueprint(screener_views, url_prefix='/screener/')
+    app.register_blueprint(research_views, url_prefix='/research/')
 
     return app
 
