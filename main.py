@@ -13,24 +13,14 @@ import json
 # from wtforms.validators import InputRequired
 from flask_mysqldb import MySQL
 
-
 import MySQLdb.cursors
 import re
 from os import path
 
-
-app = Flask(__name__)
-process = []
+# imports the flask app we configured in the application folder:
+from website import create_app
+app = create_app()
 app.config['SECRET_KEY'] = 'development'
-
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'dsq_screener'
-
-
-mysql = MySQL(app)
-
 
 
 
@@ -48,31 +38,6 @@ pemname = str
 sleepname = str
 cogname = str
 
-
-@app.route('/', methods=['post', 'get'])
-def start():
-    if request.method=='POST':
-        user_option = request.form.get('survey')
-        session['user_option'] = user_option
-        if user_option == 'clinical':
-            return redirect(url_for('login'))
-        else:
-            return redirect(url_for('research'))
-    return render_template('start.html')
-
-@app.route('/research', methods=['post', 'get'])
-def research():
-    if request.method=='POST':
-        if request.form['result']=='back':
-            return redirect(url_for('start'))
-    return render_template('research.html')
-
-@app.route('/register', methods=['post', 'get'])
-def register():
-    if request.method=='POST':
-        if request.form['result']=='back':
-            return redirect(url_for('start'))
-    return render_template('register.html')
 # Default url is the login page.
 # Eventually,  visiting the login page should be required, 
 # so you can't access any other url unless you have done so.
