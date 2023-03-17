@@ -41,59 +41,7 @@ pemname = str
 sleepname = str
 cogname = str
 
-# Default url is the login page.
-# Eventually,  visiting the login page should be required, 
-# so you can't access any other url unless you have done so.
-"""
-@app.route('/login', methods=['post', 'get'])
-def login():
-    error = None
-    mesg = None
-    cont = "Continue as Guest"
-
-    if request.method == 'POST':
-        session["checkbox"] = request.form.get("checkbox")
-        if request.form['result'] == 'login':
-            firstname = request.form.get('firstname')
-            lastname = request.form.get('lastname')
-            email = str(request.form.get('email'))
-
-            if firstname != "" and lastname != "" and email != "":
-                print(firstname, lastname, email)
-                session['user'] = str(firstname)
-                print(session['user'])
-                email = str(request.form.get('email'))
-                cursor = mysql.connection.cursor()
-
-                cursor.execute('SELECT id FROM login WHERE email = %s', (email,))
-                row = cursor.fetchone()
-                print("row",row)
-
-                if row:
-                    print(row[0])
-                    session['user_id'] = row[0]
-                else:
-                    cursor.execute('INSERT INTO login (firstname, lastname, email) VALUES ( %s, %s, %s)',
-                                   (firstname, lastname, email))
-                    session['user_id'] = cursor.lastrowid
-                mysql.connection.commit()
-
-                mesg = "Successfully logged in. Please continue."
-                session['logged_in'] = True
-                return redirect(url_for('consent'))
-            else:
-                error = "Please fill out all login information or click Continue as Guest"
-                session['user'] = "guest"
-        if request.form['result'] == "guest":
-                session.clear()
-                session["checkbox"] = request.form.get("checkbox")
-                session['user'] = 'guest'
-                session.pop('logged_in', None)
-                session['logged_in'] = False
-                return redirect(url_for('home'))
-    return render_template('login.html', error=error, mesg=mesg, cont=cont)"""
-
-
+'''
 
 # The first main diagnosis function, for the screener and short form.
 def diagnose():
@@ -445,7 +393,7 @@ def diagnose():
                                ccc_cogcheck=ccc_cogcheck, ccc_autocheck=ccc_autocheck, ccc_immunecheck=ccc_immunecheck,
                                ccc_neurocheck=ccc_neurocheck)
 
-
+'''
 
 def diagnose2():
     import domainScores as ds
@@ -771,7 +719,7 @@ def scores():
         else:
             user_message = "You have data available from 3 sessions. A graph of your responses is shown below."
     return render_template('scores.html', name=name, user_message=user_message, graphJSON=graphJSON)
-
+"""
 # First symptom question
 @app.route('/fatigue', methods=['post', 'get'])
 def page1():
@@ -808,8 +756,8 @@ def page1():
             return render_template("result.html", error=message, pagenum=session['pagenum'],
                                    selected_radio=selected_radio, selected_severity=selected_severity)
     return render_template("result.html", error=error, pagenum=session['pagenum'])
-
-
+"""
+'''
 @app.route('/minimum', methods=["post", "get"])
 def page2():
     # fatiguescore = session["fatiguescore"]
@@ -909,7 +857,7 @@ def page4():
                                    rememberf=rememberf, remembers=remembers)
     return render_template("page4.html", pagenum=session['pagenum'], message='')
 
-
+'''
 @app.route('/end2', methods=['get'])
 def end2():
     global pagenum
