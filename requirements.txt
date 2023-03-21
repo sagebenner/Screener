@@ -1,0 +1,11 @@
+Flask
+numpy
+plotly
+flask_session
+flask_wtf
+pandas
+matplotlib
+mysqlclient
+flask_mysqldb
+
+
