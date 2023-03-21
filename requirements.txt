@@ -1,3 +1,4 @@
+# version agnostic package requirements, may need to be specified at some point
 Flask
 numpy
 plotly
@@ -7,5 +8,3 @@ pandas
 matplotlib
 mysqlclient
 flask_mysqldb
-
-
