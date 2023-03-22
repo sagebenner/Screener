@@ -1,0 +1,10 @@
+# version agnostic package requirements, may need to be specified at some point
+Flask
+numpy
+plotly
+flask_session
+flask_wtf
+pandas
+matplotlib
+mysqlclient
+flask_mysqldb
