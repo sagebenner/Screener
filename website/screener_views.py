@@ -238,3 +238,69 @@ def graph():
                                    iompemcheck=iompemcheck, iomdxcheck=iomdxcheck,
                                    iomsleepcheck=iomsleepcheck, iomcogcheck=iomcogcheck,
                                    next_link="Continue to full DSQ", graphJSON=graphJSON, iom_msg=iom_msg)
+
+@screener_views.route('/scores')
+def scores():
+    name = session['user']
+    user_id = session['user_id']
+    graphJSON = None
+    print(['user id', user_id])
+    if session['checkbox']=='data':
+        cursor = mysql.connection.cursor()
+        cursor.execute("""
+            SELECT fatigue13f, fatigue13s, minimum17f, minimum17s, unrefreshed19f, 
+            unrefreshed19s, remember36f, remember36s
+            FROM screen
+            JOIN login ON screen.login_id = login.id
+            WHERE login.id = %s
+        """, (user_id,))
+        results = cursor.fetchall()
+        print('results', results, type(results))
+        array = np.array(results)
+        print(array)
+        if len(array) > 0:
+
+            fatigue = np.mean([array[:,0], array[:,1]], axis=0)
+            pem = np.mean([array[:,2], array[:,3]], axis=0)
+            sleep = np.mean([array[:,4], array[:,5]], axis=0)
+            cog = np.mean([array[:,6], array[:,7]], axis=0)
+            plot_lines = [fatigue, pem, sleep, cog]
+            line_names = ["Fatigue", "PEM", "Sleep", "Cognitive Problems"]
+            print('array', fatigue)
+            timestamps = np.arange(len(array[:,0]))
+
+            length = len(array)
+            max_width = 16
+            fig = go.Figure()
+
+            for i in range(len(plot_lines)):
+                fig.add_trace(go.Scatter(x=timestamps, y=plot_lines[i], name=line_names[i],
+                                         line=dict(width=max_width - (i * 4))))
+                fig.update_traces(mode='lines')
+
+            fig.update_layout(title='Your domain scores over time', xaxis_title='Times you took the screener',
+                              yaxis_title='Domain scores')
+            fig.update_layout(xaxis=dict(
+                               tickmode='array',
+                               tickvals=timestamps,
+                               ticktext=[(int(val)+1) for val in timestamps]
+                               ))
+            fig.update_layout(yaxis_range=[0,4.5])
+
+            graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+            user_message = f"You have data available from {length} sessions. A graph of your responses is shown below."
+
+        else:
+            user_message = "You do not have any scores yet. Your saved responses will be available here once you take " \
+                          "the screener."
+        if name == "guest":
+            user_message = "You are using the screener as a guest, and do not have data stored. " \
+                           " To track your data over time, please login."
+    else:
+        if session['checkbox'] != "data":
+            user_message = "You logged in, but chose not to have your data stored, " \
+                           " so no information is available to report."
+        else:
+            user_message = "Test"
+
+    return render_template('scores.html', name=name, user_message=user_message, graphJSON=graphJSON)
