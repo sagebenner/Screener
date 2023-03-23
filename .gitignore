@@ -1,4 +1,5 @@
 *.wsuo
 .vs/VSWorkspaceState.json
- .vs/slnx.sqlite
+.vs/slnx.sqlite
 /env/
+__pycache__/
