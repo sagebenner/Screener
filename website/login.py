@@ -6,6 +6,7 @@ import base64
 from io import BytesIO
 import json
 from flask_mysqldb import MySQL
+import bcrypt
 
 from website import mysql
 login = Blueprint('login', __name__)
