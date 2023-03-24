@@ -45,3 +45,13 @@ lastname VARCHAR(255),
 email VARCHAR(255),
 PRIMARY KEY (id)
 );
+
+CREATE TABLE researcher (
+id INT NOT NULL AUTO_INCREMENT,
+firstname VARCHAR(255),
+lastname VARCHAR(255),
+email VARCHAR(255),
+password_hash VARCHAR(255),
+study_id INT,
+PRIMARY KEY (id)
+);
