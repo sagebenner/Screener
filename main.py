@@ -645,7 +645,7 @@ def home():
     return render_template("home.html", session=session)"""
 
 # This is the view function for the scores page when you click "My Data" from the submenu
-@app.route('/scores')
+'''@app.route('/scores')
 def scores():
     name = session['user']
     user_id = session['user_id']
@@ -718,7 +718,7 @@ def scores():
                            " so no information is available to report."
         else:
             user_message = "You have data available from 3 sessions. A graph of your responses is shown below."
-    return render_template('scores.html', name=name, user_message=user_message, graphJSON=graphJSON)
+    return render_template('scores.html', name=name, user_message=user_message, graphJSON=graphJSON)'''
 """
 # First symptom question
 @app.route('/fatigue', methods=['post', 'get'])
