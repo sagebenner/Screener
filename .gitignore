@@ -3,3 +3,4 @@
 .vs/slnx.sqlite
 /env/
 __pycache__/
+*.pyc
