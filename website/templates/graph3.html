@@ -5,10 +5,11 @@
 
  <body >
 
+
 <header >
     <ul class="menu">
     <li >
-    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('screener_views.home') }}">Home</a>
      </li>
   <li>
    <a href="{{ url_for('aboutmecfs')}}">About</a><ul class="submenu2">
@@ -20,14 +21,14 @@
       <li><a href="{{ url_for('about') }}">About This Screener</a></li>
     </ul>
   </li>
-        <li > <a  href="{{ url_for('scores') }}">Account</a>
+        <li > <a  href="{{ url_for('screener_views.scores') }}">Account</a>
         <ul class="submenu">
       {% if session.logged_in %}
-            <li><a href="{{ url_for('login') }}">Logout</a></li>
+            <li><a href="{{ url_for('login.log_in') }}">Logout</a></li>
         {% else %}
-            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('login.log_in') }}">Login</a></li>
         {% endif %}
-      <li><a href="{{ url_for('scores') }}">My Data</a></li>
+      <li><a href="{{ url_for('screener_views.scores') }}">My Data</a></li>
 
     </ul></li>
  </ul>
