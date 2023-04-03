@@ -10,6 +10,10 @@ short_form = Blueprint('short_form', __name__)
 from website import mysql
 message = "Please enter a response for both frequency and severity before continuing"
 
+@short_form.route('/shortform', methods=['post', 'get'])
+def shortform():
+    return render_template('shortform.html')
+
 @short_form.route('/soreness', methods=['post', 'get'])
 def expem1():
     global pemname
