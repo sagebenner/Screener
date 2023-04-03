@@ -777,6 +777,7 @@ height: auto;
 margin-top: 5px;
 bottom: 0px;
 filter: grayscale(0%);
+display: none;
 }
 
 .results {
@@ -813,6 +814,7 @@ border: none;
 height: auto;
 width: auto;
 margin-top: 5px;
+display: none;
 }
 
 button {
