@@ -215,70 +215,74 @@ def graph2():
 
     ccc_dx = False
 
-    if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >= 2 and int(session['reduction']) == 1:
+    if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >= 2:
         ccc_fatigue = 1
-        # These checkmarks will be passed to the HTML page to put a checkmark next to relevant symptoms:
-        ccc_fatiguecheck = "✓"
+
+        ccc_fatiguecheck = "Yes"
     else:
         ccc_fatigue = 0
-        ccc_fatiguecheck = ""
+        ccc_fatiguecheck = "No"
+    if int(session['reduction']) == 1:
+        ccc_reduction = "Yes"
+    else:
+        ccc_reduction = "No"
     if int(session['musclef']) >= 2 and int(session['muscles']) >= 2:
         ccc_pain = 1
-        ccc_paincheck = "✓"
+        ccc_paincheck = "Yes"
     else:
         ccc_pain = 0
-        ccc_paincheck = ""
+        ccc_paincheck = "No"
     if int(session['sleepf']) >= 2 and int(session['sleeps']) >= 2:
         ccc_sleep = 1
-        ccc_sleepcheck = "✓"
+        ccc_sleepcheck = "Yes"
     else:
         ccc_sleep = 0
-        ccc_sleepcheck = ""
+        ccc_sleepcheck = "No"
     if (int(session['minexf']) >= 2 and int(session['minexs']) >= 2) or (
             int(session['soref']) >= 2 and int(session['sores']) >= 2):
         ccc_pem = 1
-        ccc_pemcheck = "✓"
+        ccc_pemcheck = "Yes"
     else:
         ccc_pem = 0
-        ccc_pemcheck = ""
+        ccc_pemcheck = "No"
     if (int(session['rememberf']) >= 2 and int(session['remembers']) >= 2) and (
             int(session['attentionf']) >= 2 and int(session['attentions']) >= 2):
         ccc_cog = 1
-        ccc_cogcheck = "✓"
+        ccc_cogcheck = "Yes"
     else:
         ccc_cog = 0
-        ccc_cogcheck = ""
+        ccc_cogcheck = "No"
 
     if (int(session['unsteadyf']) >= 2 and int(session['unsteadys']) >= 2) or (
             int(session['bowelf']) >= 2 and int(session['bowels']) >= 2) or (
             int(session['bloatf']) >= 2 and int(session['bloats']) >= 2):
         ccc_auto = 1
-        ccc_autocheck = "✓"
+        ccc_autocheck = "Yes"
     else:
         ccc_auto = 0
-        ccc_autocheck = ""
+        ccc_autocheck = "No"
     if (int(session['limbsf']) >= 2 and int(session['limbss']) >= 2) or (
             int(session['hotf']) >= 2 and int(session['hots']) >= 2):
         ccc_neuro = 1
-        ccc_neurocheck = "✓"
+        ccc_neurocheck = "Yes"
     else:
         ccc_neuro = 0
-        ccc_neurocheck = ""
+        ccc_neurocheck = "No"
     if (int(session['fluf']) >= 2 and int(session['flus']) >= 2) or (
             int(session['smellf']) >= 2 and int(session['smells']) >= 2):
         ccc_immune = 1
-        ccc_immunecheck = "✓"
+        ccc_immunecheck = "Yes"
     else:
         ccc_immune = 0
-        ccc_immunecheck = ""
+        ccc_immunecheck = "No"
     ccc_poly = np.sum([ccc_auto, ccc_neuro, ccc_immune])
     # most of the symptoms are required, but there is one polythetic criteria, shown here by ccc_poly
     if np.sum([ccc_fatigue, ccc_pem, ccc_sleep, ccc_pain, ccc_cog]) >= 5 and ccc_poly >= 2:
-        ccc_dx = True
+        ccc_dx = "Yes"
         ccc_msg = "Your responses suggest that you meet the Canadian Consensus Criteria for ME/CFS. " \
                   "To compare your symptoms with more case definitions, click Continue."
     else:
-        ccc_dx = False
+        ccc_dx = "No"
         ccc_msg = "Your responses do not meet the Canadian Consensus Criteria for ME/CFS. " \
                   "To compare your symptoms with more case definitions, click Continue."
 
@@ -330,4 +334,4 @@ def graph2():
     return render_template("graph2.html", graphJSON=graphJSON, ccc_msg=ccc_msg, ccc_fatiguecheck=ccc_fatiguecheck,
                            ccc_pemcheck=ccc_pemcheck, ccc_paincheck=ccc_paincheck, ccc_sleepcheck=ccc_sleepcheck,
                            ccc_cogcheck=ccc_cogcheck, ccc_autocheck=ccc_autocheck, ccc_immunecheck=ccc_immunecheck,
-                           ccc_neurocheck=ccc_neurocheck)
+                           ccc_neurocheck=ccc_neurocheck, ccc_dx=ccc_dx, ccc_reduction=ccc_reduction)
