@@ -631,15 +631,15 @@ from { width: 0; }
 
 
 .results {
-width: 49%;
+width: 50%;
 height: 500px;
 /*
 border: thin #c0c0c0 solid;  */
-
-display: inline-block;
+margin: auto;
+display: block;
 margin-top: 20px;
 font: Arial;
-text-align: left;
+text-align: center;
 }
 
 .results ul {

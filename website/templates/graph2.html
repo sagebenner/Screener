@@ -33,25 +33,17 @@
 </header>
    <h3 class="ariel">Short Form Questionnaire Results</h3>
    <hr>
-      <div class="container" style="align: center; z-index:100; position: relative; " >
-        <div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener <u>✓</u></b></a>
-        <ul><li>5 Questions</li><li>Estimates Probability of ME/CFS from your scores</li>
-            <li>Assesses IOM 2015 Case Definition</li></ul></div><span class="arrow right"></span>
-       <div id="stagetwo" style="font: Ariel;" class="layout-one"><a ><b>Short Form <u>✓</u></b></a><ul><li>Optional</li>
-           <li>10 more questions</li><li>Assesses CCC Case Definition</li></ul></div>
-       <span class="arrow right"></span><div id="stagethree" style="font: Ariel;" class="layout-one"><a>
-       <b>Full Questionnaire</b></a><ul><li>Optional</li><li>40 more questions</li>
-       <li>Assesses IOM, Fukuda, CCC, and ME-ICC Case Definitions</li></ul></div>
-    </div> <br>
+<div class="container" style="align: center; z-index:100; position: relative; " >
+<div id="stageone" style="font: Ariel;" class="layout-one"><a><b>Screener <u>✓</u></b></a>
+<ul><li>5 Questions</li><li>Estimates Probability of ME/CFS from your scores</li>
+    <li>Assesses IOM 2015 Case Definition</li></ul></div><span class="arrow right"></span>
+<div id="stagetwo" style="font: Ariel;" class="layout-one"><a ><b>Short Form <u>✓</u></b></a><ul><li>Optional</li>
+   <li>10 more questions</li><li>Assesses CCC Case Definition</li></ul></div>
+<span class="arrow right"></span><div id="stagethree" style="font: Ariel;" class="layout-one"><a>
+<b>Full Questionnaire</b></a><ul><li>Optional</li><li>40 more questions</li>
+<li>Assesses IOM, Fukuda, CCC, and ME-ICC Case Definitions</li></ul></div>
+</div> <br>
 
-       <div class="chart-center" style="height: 650px;">
-  <figure id="chart"  ></figure>
-<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-<script type='text/javascript'>
-  var graphs = {{graphJSON | safe}};
-  Plotly.plot('chart',graphs,{});
-</script>
-</div>
 <div style="" class="results" >
 
         <h3 style="margin:0;">Canadian 2003 ME/CFS Case Definition</h3><hr>
@@ -90,6 +82,16 @@
     </div>
 </div>
 
+<div class="container">
+     <div class="chart-center" style="height: 650px;">
+         <figure id="chart"  ></figure>
+            <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+            <script type='text/javascript'>
+          var graphs = {{graphJSON | safe}};
+          Plotly.plot('chart',graphs,{});
+            </script>
+    </div>
+</div>
 
 <div>
 <ul style="display: inline-block;"> <li style="display: inline-block;">
