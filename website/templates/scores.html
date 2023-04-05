@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
+{% extends 'base.html' %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Scores</title>
-</head>
+{% block title %}
+  <title>Scores</title>
+{% endblock %}
+
 <body>
 <header >
     <ul class="menu">

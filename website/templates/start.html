@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>start</title>
-</head>
+{% block title %}
+  <title>start</title>
+{% endblock %}
+
 <body class="waterbackground">
 <div style="text-align: center; margin: 40px; margin-bottom: -50px;"><img src="{{url_for('static', filename='icon4.png')}}" height="80px;" width="auto;"></div>
 
