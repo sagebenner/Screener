@@ -1,6 +1,6 @@
 body {
 
-  font-family:"Times New Roman",Times,serif;
+  font-family: 'Figtree', sans-serif;
   color: #444;
   background-color: hsl(0, 0%, 98%);
   align: center;
@@ -327,7 +327,7 @@ text-decoration: underline;
 /* The contaner must be positioned relative: */
 .custom-select {
   position: relative;
-  font-family: Times New Roman;
+  font-family: 'Figtree', sans-serif;
   width: 100%;
   left: 0px;
   bottom: 500px;
