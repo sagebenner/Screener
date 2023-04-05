@@ -44,7 +44,7 @@
        <li>Assesses IOM, Fukuda, CCC, and ME-ICC Case Definitions</li></ul></div>
     </div> <br>
 
-       <div class="chart-left" style="height: 650px;">
+       <div class="chart-center" style="height: 650px;">
   <figure id="chart"  ></figure>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script type='text/javascript'>
@@ -52,8 +52,45 @@
   Plotly.plot('chart',graphs,{});
 </script>
 </div>
+<div style="" class="results" >
 
-   <div class="results" style="height: 650px;">
+        <h3 style="margin:0;">Canadian 2003 ME/CFS Case Definition</h3><hr>
+            <p><b>{{ ccc_msg }} </b></p><hr>
+                <p> <b>Case Definition Requirements Satisfied:  </b></p>
+        <div class="symptoms">
+            <div class="left-column">
+                    <ul >
+                        <li>Fatigue that persists at least 6 months </li>
+                        <li>50% or more reduction in functioning</li>
+                        <li>Post-exertional malaise (PEM) </li>
+                        <li>Sleep Problems</li>
+                        <li>Pain</li>
+                        <li>Neurocognitive Issues</li>
+                        <li>Autonomic Dysfunction</li>
+                        <li>Neuroendocrine Issues</li>
+                        <li>Immune Symptoms</li>
+                        <li><b>Diagnosis:</b></li>
+
+                    </ul>
+            </div>
+                    <div class="right-column">
+                      <ul>
+                        <li {% if ccc_fatiguecheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_fatiguecheck }}</li>
+                        <li {% if iomreductioncheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iomreductioncheck }}</li>
+                        <li {% if ccc_pemcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_pemcheck }}</li>
+                        <li {% if ccc_sleepcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_sleepcheck }}</li>
+                        <li {% if ccc_paincheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_paincheck }}</li>
+                        <li {% if ccc_cogcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_cogcheck }}</li>
+                        <li {% if ccc_autocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_autocheck }}</li>
+                        <li {% if ccc_neurocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_cogcheck }}</li>
+                        <li {% if ccc_immunecheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_cogcheck }}</li>
+                        <li><b>{{ ccc_dxcheck }}</b></li>
+                      </ul>
+                    </div>
+    </div>
+</div>
+
+<div class="results" style="height: 650px;">
 
     <h3 style="margin: 0;">Canadian Consensus Criteria (CCC) Assessment</h3><hr>
     <p> <b>{{ ccc_msg }} </b></p><hr>
