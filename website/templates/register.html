@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
+{% block title %}
     <title>Register</title>
-</head>
+{% endblock %}
+
+
 <body class="">
 <div style="text-align: center; margin: 20px;"><img src="{{url_for('static', filename='research.png')}}" height="80px;" width="auto;"></div>
         <h2>Welcome to the online DePaul Symptom Questionnaire for Research and Data Collection</h2>
