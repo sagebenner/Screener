@@ -95,7 +95,7 @@
                         <li {% if meicc_respiratorycheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_respiratorycheck }}</li>
                         <li {% if meicc_thermocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_thermocheck }}</li>
                         <li {% if meicc_tempcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_tempcheck }}</li>
-                        <li><b>{{ ccc_dx }}</b></li>
+                        <li><b>{{ meicc_dxcheck }}</b></li>
                       </ul>
                     </div>
     </div>
@@ -141,6 +141,10 @@
     </ol></li>
 
    </ul><hr>
+
+    <p><i>Note: this is not a medical diagnosis. We advise you to consult with your physician or seek an ME/CFS specialist
+if you think you may be suffering from ME/CFS.</i></p>
+</div>
 <div>
 <ul style="display: inline-block;"> <li style="display: inline-block;">
   <button style="white-space: nowrap; margin-right: 150px;" onclick="window.print();return false;" >
@@ -149,10 +153,6 @@
 
 </ul>
 </div>
-    <p><i>Note: this is not a medical diagnosis. We advise you to consult with your physician or seek an ME/CFS specialist
-if you think you may be suffering from ME/CFS.</i></p>
-</div>
-
 </body>
 
 </html>
