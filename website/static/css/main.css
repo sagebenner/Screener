@@ -654,6 +654,7 @@ margin: 0;
 .results li {
 border: 1px solid black;
 padding: 10px;
+height: 30px;
 }
 
 .symptoms {
