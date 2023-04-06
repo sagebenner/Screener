@@ -1,6 +1,6 @@
-<!-- base template to be included on every template as boilerplate -->
+{# boilerplate base template to be included in all templates #}
 <!DOCTYPE html>
-<html lang="en"></html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -10,10 +10,15 @@
   <meta name="description" content="A self-guided assessment for ME/CFS (myalgic encephalomyelitis / chronic fatigue syndrome).">
   <meta name="author" content="The Center for Community Research - Depaul University">
   
-  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicons/favicon-32x32.ico">
-  <link rel="icon" type="image/png" sizes="16x16" href="/static/favicons/favicon-16x16.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="/static/favicons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}">
   
   <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
 
 </head>
+
+{% block content %}
+{% endblock %}
+
+</html>

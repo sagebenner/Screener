@@ -4,8 +4,7 @@
     <title>Login Page</title>
 {% endblock %}
 
-<header></header>
-
+{% block content %}
 <body class="waterbackground">
 <div style="text-align: center; margin: 40px; margin-bottom: -50px;"><img src="{{url_for('static', filename='icon4.png')}}" height="80px;" width="auto;"></div>
     <div style="text-align: center; " >
@@ -45,4 +44,4 @@ a result, then erased once you close this webpage. ">?</a></li></ul>  </form>
         </div>
     </div>
 </body>
-</html>
+{% endblock %}
