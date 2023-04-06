@@ -3,7 +3,6 @@ body {
   font-family: 'Figtree', sans-serif;
   color: #444;
   background-color: hsl(0, 0%, 98%);
-  align: center;
   padding: 0;
   margin: 0;
 }
@@ -16,7 +15,7 @@ header {
   width: 100%;
   text-align: center;
   text-transform: none;
-  text-color: #444;
+  color: #444;
   padding: 0;
   margin: 0;
 }
@@ -32,13 +31,12 @@ header h1.logo {
 header h1.logo:hover {
   color: #fff;
   text-decoration: none;
-  text-align: center:
+  text-align: center;
 }
 /*
  * Centering the body content
  */
 .container {
-  align: center;
   text-align: center;
 }
 
@@ -47,7 +45,6 @@ header h1.logo:hover {
   background-repeat: no-repeat;
   background-position: 50% 0;
   background-size: cover;
-  align: center;
   text-align: center;
 }
 
@@ -184,7 +181,6 @@ figure {
 
 select {
 font-size: 1.1em;
-justify: center;
 }
 
 .firstoption {
@@ -197,7 +193,6 @@ color: gray;
     width: 70%;
     height: auto;
     border: thin #c0c0c0 solid;
-    align: center;
     font: Ariel;
 }
 
@@ -674,7 +669,6 @@ from { width: 0; }
 
 .right-column {
   text-align: left;
-  align: left;
   flex: 1;
 }
 
@@ -741,7 +735,6 @@ from { width: 0; }
   font-size: 1em;
   padding: 10px;
   text-align: center;
-  justify: center;
 }
 
 
@@ -803,7 +796,6 @@ from { width: 0; }
     width: 100%;
     border: none;
     margin: auto;
-    align: center;
     position: absolute;
     top: 100px;
     margin-bottom: 5px;
