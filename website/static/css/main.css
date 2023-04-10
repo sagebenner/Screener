@@ -851,7 +851,9 @@ from { width: 0; }
         margin-bottom: 20px;
         font-size: 1.3em;
     }
+
 /* These are bandaid fixes; we will want to remove style tags in HTML pages*/
+
 
     #left {
         width: auto !important;
@@ -865,6 +867,7 @@ from { width: 0; }
         height: auto !important;
         float: none !important;
     }
+
     button {
         font-size: 1.5em;
         margin-left: 50%;
@@ -881,7 +884,6 @@ from { width: 0; }
     }
 
 }
-
 
 
 }
