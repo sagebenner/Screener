@@ -46,7 +46,63 @@
        <li>Assesses ME-ICC Case Definition</li></ul></div>
     </div> <br>
 
-    <div class="chart-left" >
+
+<div style="" class="results" >
+
+        <h3 style="margin:0;">ME-ICC Assessment</h3><hr>
+            <p><b>{{ me_icc }} </b></p><hr>
+                <p> <b>Case Definition Requirements Satisfied:  </b></p>
+        <div class="symptoms">
+            <div class="left-column">
+                    <ul >
+                        <li>Post-Exertional Malaise (PEM) </li>
+                        <li><i>One symptom in at least three of the following categories:</i></li>
+                        <li>Neurocognitive impairments </li>
+                        <li>Pain</li>
+                        <li>Sleep disturbance</li>
+                        <li>Neurosensory, perceptual and motor disturbances</li>
+                        <li><i>One symptom in at least three of the following categories:</i></li>
+                        <li>Flu-like symptoms</li>
+                        <li>Susceptibility to viral infections with prolonged recovery periods</li>
+                        <li>Gastro-intestinal tract disturbances</li>
+                        <li>Geniourinary disturbances</li>
+                        <li>Sensitivities to food, medications, odors, or chemicals</li>
+                        <li><i>At least one symptom from the following categories:</i></li>
+                        <li>Cardiovascular</li>
+                        <li>Respiratory</li>
+                        <li>Loss of thermostatic stability</li>
+                        <li>Intolerance of extremes of temperature</li>
+                        <li><b>Diagnosis:</b></li>
+
+                    </ul>
+            </div>
+                    <div class="right-column">
+                      <ul>
+                        <li {% if meicc_pemcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_pemcheck }}</li>
+                        <li></li>
+                        <li {% if meicc_cogcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_cogcheck }}</li>
+                        <li {% if meicc_paincheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_paincheck }}</li>
+                        <li {% if meicc_sleepcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_sleepcheck }}</li>
+                        <li {% if meicc_motorcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_motorcheck }}</li>
+                        <li></li>
+                        <li {% if meicc_flucheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_flucheck }}</li>
+                        <li {% if meicc_viralcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_viralcheck }}</li>
+                        <li {% if meicc_gastrocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_gastrocheck }}</li>
+                        <li {% if meicc_bladdercheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_bladdercheck }}</li>
+                        <li {% if meicc_sensitivitycheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_sensitivitycheck }}</li>
+                        <li><i></i></li>
+                        <li {% if meicc_cardiocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_cardiocheck }}</li>
+                        <li {% if meicc_respiratorycheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_respiratorycheck }}</li>
+                        <li {% if meicc_thermocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_thermocheck }}</li>
+                        <li {% if meicc_tempcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_tempcheck }}</li>
+                        <li><b>{{ meicc_dxcheck }}</b></li>
+                      </ul>
+                    </div>
+    </div>
+</div>
+
+
+    <div class="chart-center" >
   <figure id="chart"  ></figure>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script type='text/javascript'>
@@ -55,7 +111,7 @@
 </script>
 </div>
 
-<div class="results" style="height: 650px;">
+<div class="results" style="display: none;">
 
     <h3 style="margin: 0;">ME-ICC Assessment</h3><hr>
     <p> <b>{{ me_icc }} </b></p><hr>
@@ -85,6 +141,10 @@
     </ol></li>
 
    </ul><hr>
+
+    <p><i>Note: this is not a medical diagnosis. We advise you to consult with your physician or seek an ME/CFS specialist
+if you think you may be suffering from ME/CFS.</i></p>
+</div>
 <div>
 <ul style="display: inline-block;"> <li style="display: inline-block;">
   <button style="white-space: nowrap; margin-right: 150px;" onclick="window.print();return false;" >
@@ -93,10 +153,6 @@
 
 </ul>
 </div>
-    <p><i>Note: this is not a medical diagnosis. We advise you to consult with your physician or seek an ME/CFS specialist
-if you think you may be suffering from ME/CFS.</i></p>
-</div>
-
 </body>
 
 </html>

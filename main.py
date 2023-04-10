@@ -104,10 +104,10 @@ def diagnose2():
         (int(session['soref'])>=2 and int(session['sores'])>=2) or (int(session['mentalf'])>=2 and int(session['mentals'])>=2) or\
             (int(session['drainedf'])>=2 and int(session['draineds'])>=2):
         ME_A = 1
-        meicc_pemcheck = "✓"
+        meicc_pemcheck = "Yes"
     else:
         ME_A = 0
-        meicc_pemcheck = ""
+        meicc_pemcheck = "No"
     print(ME_A)
     if (int(session['rememberf'])>=2 and int(session['remembers'])>=2) or (int(session['attentionf'])>=2 and int(session['attentions'])>=2) or\
         (int(session['wordf'])>=2 and int(session['words'])>=2) or (int(session['understandf'])>=2 and int(session['understands'])>=2) or\
@@ -115,37 +115,37 @@ def diagnose2():
             (int(session['depthf']) >= 2 and int(session['depths']) >= 2) or  (int(session['slowf'])>=2 and int(session['slows'])>=2) or \
             (int(session['absentf']) >= 2 and int(session['absents']) >= 2):
         ME_B1 = 1
-        meicc_cogcheck = "✓"
+        meicc_cogcheck = "Yes"
     else:
         ME_B1 = 0
-        meicc_cogcheck = ""
+        meicc_cogcheck = "No"
     print(ME_B1)
     if (int(session['musclef'])>=2 and int(session['muscles'])>=2) or (int(session['jointpainf'])>=2 and int(session['jointpains'])>=2) or\
         (int(session['eyepainf'])>=2 and int(session['eyepains'])>=2) or (int(session['chestpainf'])>=2 and int(session['chestpains'])>=2) or\
             (int(session['headachesf'])>=2 and int(session['headachess'])>=2):
         ME_B2 = 1
-        meicc_paincheck = "✓"
+        meicc_paincheck = "Yes"
     else:
         ME_B2 = 0
-        meicc_paincheck = ""
+        meicc_paincheck = "No"
     print(ME_B2)
     if (int(session['sleepf'])>=2 and int(session['sleeps'])>=2) or (int(session['napf'])>=2 and int(session['naps'])>=2) or\
         (int(session['fallf'])>=2 and int(session['falls'])>=2) or (int(session['stayf'])>=2 and int(session['stays'])>=2) or\
             (int(session['earlyf'])>=2 and int(session['earlys'])>=2) or (int(session['alldayf'])>=2 and int(session['alldays'])>=2):
         ME_B3 = 1
-        meicc_sleepcheck = "✓"
+        meicc_sleepcheck = "Yes"
     else:
         ME_B3 = 0
-        meicc_sleepcheck = ""
+        meicc_sleepcheck = "No"
     print(ME_B3)
     if (int(session['twitchesf'])>=2 and int(session['twitchess'])>=2) or (int(session['weakf'])>=2 and int(session['weaks'])>=2) or\
         (int(session['noisef'])>=2 and int(session['noises'])>=2) or (int(session['lightsf'])>=2 and int(session['lightss'])>=2) or\
             (int(session['unsteadyf'])>=2 and int(session['unsteadys'])>=2):
         ME_B4 = 1
-        meicc_motorcheck = "✓"
+        meicc_motorcheck = "Yes"
     else:
         ME_B4 = 0
-        meicc_motorcheck = ""
+        meicc_motorcheck = "No"
     print(ME_B4)
     if (ME_B1+ ME_B2 + ME_B3 + ME_B4) >= 3:
         ME_B = 1
@@ -155,40 +155,40 @@ def diagnose2():
     if (int(session['throatf'])>=2 and int(session['throats'])>=2) or (int(session['lymphnodesf'])>=2 and int(session['lymphnodess'])>=2) or\
         (int(session['feverf'])>=2 and int(session['fevers'])>=2) or (int(session['fluf'])>=2 and int(session['flus'])>=2):
         ME_C1 = 1
-        meicc_flucheck = "✓"
+        meicc_flucheck = "Yes"
     else:
         ME_C1 = 0
-        meicc_flucheck = ""
+        meicc_flucheck = "No"
     print(ME_C1)
 
     if int(session['viral']) == 1:
         ME_C2 = 1
-        meicc_viralcheck = "✓"
+        meicc_viralcheck = "Yes"
     else:
         ME_C2 = 0
-        meicc_viralcheck = ""
+        meicc_viralcheck = "No"
     if (int(session['bloatf'])>=2 and int(session['bloats'])>=2) or (int(session['stomachf'])>=2 and int(session['stomachs'])>=2) or\
         (int(session['bowelf'])>=2 and int(session['bowels'])>=2) or (int(session['nauseaf'])>=2 and int(session['nauseas'])>=2):
         ME_C3 = 1
-        meicc_gastrocheck = "✓"
+        meicc_gastrocheck = "Yes"
     else:
         ME_C3 = 0
-        meicc_gastrocheck = ""
+        meicc_gastrocheck = "No"
     print(ME_C3)
     if int(session['bladderf']) >=2 and int(session['bladders']) >= 2:
         ME_C4 = 1
-        meicc_bladdercheck = "✓"
+        meicc_bladdercheck = "Yes"
     else:
         ME_C4 = 0
-        meicc_bladdercheck = "✓"
+        meicc_bladdercheck = "No"
     print(ME_C4)
     if (int(session['alcoholf']) >= 2 and int(session['alcohols']) >= 2) or (
             int(session['smellf']) >= 2 and int(session['smells']) >= 2):
         ME_C5 = 1
-        meicc_sensitivitycheck = "✓"
+        meicc_sensitivitycheck = "Yes"
     else:
         ME_C5 = 0
-        meicc_sensitivitycheck = ""
+        meicc_sensitivitycheck = "No"
     print(ME_C5)
     if (ME_C1 + ME_C2 + ME_C3 + ME_C4 + ME_C5) >= 3:
         ME_C = 1
@@ -198,17 +198,17 @@ def diagnose2():
     if (int(session['dizzyf']) >= 2 and int(session['dizzys']) >= 2) or (
             int(session['heartf']) >= 2 and int(session['hearts']) >= 2):
         ME_D1 = 1
-        meicc_cardiocheck = "✓"
+        meicc_cardiocheck = "Yes"
     else:
         ME_D1 = 0
-        meicc_cardiocheck = ""
+        meicc_cardiocheck = "No"
     print(ME_D1)
     if int(session['shortf']) >=2 and int(session['shorts']) >= 2:
         ME_D2 = 1
-        meicc_respiratorycheck = "✓"
+        meicc_respiratorycheck = "Yes"
     else:
         ME_D2 = 0
-        meicc_respiratorycheck = ""
+        meicc_respiratorycheck = "No"
     print(ME_D2)
     if (int(session['sweatf'])>=2 and int(session['sweats'])>=2) or (int(session['nightf'])>=2 and int(session['nights'])>=2) or\
         (int(session['limbsf'])>=2 and int(session['limbss'])>=2) or (int(session['chillsf'])>=2 and int(session['chillss'])>=2) or\
@@ -216,12 +216,12 @@ def diagnose2():
             (int(session['lotempf']) >= 2 and int(session['lotemps']) >= 2) or  (int(session['slowf'])>=2 and int(session['slows'])>=2) or \
             (int(session['absentf']) >= 2 and int(session['absents']) >= 2):
         ME_D3 = 1
-        meicc_thermocheck = "✓"
-        meicc_tempcheck = "✓"
+        meicc_thermocheck = "Yes"
+        meicc_tempcheck = "Yes"
     else:
         ME_D3 = 0
-        meicc_thermocheck = ""
-        meicc_tempcheck = ""
+        meicc_thermocheck = "No"
+        meicc_tempcheck = "No"
     print(ME_D3)
     if (ME_D1 + ME_D2 + ME_D3) >= 1:
         ME_D = 1
@@ -233,10 +233,11 @@ def diagnose2():
     if ME_score == 5:
         ME_diagnosis = 1
         me_icc = "Your scores suggest you meet the ME-ICC case definition criteria for ME/CFS"
+        meicc_dxcheck = "Met"
     else:
         ME_diagnosis = 0
         me_icc = "Your scores suggest you do not meet the ME-ICC case definition criteria for ME/CFS"
-
+        meicc_dxcheck = "Not met"
     fig = go.Figure(
         data=[
             go.Bar(y=cfsDomains, x=categories,
@@ -264,7 +265,7 @@ def diagnose2():
                            meicc_bladdercheck=meicc_bladdercheck,
                            meicc_sensitivitycheck=meicc_sensitivitycheck, meicc_respiratorycheck=meicc_respiratorycheck,
                            meicc_cardiocheck=meicc_cardiocheck, meicc_thermocheck=meicc_thermocheck,
-                           meicc_tempcheck=meicc_tempcheck)
+                           meicc_tempcheck=meicc_tempcheck, meicc_dxcheck=meicc_dxcheck)
 
 
 @app.route('/graph')

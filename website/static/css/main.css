@@ -654,6 +654,7 @@ margin: 0;
 .results li {
 border: 1px solid black;
 padding: 10px;
+height: 30px;
 }
 
 .symptoms {
@@ -701,7 +702,7 @@ height: auto;
 border: none;
 text-align: center;
 
-margin: 20 px auto;
+margin: auto;
 
 display: block;
 position: relative;
