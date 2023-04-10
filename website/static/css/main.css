@@ -881,5 +881,7 @@ display: none;
         height: 40px;
 
     }
-    .instr
+    .instructions {
+        font-size: 20px;
+    }
 }
