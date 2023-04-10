@@ -742,13 +742,6 @@ from { width: 0; }
   to { opacity: 100% }
 }
 
-.hamburger {
-display: none;
-}
-
-.hamburger ul {
-display: none;
-}
 
 @media print {
 
@@ -843,103 +836,6 @@ display: none;
   }
 }
 
-
-
-
 @media only screen and (max-device-width: 800px) {
-    body {
-        font-size: 30px;
-    }
-    .button-home {
-        font-size: 2em;
-        width: auto;
-    }
-    fieldset {
-        border: none;
-        margin-bottom: 20px;
-        font-size: 1.3em;
-    }
-/* These are bandaid fixes; we will want to remove style tags in HTML pages*/
-
-    #left {
-        width: auto !important;
-        height: auto !important;
-        float: none !important;
-
-    }
-    #right {
-        width: auto !important;
-        height: auto !important;
-        float: none !important;
-    }
-    button {
-        font-size: 1.5em;
-        margin-left: 50%;
-    }
-    footer {
-        width: 98%;
-    }
-    p {
-        margin-left: 20px;
-        margin-right: 20px;
-    }
-    h2 {
-        margin-left: 20px;
-        margin-right: 20px;
-    }
-    .meter {
-        height: 40px;
-
-    }
-    .instructions {
-        font-size: 20px;
-    }
-    .message {
-        font-size: 0.4em;
-    }
-    .layout-one {
-        font-size: 1.2em;
-        width: 260px;
-        height: 100px;
-    }
-    .layout-one:hover {
-        height: 400px;
-        margin-bottom: -400px;
-    }
-    .menu {
-        height: 70px;
-    }
-    .menu a {
-        display: none;
-    }
-    .hamburger {
-        display: inline-block;
-
-    }
-    .bar1, .bar2, .bar3 {
-          width: 35px;
-          height: 5px;
-          background-color: white;
-          margin: 6px 0;
-          transition: 0.4s;
-    }
-.change .bar1 {
-  transform: translate(0, 11px) rotate(-45deg);
-}
-
-/* Fade out the second bar */
-.change .bar2 {opacity: 0;}
-
-/* Rotate last bar */
-.change .bar3 {
-  transform: translate(0, -11px) rotate(45deg);
-}
-
-  .navbar-links {
-    display: none;
-  }
-  .show-navbar-links {
-    display: block;
-  }
 
 }
