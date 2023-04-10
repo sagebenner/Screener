@@ -871,4 +871,8 @@ display: none;
         height: auto !important;
         float: none !important;
     }
+    button {
+        font-size: 1.5em;
+        margin-left: 50%;
+    }
 }
