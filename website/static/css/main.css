@@ -850,5 +850,8 @@ display: none;
     body {
         font-size: 30px;
     }
-
+    .button-home {
+        font-size: 2em;
+        width: auto;
+    }
 }
