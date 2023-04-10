@@ -855,4 +855,20 @@ display: none;
         font-size: 2em;
         width: auto;
     }
+    fieldset {
+        border: none;
+        margin-bottom: 20px;
+        font-size: 1.3em;
+    }
+    #left {
+        width: auto !important;
+        height: auto !important;
+        float: none !important;
+
+    }
+    #right {
+        width: auto !important;
+        height: auto !important;
+        float: none !important;
+    }
 }
