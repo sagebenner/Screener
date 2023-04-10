@@ -873,13 +873,13 @@ from { width: 0; }
         margin-left: 50%;
     }
 
-    footer {
         width: 98%;
     }
     .meter {
         height: 40px;
 
     }
+
     .instructions {
         font-size: 20px;
     }
