@@ -840,6 +840,7 @@ from { width: 0; }
     body {
         font-size: 30px;
     }
+
     .button-home {
         font-size: 2em;
         width: auto;
@@ -879,6 +880,7 @@ from { width: 0; }
     }
 
 }
+
 
 
 }
