@@ -847,5 +847,8 @@ display: none;
 }
 
 @media only screen and (max-device-width: 800px) {
+    body {
+        font-size: 30px;
+    }
 
 }
