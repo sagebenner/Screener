@@ -173,10 +173,23 @@ def smells():
             session["smells"] = smells
             session['pagenum'] += 1
             survey='rf14'
-            return redirect(url_for('short_form.graph2'))
+            return redirect(url_for('short_form.reduction'))
         else:
             return render_template("smells.html", message=message, pagenum=session['pagenum'])
     return render_template("smells.html", message='', pagenum=session['pagenum'])
+
+@short_form.route('/reduction', methods=['post', 'get'])
+def reduction():
+    msg_reduction = "Please select one of the options before continuing"
+    if request.method == 'POST':
+        reduction = request.form.get('reduction')
+        if reduction is not None:
+            session['reduction'] = reduction
+            return redirect(url_for('short_form.graph2'))
+        else:
+            return render_template("reduction.html", message=msg_reduction, pagenum=session['pagenum'])
+    return render_template('reduction.html', message='', pagenum=session['pagenum'])
+
 
 @short_form.route('/short_form_dx', methods=['post', 'get'])
 def graph2():
