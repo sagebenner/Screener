@@ -117,25 +117,12 @@ def page4():
             session["cogname"] = 'remember36'
             session['cogscore'] = (int(session['rememberf']) + int(session['remembers'])) / 2
 
-            return redirect(url_for('screener_views.reduction'))
+            return redirect(url_for('screener_views.graph'))
 
         else:
             return render_template("page4.html", pagenum=session['pagenum'], message=message,
                                    rememberf=rememberf, remembers=remembers)
     return render_template("page4.html", pagenum=session['pagenum'], message='')
-
-
-@screener_views.route('/reduction', methods=['post', 'get'])
-def reduction():
-    msg_reduction = "Please select one of the options before continuing"
-    if request.method == 'POST':
-        reduction = request.form.get('reduction')
-        if reduction is not None:
-            session['reduction'] = reduction
-            return redirect(url_for('screener_views.graph'))
-        else:
-            return render_template("reduction.html", message=msg_reduction, pagenum=session['pagenum'])
-    return render_template('reduction.html', message='', pagenum=session['pagenum'])
 
 
 @screener_views.route('/graph')
