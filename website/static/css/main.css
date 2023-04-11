@@ -852,7 +852,9 @@ from { width: 0; }
         font-size: 1.3em;
     }
 
+
 /* These are bandaid fixes; we will want to remove style tags in HTML pages*/
+
 
 
     #left {
