@@ -21,16 +21,6 @@
       <li><a href="{{ url_for('about') }}">About This Screener</a></li>
     </ul>
   </li>
-        <li > <a  href="{{ url_for('screener_views.scores') }}">Account</a>
-        <ul class="submenu">
-      {% if session.logged_in %}
-            <li><a href="{{ url_for('login.log_in') }}">Logout</a></li>
-        {% else %}
-            <li><a href="{{ url_for('login.log_in') }}">Login</a></li>
-        {% endif %}
-      <li><a href="{{ url_for('screener_views.scores') }}">My Data</a></li>
-
-    </ul></li>
  </ul>
 </header>
  <h3 class="ariel">Full Questionnaire Results</h3>
