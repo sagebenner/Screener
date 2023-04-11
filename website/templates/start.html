@@ -1,28 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <body class="waterbackground">
-<div style="text-align: center; margin: 40px; margin-bottom: -50px;"><img src="{{url_for('static', filename='icon4.png')}}" height="80px;" width="auto;"></div>
+  <div style="text-align: center; margin: 40px; margin-bottom: -50px;"><img
+      src="{{url_for('static', filename='icon4.png')}}" height="80px;" width="auto;"></div>
 
-    <div style="text-align: center">
-                <h2>Welcome to the online screener for Chronic Fatigue Syndrome (CFS) and Myalgic Encephalomyelitis (ME)</h2>
-        <ul style="display: inline-block; text-align: center;"><li style="display: inline-block;"><h3 class="ariel">
-          <i>Are you a researcher, clinician, or guest?</i></h3></li>
-          <li style="display: inline-block;"><a class="question" title="
-          Entering your login information will allow you to compare your responses across time">?</a></li></ul>
-      <br>
-        <form class="login" method="post">
-             <label for="survey" style=""></label>
-          <select name="survey" id="survey" title =  "">
-            <option style="color: gray; font-style: italic;" value=None>- Please select one -</option>
-            <option value="clinical">Clinician, patient, or guest</option>
-            <option value="research">Researcher</option>
+  <div style="text-align: center">
+    <h1>Chronic Fatigue Syndrome (CFS) and Myalgic Encephalomyelitis (ME) Online Screener</h1>
+    <ul style="display: inline-block; text-align: center;">
+      <li style="display: inline-block;">
+        <h3 class="ariel">
+          <i>Are you a researcher, clinician, or guest?</i>
+        </h3>
+      </li>
+      <li style="display: inline-block;"><a class="question" title="
+          Entering your login information will allow you to compare your responses across time">?</a></li>
+    </ul>
+    <br>
+    <form class="login" method="post">
+      <label for="survey" style=""></label>
+      <select name="survey" id="survey" title="">
+        <option style="color: gray; font-style: italic;" value=None>- Please select one -</option>
+        <option value="clinical">Clinician, patient, or guest</option>
+        <option value="research">Researcher</option>
 
 
-          </select>
-                <button style="margin: auto; " type="submit" name="result" value="continue" >Continue</button>
-        </form>
-    </div>
+      </select>
+      <button style="margin: auto; " type="submit" name="result" value="continue">Continue</button>
+    </form>
+  </div>
 </body>
 
 {% endblock %}
