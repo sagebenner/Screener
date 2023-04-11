@@ -48,9 +48,7 @@ header h1.logo:hover {
 }
 
 .waterbackground div {
-  margin-top: 10%;
-  font-family:"Times New Roman",Times,serif;
-
+  font-family:'Proxima-Nova-Condensed',Arial, Helvetica, sans-serif;
 }
 
 .container span {
