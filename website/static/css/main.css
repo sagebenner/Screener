@@ -860,6 +860,8 @@ display: none;
         margin-bottom: 20px;
         font-size: 1.3em;
     }
+/* These are bandaid fixes; we will want to remove style tags in HTML pages*/
+
     #left {
         width: auto !important;
         height: auto !important;
