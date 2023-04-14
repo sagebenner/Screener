@@ -135,8 +135,6 @@ def graph():
 
     cogscore = session['cogscore']
 
-    reduction = session['reduction']
-
     df = pd.read_csv('MECFS COMPOSITE DATA.csv')
     responses = [fatiguescore, pemscore, sleepscore, cogscore]
     iomfatiguecheck = "No"
