@@ -170,34 +170,6 @@ def graph():
         screen_message = "Your scores do not meet a threshold of 2 frequency or severity for any of the major symptoms." \
                          "It is unlikely that you have ME/CFS based on your self-report scores."
 
-    if session["checkbox"] == "data" and session['logged_in']:
-        user_id = int(session['user_id'])
-        print(user_id)
-        cursor = mysql.connection.cursor()
-        if session['logged_in'] == True:
-            if 'user_id' in session:
-                login_id = session['user_id']
-            else:
-                # get the next auto-increment id value from the login table
-                cursor.execute(
-                    "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'dsq_screener' AND TABLE_NAME = 'login'")
-                result = cursor.fetchone()
-                login_id = result[0]
-
-                # insert a new row into the login table to reserve the id value
-                cursor.execute("INSERT INTO login (id) VALUES (NULL)")
-                mysql.connection.commit()
-                cursor.execute("""
-                         INSERT INTO screen (fatigue13f, fatigue13s, minimum17f, minimum17s, unrefreshed19f, unrefreshed19s,
-                                             remember36f, remember36s, reduction, login_id)
-                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                         """, (int(session['fatiguescoref']), int(session['fatiguescores']), int(session['minexf']),
-                               int(session['minexs']),
-                               int(session['sleepf']), int(session['sleeps']), int(session['rememberf']),
-                               int(session['remembers']),
-                               int(session['reduction']), login_id))
-                mysql.connection.commit()
-
     composite_scores = responses
     categories = ['Fatigue', 'Post-exertional malaise', 'Sleep problems',
                   'Cognitive problems']
