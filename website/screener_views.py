@@ -195,8 +195,6 @@ def graph():
     fig.add_hline(y=1.5, line_color='black')
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    print(session["checkbox"])
-
     return render_template("graph.html",
                            iomfatiguecheck=iomfatiguecheck, iomreductioncheck=iomreductioncheck,
                            iompemcheck=iompemcheck, iomdxcheck=iomdxcheck,
