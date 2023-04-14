@@ -144,8 +144,8 @@ def graph():
     iomcogcheck = "No"
     if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >= 2:
         iomfatiguecheck = "Yes"
-    if int(session['reduction']) == 1:
-        iomreductioncheck = "Yes"
+
+    iomreductioncheck = "Yes"
     if int(session['minexf']) >= 2 and int(session['minexs']) >= 2:
         iompemcheck = "Yes"
     if int(session['sleepf']) >= 2 and int(session['sleeps']) >= 2:
