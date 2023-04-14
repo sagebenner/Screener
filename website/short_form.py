@@ -299,24 +299,6 @@ def graph2():
         ccc_msg = "Your responses do not meet the Canadian Consensus Criteria for ME/CFS. " \
                   "To compare your symptoms with more case definitions, click Continue."
 
-    # Insert the user domain scores into relevant columns in the Domains table
-    cursor = mysql.connection.cursor()
-    # Make sure user consented to having their data stored
-    if session["checkbox"] == "data" and session['user'] != 'guest':
-        cursor.execute("""
-                                INSERT INTO domains (fatigue, pem, sleep, cog, pain, gastro, ortho, circ, immune, 
-                                neurendocrine, login_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """, (fatiguescore, pemscore, sleepscore, cogscore, painscore, gastroscore, orthoscore, circscore,
-                      immunescore, neuroenscore, int(session['user_id'])))
-        mysql.connection.commit()
-        """
-        cursor.execute('INSERT INTO shortform VALUES (NULL, % s, % s, % s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-                       , (data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9],
-                        data[10], data[11], data[12], data[13]))
-        mysql.connection.commit()"""
-
-
-
     # categories = [*feature_list, feature_list[0]]
     categories = ['Fatigue', 'PEM', 'Sleep', 'Cognitive Impairment', 'Pain', 'Gastro Problems',
                   'Orthostatic Intolerance', 'Circulatory Problems', 'Immune System', 'Neuroendocrine Problems']
