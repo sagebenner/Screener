@@ -258,7 +258,7 @@ def graph2():
     else:
         ccc_pem = 0
         ccc_pemcheck = "No"
-    if (int(session['rememberf']) >= 2 and int(session['remembers']) >= 2) and (
+    if (int(session['rememberf']) >= 2 and int(session['remembers']) >= 2) or (
             int(session['attentionf']) >= 2 and int(session['attentions']) >= 2):
         ccc_cog = 1
         ccc_cogcheck = "Yes"
