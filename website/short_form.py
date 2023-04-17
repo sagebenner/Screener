@@ -291,11 +291,11 @@ def graph2():
     ccc_poly = np.sum([ccc_auto, ccc_neuro, ccc_immune])
     # most of the symptoms are required, but there is one polythetic criteria, shown here by ccc_poly
     if np.sum([ccc_fatigue, ccc_pem, ccc_sleep, ccc_pain, ccc_cog]) >= 5 and ccc_poly >= 2:
-        ccc_dx = "Yes"
+        ccc_dx = "Met"
         ccc_msg = "Your responses suggest that you meet the Canadian Consensus Criteria for ME/CFS. " \
                   "To compare your symptoms with more case definitions, click Continue."
     else:
-        ccc_dx = "No"
+        ccc_dx = "Not met"
         ccc_msg = "Your responses do not meet the Canadian Consensus Criteria for ME/CFS. " \
                   "To compare your symptoms with more case definitions, click Continue."
 
