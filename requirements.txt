@@ -8,3 +8,5 @@ pandas
 matplotlib
 mysqlclient
 gunicorn
+imblearn
+seaborn
