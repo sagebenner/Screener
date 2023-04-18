@@ -45,6 +45,8 @@ header h1.logo:hover {
   background-position: 50% 0;
   background-size: cover;
   text-align: center;
+  height: 90vh;
+  padding-top: 10vh;
 }
 
 .waterbackground div {

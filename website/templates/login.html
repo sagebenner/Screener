@@ -5,17 +5,18 @@
 {% endblock %}
 
 {% block content %}
-<div style="text-align: center">
-  <h1>
-    Chronic Fatigue Syndrome (CFS) and Myalgic Encephalomyelitis (ME) Online
-    Screener
-  </h1>
-  <div style="text-align: center; margin: 40px">
+<div class="waterbackground">
+  <div style="text-align: center">
     <img
       src="{{url_for('static', filename='icon4.png')}}"
       height="80px;"
       width="auto;"
     />
+  <h1>
+    Chronic Fatigue Syndrome (CFS) and Myalgic Encephalomyelitis (ME) Online
+    Screener
+  </h1>
+  
   </div>
   <ul style="display: inline-block; text-align: center">
     <li style="display: inline-block">
@@ -108,6 +109,6 @@ a result, then erased once you close this webpage. "
   <div style="text-align: center; box-sizing: border-box; margin: 0">
     <p class="message">Successfully logged in! Please continue.</p>
   </div>
-  {% endif %} {% endblock %}
+  {% endif %}
 </div>
 {% endblock %}
