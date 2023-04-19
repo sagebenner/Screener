@@ -192,12 +192,10 @@ def diagnose2():
     # most of the symptoms are required, but there is one polythetic criteria, shown here by ccc_poly
     if np.sum([ccc_fatigue, ccc_pem, ccc_sleep, ccc_pain, ccc_cog]) >= 5 and ccc_poly >= 2:
         ccc_dx = "Met"
-        ccc_msg = "Your responses suggest that you meet the Canadian Consensus Criteria for ME/CFS. " \
-                  "To compare your symptoms with more case definitions, click Continue."
+        ccc_msg = "Your responses suggest that you meet the Canadian Consensus Criteria for ME/CFS."
     else:
         ccc_dx = "Not met"
-        ccc_msg = "Your responses do not meet the Canadian Consensus Criteria for ME/CFS. " \
-                  "To compare your symptoms with more case definitions, click Continue."
+        ccc_msg = "Your responses do not meet the Canadian Consensus Criteria for ME/CFS. "
 
     # ME-ICC assessment starts here, the longest and most complicated assessment
     if int(session['reduction']) == 1:
