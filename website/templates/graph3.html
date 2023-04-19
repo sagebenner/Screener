@@ -35,6 +35,43 @@
         <ul><li>Optional</li><li>41 more questions</li><li>Assesses ME-ICC Case Definition</li></ul></div>
     </div> <br>
 
+<div style="" class="results" >
+
+        <h3 style="margin:0;">Canadian 2003 ME/CFS Case Definition</h3><hr>
+            <p><b>{{ ccc_msg }} </b></p><hr>
+                <p> <b>Case Definition Requirements Satisfied:  </b></p>
+        <div class="symptoms">
+            <div class="left-column">
+                    <ul >
+                        <li>Fatigue that persists at least 6 months </li>
+                        <li>50% or more reduction in functioning</li>
+                        <li>Post-exertional malaise (PEM) </li>
+                        <li>Sleep Problems</li>
+                        <li>Pain</li>
+                        <li>Neurocognitive Issues</li>
+                        <li>Autonomic Dysfunction</li>
+                        <li>Neuroendocrine Issues</li>
+                        <li>Immune Symptoms</li>
+                        <li><b>Diagnosis:</b></li>
+
+                    </ul>
+            </div>
+                    <div class="right-column">
+                      <ul>
+                        <li {% if ccc_fatiguecheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_fatiguecheck }}</li>
+                        <li {% if ccc_reduction == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_reduction }}</li>
+                        <li {% if ccc_pemcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_pemcheck }}</li>
+                        <li {% if ccc_sleepcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_sleepcheck }}</li>
+                        <li {% if ccc_paincheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_paincheck }}</li>
+                        <li {% if ccc_cogcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_cogcheck }}</li>
+                        <li {% if ccc_autocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_autocheck }}</li>
+                        <li {% if ccc_neurocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_cogcheck }}</li>
+                        <li {% if ccc_immunecheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_cogcheck }}</li>
+                        <li><b>{{ ccc_dx }}</b></li>
+                      </ul>
+                    </div>
+    </div>
+</div>
 
 <div style="" class="results" >
 
