@@ -383,15 +383,11 @@ def diagnose2():
 
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    return render_template("graph3.html", graphJSON=graphJSON, me_icc=me_icc, meicc_pemcheck=meicc_pemcheck,
-                           meicc_cogcheck=meicc_cogcheck, meicc_paincheck=meicc_paincheck,
-                           meicc_sleepcheck=meicc_sleepcheck,
-                           meicc_motorcheck=meicc_motorcheck, meicc_flucheck=meicc_flucheck,
-                           meicc_viralcheck=meicc_viralcheck, meicc_gastrocheck=meicc_gastrocheck,
-                           meicc_bladdercheck=meicc_bladdercheck,
-                           meicc_sensitivitycheck=meicc_sensitivitycheck, meicc_respiratorycheck=meicc_respiratorycheck,
-                           meicc_cardiocheck=meicc_cardiocheck, meicc_thermocheck=meicc_thermocheck,
-                           meicc_tempcheck=meicc_tempcheck, meicc_dxcheck=meicc_dxcheck)
+    return render_template("graph3.html", graphJSON=graphJSON,
+                           ccc_msg=ccc_msg, ccc_fatiguecheck=ccc_fatiguecheck,
+                           ccc_pemcheck=ccc_pemcheck, ccc_paincheck=ccc_paincheck, ccc_sleepcheck=ccc_sleepcheck,
+                           ccc_cogcheck=ccc_cogcheck, ccc_autocheck=ccc_autocheck, ccc_immunecheck=ccc_immunecheck,
+                           ccc_neurocheck=ccc_neurocheck, ccc_dx=ccc_dx, ccc_reduction=ccc_reduction)
 
 
 @app.route('/graph')
