@@ -453,6 +453,7 @@ height:200px;
   width: 240px;
   margin-top: auto;
   overflow: hidden;
+  z-index: 1;
 }
 
 .layout-one:hover {
