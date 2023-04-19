@@ -35,60 +35,44 @@
         <ul><li>Optional</li><li>41 more questions</li><li>Assesses ME-ICC Case Definition</li></ul></div>
     </div> <br>
 
-
 <div style="" class="results" >
 
-        <h3 style="margin:0;">ME-ICC Assessment</h3><hr>
-            <p><b>{{ me_icc }} </b></p><hr>
+        <h3 style="margin:0;">Canadian 2003 ME/CFS Case Definition</h3><hr>
+            <p><b>{{ ccc_msg }} </b></p><hr>
                 <p> <b>Case Definition Requirements Satisfied:  </b></p>
         <div class="symptoms">
             <div class="left-column">
                     <ul >
-                        <li>Post-Exertional Malaise (PEM) </li>
-                        <li><i>One symptom in at least three of the following categories:</i></li>
-                        <li>Neurocognitive impairments </li>
+                        <li>Fatigue that persists at least 6 months </li>
+                        <li>50% or more reduction in functioning</li>
+                        <li>Post-exertional malaise (PEM) </li>
+                        <li>Sleep Problems</li>
                         <li>Pain</li>
-                        <li>Sleep disturbance</li>
-                        <li>Neurosensory, perceptual and motor disturbances</li>
-                        <li><i>One symptom in at least three of the following categories:</i></li>
-                        <li>Flu-like symptoms</li>
-                        <li>Susceptibility to viral infections with prolonged recovery periods</li>
-                        <li>Gastro-intestinal tract disturbances</li>
-                        <li>Geniourinary disturbances</li>
-                        <li>Sensitivities to food, medications, odors, or chemicals</li>
-                        <li><i>At least one symptom from the following categories:</i></li>
-                        <li>Cardiovascular</li>
-                        <li>Respiratory</li>
-                        <li>Loss of thermostatic stability</li>
-                        <li>Intolerance of extremes of temperature</li>
+                        <li>Neurocognitive Issues</li>
+                        <li>Autonomic Dysfunction</li>
+                        <li>Neuroendocrine Issues</li>
+                        <li>Immune Symptoms</li>
                         <li><b>Diagnosis:</b></li>
 
                     </ul>
             </div>
                     <div class="right-column">
                       <ul>
-                        <li {% if meicc_pemcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_pemcheck }}</li>
-                        <li></li>
-                        <li {% if meicc_cogcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_cogcheck }}</li>
-                        <li {% if meicc_paincheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_paincheck }}</li>
-                        <li {% if meicc_sleepcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_sleepcheck }}</li>
-                        <li {% if meicc_motorcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_motorcheck }}</li>
-                        <li></li>
-                        <li {% if meicc_flucheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_flucheck }}</li>
-                        <li {% if meicc_viralcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_viralcheck }}</li>
-                        <li {% if meicc_gastrocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_gastrocheck }}</li>
-                        <li {% if meicc_bladdercheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_bladdercheck }}</li>
-                        <li {% if meicc_sensitivitycheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_sensitivitycheck }}</li>
-                        <li><i></i></li>
-                        <li {% if meicc_cardiocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_cardiocheck }}</li>
-                        <li {% if meicc_respiratorycheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_respiratorycheck }}</li>
-                        <li {% if meicc_thermocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_thermocheck }}</li>
-                        <li {% if meicc_tempcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ meicc_tempcheck }}</li>
-                        <li><b>{{ meicc_dxcheck }}</b></li>
+                        <li {% if ccc_fatiguecheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_fatiguecheck }}</li>
+                        <li {% if ccc_reduction == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_reduction }}</li>
+                        <li {% if ccc_pemcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_pemcheck }}</li>
+                        <li {% if ccc_sleepcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_sleepcheck }}</li>
+                        <li {% if ccc_paincheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_paincheck }}</li>
+                        <li {% if ccc_cogcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_cogcheck }}</li>
+                        <li {% if ccc_autocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_autocheck }}</li>
+                        <li {% if ccc_neurocheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_cogcheck }}</li>
+                        <li {% if ccc_immunecheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ ccc_cogcheck }}</li>
+                        <li><b>{{ ccc_dx }}</b></li>
                       </ul>
                     </div>
     </div>
 </div>
+
 
 
     <div class="chart-center" >
