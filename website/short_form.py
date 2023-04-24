@@ -235,11 +235,13 @@ def graph2():
         iomfatiguecheck = "Yes"
 
     iomreductioncheck = "Yes"
-    if int(session['minexf']) >= 2 and int(session['minexs']) >= 2:
+    if (int(session['minexf']) >= 2 and int(session['minexs'] >= 2) or (
+            int(session['soref']) >= 2 and int(session['sores']) >= 2)):
         iompemcheck = "Yes"
     if int(session['sleepf']) >= 2 and int(session['sleeps']) >= 2:
         iomsleepcheck = "Yes"
-    if int(session['rememberf']) and int(session['remembers']) >= 2:
+    if (int(session['rememberf']) and int(session['remembers']) >= 2 ) or (
+            int(session['attentionf']) >= 2 and int(session['attentions']) >= 2):
         iomcogcheck = "Yes"
 
     if iomfatiguecheck == "Yes" and iomreductioncheck == "Yes" and iompemcheck == "Yes" and iomsleepcheck == "Yes" and iomcogcheck == "Yes":
