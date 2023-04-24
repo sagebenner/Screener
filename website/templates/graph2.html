@@ -35,6 +35,37 @@
 
 <div style="" class="results" >
 
+        <h3 style="margin:0;">Institute of Medicine (IOM) Case Definition Assessment</h3><hr>
+            <p><b>{{ iom_msg }} </b></p><hr>
+                <p> <b>Case Definition Requirements Satisfied:  </b></p>
+        <div class="symptoms">
+            <div class="left-column">
+                    <ul >
+                        <li>Fatigue that persists at least 6 months </li>
+                        <li>50% or more reduction in functioning</li>
+                        <li>Post-exertional malaise (PEM) </li>
+                        <li>Unrefreshing sleep </li>
+                        <li>Cognitive impairment </li>
+                        <li><b>Diagnosis:</b></li>
+
+                    </ul>
+            </div>
+                    <div class="right-column">
+                      <ul>
+                        <li {% if iomfatiguecheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iomfatiguecheck }}</li>
+                        <li {% if iomreductioncheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iomreductioncheck }}</li>
+                        <li {% if iompemcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iompemcheck }}</li>
+                        <li {% if iomsleepcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iomsleepcheck }}</li>
+                        <li {% if iomcogcheck == 'Yes' %} style="background-color: #FFD580;" {% endif %}>{{ iomcogcheck }}</li>
+                        <li><b>{{ iomdxcheck }}</b></li>
+                      </ul>
+                    </div>
+    </div>
+</div>
+
+
+<div style="" class="results" >
+
         <h3 style="margin:0;">Canadian 2003 ME/CFS Case Definition</h3><hr>
             <p><b>{{ ccc_msg }} </b></p><hr>
                 <p> <b>Case Definition Requirements Satisfied:  </b></p>
