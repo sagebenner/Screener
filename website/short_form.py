@@ -258,7 +258,7 @@ def graph2():
     else:
         ccc_pem = 0
         ccc_pemcheck = "No"
-    if (int(session['rememberf']) >= 2 and int(session['remembers']) >= 2) and (
+    if (int(session['rememberf']) >= 2 and int(session['remembers']) >= 2) or (
             int(session['attentionf']) >= 2 and int(session['attentions']) >= 2):
         ccc_cog = 1
         ccc_cogcheck = "Yes"
@@ -291,31 +291,13 @@ def graph2():
     ccc_poly = np.sum([ccc_auto, ccc_neuro, ccc_immune])
     # most of the symptoms are required, but there is one polythetic criteria, shown here by ccc_poly
     if np.sum([ccc_fatigue, ccc_pem, ccc_sleep, ccc_pain, ccc_cog]) >= 5 and ccc_poly >= 2:
-        ccc_dx = "Yes"
+        ccc_dx = "Met"
         ccc_msg = "Your responses suggest that you meet the Canadian Consensus Criteria for ME/CFS. " \
                   "To compare your symptoms with more case definitions, click Continue."
     else:
-        ccc_dx = "No"
+        ccc_dx = "Not met"
         ccc_msg = "Your responses do not meet the Canadian Consensus Criteria for ME/CFS. " \
                   "To compare your symptoms with more case definitions, click Continue."
-
-    # Insert the user domain scores into relevant columns in the Domains table
-    cursor = mysql.connection.cursor()
-    # Make sure user consented to having their data stored
-    if session["checkbox"] == "data" and session['user'] != 'guest':
-        cursor.execute("""
-                                INSERT INTO domains (fatigue, pem, sleep, cog, pain, gastro, ortho, circ, immune, 
-                                neurendocrine, login_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """, (fatiguescore, pemscore, sleepscore, cogscore, painscore, gastroscore, orthoscore, circscore,
-                      immunescore, neuroenscore, int(session['user_id'])))
-        mysql.connection.commit()
-        """
-        cursor.execute('INSERT INTO shortform VALUES (NULL, % s, % s, % s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-                       , (data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9],
-                        data[10], data[11], data[12], data[13]))
-        mysql.connection.commit()"""
-
-
 
     # categories = [*feature_list, feature_list[0]]
     categories = ['Fatigue', 'PEM', 'Sleep', 'Cognitive Impairment', 'Pain', 'Gastro Problems',

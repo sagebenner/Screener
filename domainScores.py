@@ -7,18 +7,7 @@ Created on Wed Feb 22 14:10:11 2023
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import imblearn
-import seaborn as sns
-from sklearn.datasets import make_classification
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score
-# Model performance
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report
-from collections import Counter
-import plotly.graph_objects as go
-import plotly.express as px
+
 #import plotly.offline as pyo
 
 pemdomain = ['minimum17f', 'soreness15f', 'drained18f', 'mental16f', 'heavy14f', 'weakness33f',

@@ -8,3 +8,4 @@ pandas
 matplotlib
 mysqlclient
 flask_mysqldb
+gunicorn
