@@ -880,6 +880,10 @@ display: none;
     footer {
         width: 98%;
     }
+    p {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
     .meter {
         height: 40px;
 
