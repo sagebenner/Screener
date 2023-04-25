@@ -928,4 +928,11 @@ display: none;
           transition: 0.4s;
 }
 
+  .navbar-links {
+    display: none;
+  }
+  .show-navbar-links {
+    display: block;
+  }
+
 }
