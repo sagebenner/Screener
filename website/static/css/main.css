@@ -753,6 +753,10 @@ justify: center;
 display: none;
 }
 
+.hamburger ul {
+display: none;
+}
+
 @media print {
 
 header, button {
@@ -929,5 +933,16 @@ display: none;
           background-color: white;
           margin: 6px 0;
           transition: 0.4s;
+    }
+.change .bar1 {
+  transform: translate(0, 11px) rotate(-45deg);
+}
+
+/* Fade out the second bar */
+.change .bar2 {opacity: 0;}
+
+/* Rotate last bar */
+.change .bar3 {
+  transform: translate(0, -11px) rotate(45deg);
 }
 }
