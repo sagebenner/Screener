@@ -1,43 +1,47 @@
 {% extends 'base.html' %}
 
-<body>
-
+{% block content %}
 <form method="post">
-<div >
-    <p class="instructions"><i>For the following question, please select the choice that best fits your experience.
-    </i></p>
-    <h3> {{ pagenum }}. Since the onset of your problems with fatigue / energy, have your symptoms caused a 50% or greater reduction in your activity level?</h3>
-</div  >
-    <div style="display:height:200px;">
- <fieldset style="align:center; padding-left: 5%;">
-
-        <ol  start="0">
-            <li>
-                <input type="radio" id="f0" name="reduction" value="0">
-                <label for="f0">No</label>
-            </li>
-            <li>
-                <input type="radio" id="f1" name="reduction" value="1">
-                <label for="f1">Yes</label>
-            </li>
-            <li>
-                <input type="radio" id="f2" name="reduction" value="2">
-                <label for="f2">Not having a problem with fatigue/energy</label>
-            </li>
-
-        </ol>
+  <div>
+    <p class="instructions">
+      <i
+        >For the following question, please select the choice that best fits
+        your experience.
+      </i>
+    </p>
+    <h3>
+      {{ pagenum }}. Since the onset of your problems with fatigue / energy,
+      have your symptoms caused a 50% or greater reduction in your activity
+      level?
+    </h3>
+  </div>
+  <div style="display:height:200px;">
+    <fieldset style="align: center; padding-left: 5%">
+      <ol start="0">
+        <li>
+          <input type="radio" id="f0" name="reduction" value="0" />
+          <label for="f0">No</label>
+        </li>
+        <li>
+          <input type="radio" id="f1" name="reduction" value="1" />
+          <label for="f1">Yes</label>
+        </li>
+        <li>
+          <input type="radio" id="f2" name="reduction" value="2" />
+          <label for="f2">Not having a problem with fatigue/energy</label>
+        </li>
+      </ol>
     </fieldset>
-</div>
+  </div>
 
- <button type="submit" name="result" value="result">Submit</button>
-
+  <button type="submit" name="result" value="result">Submit</button>
 </form>
 
 <div class="container">
-<p class="typed" > <i>{{ message }} </i></p>
+  <p class="typed"><i>{{ message }} </i></p>
 </div>
-<footer style="">
+
 <div class="meter">
-  <span class="meter2span" style="--start:91%; width: 100%;" ></span>
-</div></footer>
-</body>
+  <span class="meter2span" style="--start: 91%; width: 100%"></span>
+</div>
+{% endblock %}

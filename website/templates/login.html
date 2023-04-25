@@ -5,59 +5,109 @@
 {% endblock %}
 
 {% block content %}
+<div style="text-align: center">
+  <h1>
+    Chronic Fatigue Syndrome (CFS) and Myalgic Encephalomyelitis (ME) Online
+    Screener
+  </h1>
+  <div style="text-align: center; margin: 40px">
+    <img
+      src="{{url_for('static', filename='icon4.png')}}"
+      height="80px;"
+      width="auto;"
+    />
+  </div>
+  <ul style="display: inline-block; text-align: center">
+    <li style="display: inline-block">
+      <h3 class="ariel">
+        <i>Please enter your registration information or continue as guest</i>
+      </h3>
+    </li>
+    <li style="display: inline-block">
+      <a
+        class="question"
+        title="
+          Entering your login information will allow you to compare your responses across time"
+        >?</a
+      >
+    </li>
+  </ul>
+  <br />
 
-<body class="waterbackground">
-  <div style="text-align: center; ">
-    <h1>Chronic Fatigue Syndrome (CFS) and Myalgic Encephalomyelitis (ME) Online Screener</h1>
-    <div style="text-align: center; margin: 40px;">
-      <img src="{{url_for('static', filename='icon4.png')}}" height="80px;" width="auto;">
-    </div>
-    <ul style="display: inline-block; text-align: center;">
-      <li style="display: inline-block;">
-        <h3 class="ariel">
-          <i>Please enter your registration information or continue as guest</i>
-        </h3>
+  <div style="position: relative">
+    {% if error %}
+    <p
+      class="message"
+      style="position: absolute; top: -50px; left: 200px; color: #0057b7"
+    >
+      <strong>Error:</strong> {{ error }} {% endif %}
+    </p>
+  </div>
+
+  <form class="login" action="" method="post">
+    <input
+      class="login"
+      type="text"
+      placeholder="First name"
+      name="firstname"
+      value="{{
+          request.form.firstname }}"
+    />
+    <input
+      class="login"
+      type="text"
+      placeholder="Last name"
+      name="lastname"
+      value="{{
+          request.form.lastname }}"
+    />
+    <input
+      class="login"
+      type="email"
+      placeholder="Email"
+      name="email"
+      value="{{
+          request.form.email }}"
+    /><br /><br />
+    <button style="margin: auto" type="submit" name="result" value="login">
+      Login
+    </button>
+    <button style="margin: auto" type="submit" name="result" value="guest">
+      {{ cont }}
+    </button>
+    <br /><br />
+    <ul style="display: inline-block; text-align: center">
+      <li style="display: inline-block">
+        <input
+          type="checkbox"
+          id="checkbox"
+          name="checkbox"
+          value="data"
+          checked
+        />
+        <label
+          for="checkbox"
+          title="If you don't check this box, your answers will only be stored temporarily to give you
+a result, then erased once you close this webpage. "
+        >
+          I agree to have my answers stored confidentially for analysis
+          purposes.</label
+        ><br />
       </li>
-      <li style="display: inline-block;"><a class="question" title="
-          Entering your login information will allow you to compare your responses across time">?</a></li>
+      <li style="display: inline-block">
+        <a
+          class="question"
+          title="If you don't check this box, your answers will only be stored temporarily to give you
+a result, then erased once you close this webpage. "
+          >?</a
+        >
+      </li>
     </ul>
-    <br>
-
-    <div style="position: relative;">
-      {% if error %}
-      <p class="message" style="position: absolute;top: -50px;left: 200px;color: #0057b7;"><strong>Error:</strong> {{
-        error }}
-        {% endif %}
-    </div>
-
-    <form class="login" action="" method="post">
-      <input class="login" type="text" placeholder="First name" name="firstname" value="{{
-          request.form.firstname }}">
-      <input class="login" type="text" placeholder="Last name" name="lastname" value="{{
-          request.form.lastname }}">
-      <input class="login" type="email" placeholder="Email" name="email" value="{{
-          request.form.email }}"><br><br>
-      <button style="margin: auto; " type="submit" name="result" value="login">Login</button>
-      <button style="margin: auto;" type="submit" name="result" value="guest">{{ cont }}</button>
-      <br><br>
-      <ul style="display: inline-block; text-align: center;">
-        <li style="display: inline-block;"><input type="checkbox" id="checkbox" name="checkbox" value="data" checked>
-          <label for="checkbox" title="If you don't check this box, your answers will only be stored temporarily to give you
-a result, then erased once you close this webpage. ">
-            I agree to have my answers stored confidentially for analysis purposes.</label><br>
-        </li>
-        <li style="display: inline-block;">
-          <a class="question" title="If you don't check this box, your answers will only be stored temporarily to give you
-a result, then erased once you close this webpage. ">?</a>
-        </li>
-      </ul>
-    </form>
-    {% if mesg %}
-    <div style="text-align: center; box-sizing: border-box; margin: 0;">
-      <p class="message">
-        Successfully logged in! Please continue.
-      </p>
-    </div>
-    {% endif %}
-</body>
+  </form>
+  {% if mesg %}
+  <div style="text-align: center; box-sizing: border-box; margin: 0">
+    <p class="message">Successfully logged in! Please continue.</p>
+  </div>
+  {% endif %} {% endblock %}
+</div>
 {% endblock %}

@@ -1,24 +1,49 @@
 {% extends 'base.html' %}
 
 {% block title %}
-  <title>Researcher Registration</title>
+<title>Researcher Registration</title>
 {% endblock %}
 
-<body class="">
-<div style="text-align: center; margin: 20px;"><img src="{{url_for('static', filename='research.png')}}" height="80px;" width="auto;"></div>
-        <h2>Welcome to the online DePaul Symptom Questionnaire for Research and Data Collection</h2>
-<h3 class="ariel">Please log in with your email and password. If you do not have an account, please register
-    <u><a href="{{ url_for('login.register') }}">here.</a></u></h3>
-     <form class="login" action="" method="post">
+{% block content %}
+<div style="text-align: center; margin: 20px">
+  <img
+    src="{{url_for('static', filename='research.png')}}"
+    height="80px;"
+    width="auto;"
+  />
+</div>
+<h2>
+  Welcome to the online DePaul Symptom Questionnaire for Research and Data
+  Collection
+</h2>
+<h3 class="ariel">
+  Please log in with your email and password. If you do not have an account,
+  please register <u><a href="{{ url_for('login.register') }}">here.</a></u>
+</h3>
+<form class="login" action="" method="post">
+  <input
+    class="login"
+    type="text"
+    placeholder="Email"
+    name="r_email"
+    value="{{
+          request.form.email }}"
+  />
+  <input
+    class="login"
+    type="password"
+    placeholder="Password"
+    name="email"
+    value="{{
+          request.form.password }}"
+  /><br /><br />
+  <button style="margin: auto" type="submit" name="result" value="back">
+    Back
+  </button>
+  <button style="margin: auto" type="submit" name="result" value="login">
+    Log In
+  </button>
 
-          <input class="login" type="text" placeholder="Email" name="r_email" value="{{
-          request.form.email }}">
-         <input class="login" type="password" placeholder="Password" name="email" value="{{
-          request.form.password }}"><br><br>
-         <button style="margin: auto; " type="submit" name="result" value="back" >Back</button>
-        <button  style="margin: auto; " type="submit" name="result" value="login" >Log In</button>
-
-          <br><br>
-        </form>
-</body>
-</html>
+  <br /><br />
+</form>
+{% endblock %}

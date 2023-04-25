@@ -1,29 +1,70 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    <title>Register</title>
+<title>Register</title>
 {% endblock %}
 
-
-<body class="">
-<div style="text-align: center; margin: 20px;"><img src="{{url_for('static', filename='research.png')}}" height="80px;" width="auto;"></div>
-        <h2>Welcome to the online DePaul Symptom Questionnaire for Research and Data Collection</h2>
+{% block content %}
+<div style="text-align: center; margin: 20px">
+  <img
+    src="{{url_for('static', filename='research.png')}}"
+    height="80px;"
+    width="auto;"
+  />
+</div>
+<h2>
+  Welcome to the online DePaul Symptom Questionnaire for Research and Data
+  Collection
+</h2>
 <h3 class="ariel">Please register.</h3>
-     <form class="login" action="" method="post">
-          <input class="login" type="text" placeholder="First name" name="r_firstname" value="{{
-          request.form.firstname }}"><br>
-                   <input class="login" type="text" placeholder="Last name" name="r_lastname" value="{{
-          request.form.last }}"><br>
-          <input class="login" type="text" placeholder="Email" name="r_email" value="{{
-          request.form.email }}"><br>
-         <input class="login" type="password" placeholder="Password" name="password" value="{{
-          request.form.password }}"><br>
-         <input class="login" type="password" placeholder="Confirm password" name="password" value="{{
-          request.form.password }}"><br><br>
-         <button  style="margin: auto; " type="submit" name="result" value="back" >Back</button>
-        <button  style="margin: auto; " type="submit" name="result" value="login" >Register</button>
+<form class="login" action="" method="post">
+  <input
+    class="login"
+    type="text"
+    placeholder="First name"
+    name="r_firstname"
+    value="{{
+          request.form.firstname }}"
+  /><br />
+  <input
+    class="login"
+    type="text"
+    placeholder="Last name"
+    name="r_lastname"
+    value="{{
+          request.form.last }}"
+  /><br />
+  <input
+    class="login"
+    type="text"
+    placeholder="Email"
+    name="r_email"
+    value="{{
+          request.form.email }}"
+  /><br />
+  <input
+    class="login"
+    type="password"
+    placeholder="Password"
+    name="password"
+    value="{{
+          request.form.password }}"
+  /><br />
+  <input
+    class="login"
+    type="password"
+    placeholder="Confirm password"
+    name="password"
+    value="{{
+          request.form.password }}"
+  /><br /><br />
+  <button style="margin: auto" type="submit" name="result" value="back">
+    Back
+  </button>
+  <button style="margin: auto" type="submit" name="result" value="login">
+    Register
+  </button>
 
-          <br><br>
-        </form>
-</body>
-</html>
+  <br /><br />
+</form>
+{% endblock %}

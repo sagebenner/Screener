@@ -1,52 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data" >
-    <div>
-        <h1>Fatigue/extreme tiredness</h1>
-    </div>
-    <div id="left" style="display: inline-block;width:40%;height:200px;float:left;">
+<form method="post" enctype="multipart/form-data">
+  <div>
+    <h1>Fatigue/extreme tiredness</h1>
+  </div>
+  <div
+    id="left"
+    style="display: inline-block; width: 40%; height: 200px; float: left"
+  >
     <label>
-    <p>{{ radio1f }}</b></p><br>
-    <p> </p>
-     </label>
-
-
-
-
-</div>
-    <div id="right" style="display:inline-block; width:45%; height:200px;float:right;">
-        <label>
-            <p>
-                {{ radio1s }}
-
-           </p>
-        </label>
-    </div>
-
-<div class='parent'>
-      <label class="button">
-        {{ button }}
+      <p>{{ radio1f }}</p>
+      <br />
+      <p></p>
     </label>
-</div>
+  </div>
+  <div
+    id="right"
+    style="display: inline-block; width: 45%; height: 200px; float: right"
+  >
+    <label>
+      <p>{{ radio1s }}</p>
+    </label>
+  </div>
+
+  <div class="parent">
+    <label class="button"> {{ button }} </label>
+  </div>
 </form>
 
 <script type="text/javascript">
-    $(document).on('submit','#todo-form',function(e)
-                   {
-      console.log('hello');
-      e.preventDefault();
-      $.ajax({
-        type:'POST',
-        url:'/',
-        data:{
-          todo:$("#todo").val()
-        },
-        success:function()
-        {
-          alert('saved');
-        }
-      })
+  $(document).on("submit", "#todo-form", function (e) {
+    console.log("hello");
+    e.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: "/",
+      data: {
+        todo: $("#todo").val(),
+      },
+      success: function () {
+        alert("saved");
+      },
     });
-  </script>
-  {% endblock %}
+  });
+</script>
+{% endblock %}

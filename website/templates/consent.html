@@ -1,47 +1,68 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    <title>About</title>
+<title>About</title>
 {% endblock %}
 
 {% block content %}
-<body>
 <h2>Please read the following consent form carefully</h2>
-<hr>
-<p>If you agree to store your data for this screener, it will involve completing a 5-question survey.
-    Each question will assess your symptom burden.
+<hr />
+<p>
+  If you agree to store your data for this screener, it will involve completing
+  a 5-question survey. Each question will assess your symptom burden.
 </p>
 
- <p>The questions can be completed online or from you mobile phone or personal computer. You must complete each 
-    question before moving on to the next one.
+<p>
+  The questions can be completed online or from you mobile phone or personal
+  computer. You must complete each question before moving on to the next one.
 </p>
 <h3>Are there any risks involve din participating in this study?</h3>
-<p>You may be upset or uncomfortable answering some questions, but you may stop at any time if
-    you do not want to continue. There is the possibility that others may find out your answers, 
-    but we have put protections in place, such as encrypting your personal information before storing it,
-giving it as much protection as a password.</p>
+<p>
+  You may be upset or uncomfortable answering some questions, but you may stop
+  at any time if you do not want to continue. There is the possibility that
+  others may find out your answers, but we have put protections in place, such
+  as encrypting your personal information before storing it, giving it as much
+  protection as a password.
+</p>
 <h3>Are there any benefits to participating in this study?</h3>
-<p>You may not directly benefit from this study. 
-    However, you will be able to return and track your data over time. Your participation may contribute
-to researchers better understanding ME/CFS.</p>
+<p>
+  You may not directly benefit from this study. However, you will be able to
+  return and track your data over time. Your participation may contribute to
+  researchers better understanding ME/CFS.
+</p>
 
 <div class="container">
-<form method="post">
-    <ul style="display: inline-block; text-align: center;">
-        <li style="display: inline-block;">
-            <input type="checkbox" id="checkbox" name="consent_check" value="data"  >
-            <label for="checkbox"
-            title="If you don't check this box, your answers will only be stored temporarily to give you
-            a result, then erased once you close this webpage. ">
-            I agree to have my answers stored confidentially for analysis purposes.</label><br>
-        </li>
-        <li style="display: inline-block;">
-            <a class="question" title="If you don't check this box, your answers will only be stored temporarily to give you
-            a result, then erased once you close this webpage. ">?</a>
-        </li>
-    </ul><br>
-    <button class="button-home" type="submit" name="result" value="result" >Continue</button>
-</form>
+  <form method="post">
+    <ul style="display: inline-block; text-align: center">
+      <li style="display: inline-block">
+        <input
+          type="checkbox"
+          id="checkbox"
+          name="consent_check"
+          value="data"
+        />
+        <label
+          for="checkbox"
+          title="If you don't check this box, your answers will only be stored temporarily to give you
+            a result, then erased once you close this webpage. "
+        >
+          I agree to have my answers stored confidentially for analysis
+          purposes.</label
+        ><br />
+      </li>
+      <li style="display: inline-block">
+        <a
+          class="question"
+          title="If you don't check this box, your answers will only be stored temporarily to give you
+            a result, then erased once you close this webpage. "
+          >?</a
+        >
+      </li>
+    </ul>
+    <br />
+    <button class="button-home" type="submit" name="result" value="result">
+      Continue
+    </button>
+  </form>
 </div>
-</body>
 {% endblock %}
