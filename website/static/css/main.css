@@ -945,4 +945,12 @@ display: none;
 .change .bar3 {
   transform: translate(0, -11px) rotate(45deg);
 }
+
+  .navbar-links {
+    display: none;
+  }
+  .show-navbar-links {
+    display: block;
+  }
+
 }
