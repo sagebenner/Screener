@@ -884,6 +884,10 @@ display: none;
         margin-left: 20px;
         margin-right: 20px;
     }
+    h2 {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
     .meter {
         height: 40px;
 
