@@ -13,10 +13,23 @@
     <li >
     <a href="{{ url_for('screener_views.home') }}">Home</a>
      </li>
-        <li class="hamburger" >
+
+        <li class="hamburger" onclick="myFunction(this)">
+
             <div class="bar1"></div>
             <div class="bar2"></div>
-            <div class="bar3"></div></li>
+            <div class="bar3"></div>
+            <ul class="navbar-links">
+            <li >
+                <a href="{{ url_for('screener_views.home') }}">Home</a>
+                </li>
+           <li><a href="{{ url_for('aboutmecfs')}}">
+          About ME/CFS</a></li>
+            <li><a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/measures.aspx"
+      target="_blank">
+          About the DSQ</a></li>
+      <li><a href="{{ url_for('about') }}">About This Screener</a></li>
+        </ul></li>
   <li>
    <a href="{{ url_for('aboutmecfs')}}">About</a><ul class="submenu2">
       <li><a href="{{ url_for('aboutmecfs')}}">
@@ -88,4 +101,21 @@ while keeping the same number of domains as the full DSQ.">
    href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/measures.aspx"
   target="_blank"><!/a>
 </div>
+
 {% endblock %}
+
+<script>
+function myFunction(x) {
+  x.classList.toggle("change");
+}
+
+      const hamburger = document.querySelector('.hamburger');
+      const navbarLinks = document.querySelector('.navbar-links');
+
+      hamburger.addEventListener('click', () => {
+        navbarLinks.classList.toggle('show-navbar-links');
+      });
+</script>
+</body>
+</html>
+
