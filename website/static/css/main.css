@@ -887,4 +887,7 @@ display: none;
     .instructions {
         font-size: 20px;
     }
+    .message {
+        font-size: 0.4em;
+    }
 }
