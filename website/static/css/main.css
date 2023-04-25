@@ -894,4 +894,14 @@ from { width: 0; }
         font-size: 0.4em;
     }
 
+    .layout-one {
+        font-size: 1.2em;
+        width: 260px;
+        height: 100px;
+    }
+    .layout-one:hover {
+        height: 400px;
+        margin-bottom: -400px;
+    }
+
 }
