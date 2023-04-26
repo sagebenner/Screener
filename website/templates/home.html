@@ -14,7 +14,7 @@
     <a href="{{ url_for('screener_views.home') }}">Home</a>
      </li>
 
-        <li class="hamburger" onclick="myFunction(this)">
+        <li class="hamburger" >
 
             <div class="bar1"></div>
             <div class="bar2"></div>
@@ -101,21 +101,19 @@ while keeping the same number of domains as the full DSQ.">
    href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/measures.aspx"
   target="_blank"><!/a>
 </div>
+<script>
+const hamburger = document.querySelector('.hamburger');
+const navbarLinks = document.querySelector('.navbar-links');
 
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('show-navbar-links');
+  hamburger.classList.toggle('change');
+});
+
+</script>
 {% endblock %}
 
-<script>
-function myFunction(x) {
-  x.classList.toggle("change");
-}
 
-      const hamburger = document.querySelector('.hamburger');
-      const navbarLinks = document.querySelector('.navbar-links');
 
-      hamburger.addEventListener('click', () => {
-        navbarLinks.classList.toggle('show-navbar-links');
-      });
-</script>
-</body>
-</html>
+
 
