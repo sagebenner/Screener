@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<!doctype html>
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
+{% extends 'base.html' %}
 
- <body >
-
-
+{% block content %}
 <header >
     <ul class="menu">
     <li >
@@ -126,6 +121,4 @@ if you think you may be suffering from ME/CFS.</i></p>
 
 </ul>
 </div>
-</body>
-
-</html>
+{% endblock %}

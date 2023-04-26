@@ -1,90 +1,92 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
-
-<body>
-
+{% block content %}
 <form method="post">
-<div >
-    <p class="instructions"><i>For each question below, please select <b>one number for frequency</b> and <b>one number for severity.</b>
-    </i></p>
-    <h3> {{ pagenum }}. Sleep all day and stay awake all night</h3>
-</div>
+  <div>
+    <p class="instructions">
+      <i
+        >For each question below, please select
+        <b>one number for frequency</b> and <b>one number for severity.</b>
+      </i>
+    </p>
+    <h3>{{ pagenum }}. Sleep all day and stay awake all night</h3>
+  </div>
 
-    <div id="left" style="display: inline-block;width:50%;height:200px;float:left;">
-       <fieldset>
-        <legend><b>Frequency: </b>Throughout the past 6 months, how often have you had this symptom?</legend>
-        <ol start="0">
-            <li>
-                <input type="radio" id="f0" name="alldayf" value="0">
-                <label for="f0">None of the time</label>
-            </li>
-            <li>
-                <input type="radio" id="f1" name="alldayf" value="1">
-                <label for="f1">A little of the time</label>
-            </li>
-            <li>
-                <input type="radio" id="f2" name="alldayf" value="2">
-                <label for="f2">About half the time</label>
-            </li>
-            <li>
-                <input type="radio" id="f3" name="alldayf" value="3">
-                <label for="f3">Most of the time</label>
-            </li>
-            <li>
-                <input type="radio" id="f4" name="alldayf" value="4">
-                <label for="f4">All of the time</label>
-            </li>
-
-        </ol>
-    </fieldset>
-
-
-
-</div>
-
-
-
-<div id="right" style="display:inline-block; width:50%; height:200px;float:right;">
+  <div
+    id="left"
+    style="display: inline-block; width: 50%; height: 200px; float: left"
+  >
     <fieldset>
-        <legend><b>Severity: </b>Throughout the past 6 months, how much has this symptom bothered you? </legend>
-        <ol start="0">
-            <li>
-                <input type="radio" id="s0" name="alldays" value="0">
-                <label for="s0">Symptom not present</label>
-            </li>
-            <li>
-                <input type="radio" id="s1" name="alldays" value="1">
-                <label for="s1">Mild</label>
-            </li>
-            <li>
-                <input type="radio" id="s2" name="alldays" value="2">
-                <label for="s2">Moderate</label>
-            </li>
-            <li>
-                <input type="radio" id="s3" name="alldays" value="3">
-                <label for="s3">Severe</label>
-            </li>
-            <li>
-                <input type="radio" id="s4" name="alldays" value="4">
-                <label for="s4">Very severe</label>
-            </li>
-
-        </ol>
+      <legend>
+        <b>Frequency: </b>Throughout the past 6 months, how often have you had
+        this symptom?
+      </legend>
+      <ol start="0">
+        <li>
+          <input type="radio" id="f0" name="alldayf" value="0" />
+          <label for="f0">None of the time</label>
+        </li>
+        <li>
+          <input type="radio" id="f1" name="alldayf" value="1" />
+          <label for="f1">A little of the time</label>
+        </li>
+        <li>
+          <input type="radio" id="f2" name="alldayf" value="2" />
+          <label for="f2">About half the time</label>
+        </li>
+        <li>
+          <input type="radio" id="f3" name="alldayf" value="3" />
+          <label for="f3">Most of the time</label>
+        </li>
+        <li>
+          <input type="radio" id="f4" name="alldayf" value="4" />
+          <label for="f4">All of the time</label>
+        </li>
+      </ol>
     </fieldset>
+  </div>
 
-
-</div>
-<button type="submit" name="result" value="result">Next</button>
-
+  <div
+    id="right"
+    style="display: inline-block; width: 50%; height: 200px; float: right"
+  >
+    <fieldset>
+      <legend>
+        <b>Severity: </b>Throughout the past 6 months, how much has this symptom
+        bothered you?
+      </legend>
+      <ol start="0">
+        <li>
+          <input type="radio" id="s0" name="alldays" value="0" />
+          <label for="s0">Symptom not present</label>
+        </li>
+        <li>
+          <input type="radio" id="s1" name="alldays" value="1" />
+          <label for="s1">Mild</label>
+        </li>
+        <li>
+          <input type="radio" id="s2" name="alldays" value="2" />
+          <label for="s2">Moderate</label>
+        </li>
+        <li>
+          <input type="radio" id="s3" name="alldays" value="3" />
+          <label for="s3">Severe</label>
+        </li>
+        <li>
+          <input type="radio" id="s4" name="alldays" value="4" />
+          <label for="s4">Very severe</label>
+        </li>
+      </ol>
+    </fieldset>
+  </div>
+  <button type="submit" name="result" value="result">Next</button>
 </form>
 
 <div class="container">
-
-<p class="typed" > <i>{{ message }} </i></p>
+  <p class="typed"><i>{{ message }} </i></p>
 </div>
 
-</body>
 <div class="meter">
-  <span class="meter3span" style="--start:20%; width: 22.5%;" ></span>
+  <span class="meter3span" style="--start: 20%; width: 22.5%"></span>
 </div>
+{% endblock %}

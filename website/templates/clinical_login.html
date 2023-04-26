@@ -1,69 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<!DOCTYPE html>
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
+{% extends 'base.html' %}
 
+{% block title %}
+<title>Login</title>
+{% endblock %}
 
-
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<header></header>
-
-<body class="waterbackground">
+{% block content %}
 <form class="login" action="" method="post">
-    <div style="text-align: center; " >
-        <h2>Welcome to the online screener for Chronic Fatigue Syndrome (CFS) and Myalgic Encephalomyelitis (ME)</h2>
-      <ul style="display: inline-block; text-align: center; list-style-type: none;"><li style="display: inline-block;"><h3 class="ariel">
-          <i>Please enter your login information or continue as guest</i></h3></li>
-          <li style="display: inline-block;"><a class="question" title="">?</a></li>
+  <div style="text-align: center">
+    <h2>
+      Welcome to the online screener for Chronic Fatigue Syndrome (CFS) and
+      Myalgic Encephalomyelitis (ME)
+    </h2>
+    <ul
+      style="display: inline-block; text-align: center; list-style-type: none"
+    >
+      <li style="display: inline-block">
+        <h3 class="ariel">
+          <i>Please enter your login information or continue as guest</i>
+        </h3>
+      </li>
+      <li style="display: inline-block"><a class="question" title="">?</a></li>
+    </ul>
 
+    <input
+      class="login"
+      type="text"
+      placeholder="First name"
+      name="firstname"
+      value="{{
+          request.form.firstname }}"
+    />
+    <input
+      class="login"
+      type="text"
+      placeholder="Last name"
+      name="lastname"
+      value="{{
+          request.form.lastname }}"
+    />
+    <input
+      class="login"
+      type="email"
+      placeholder="Email"
+      name="email"
+      value="{{
+          request.form.email }}"
+    /><br /><br />
+    <button style="margin: auto" type="submit" name="result" value="login">
+      Login
+    </button>
+    <button style="margin: auto" type="submit" name="result" value="guest">
+      {{ cont }}
+    </button>
 
-         </ul>
+    <br /><br /><br /><br />
 
-
-
-
-
-
-
-
-        <input class="login" type="text" placeholder="First name" name="firstname" value="{{
-          request.form.firstname }}">
-          <input class="login" type="text" placeholder="Last name" name="lastname" value="{{
-          request.form.lastname }}">
-         <input class="login" type="email" placeholder="Email" name="email" value="{{
-          request.form.email }}"><br><br>
-        <button style="margin: auto; " type="submit" name="result" value="login" >Login</button>
-         <button style="margin: auto;" type="submit" name="result" value="guest" >{{ cont }}</button>
-
-
-
-          <br><br><br><br>
-
-        <button style="margin: auto; " type="submit" name="result" value="continue" >Continue</button>
-        <br>
-        <ul style="display: inline-block; text-align: center;">
-                       <li style="display: inline-block;"><input type="checkbox" id="checkbox" name="checkbox" value="data" checked >
-            <label for="checkbox"
-                   title="If you don't check this box, your answers will only be stored temporarily to give you
-        a result, then erased once you close this webpage. ">
-                I agree to have my answers stored confidentially for analysis purposes.</label><br>
-           </li><li style="display: inline-block;"><a class="question" title="If you don't check this box, your answers will only be stored temporarily to give you
-        a result, then erased once you close this webpage. ">?</a></li></ul> <br>
-        <div style="position: relative; bottom: 50px;">
+    <button style="margin: auto" type="submit" name="result" value="continue">
+      Continue
+    </button>
+    <br />
+    <ul style="display: inline-block; text-align: center">
+      <li style="display: inline-block">
+        <input
+          type="checkbox"
+          id="checkbox"
+          name="checkbox"
+          value="data"
+          checked
+        />
+        <label
+          for="checkbox"
+          title="If you don't check this box, your answers will only be stored temporarily to give you
+        a result, then erased once you close this webpage. "
+        >
+          I agree to have my answers stored confidentially for analysis
+          purposes.</label
+        ><br />
+      </li>
+      <li style="display: inline-block">
+        <a
+          class="question"
+          title="If you don't check this box, your answers will only be stored temporarily to give you
+        a result, then erased once you close this webpage. "
+          >?</a
+        >
+      </li>
+    </ul>
+    <br />
+    <div style="position: relative; bottom: 50px">
       {% if error %}
-        <p class="message"><strong>Error:</strong> {{ error }}
-      {% endif %}
-      {% if mesg %}
-       <div style="text-align: center; box-sizing: border-box; margin: 0;"><p class="message">
-            Successfully logged in! Please continue.
-      {% endif %}
+      <p class="message">
+        <strong>Error:</strong> {{ error }} {% endif %} {% if mesg %}
+      </p>
+
+      <div style="text-align: center; box-sizing: border-box; margin: 0">
+        <p class="message">
+          Successfully logged in! Please continue. {% endif %}
         </p>
-        </div>
+      </div>
     </div>
-    </div>
- </form>
-</body>
-</html>
+  </div>
+</form>
+{% endblock %}

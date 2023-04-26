@@ -7,5 +7,6 @@ flask_wtf
 pandas
 matplotlib
 mysqlclient
-flask_mysqldb
 gunicorn
+imblearn
+seaborn

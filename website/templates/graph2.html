@@ -1,9 +1,6 @@
-<!doctype html>
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
-<html>
+{% extends 'base.html' %}
 
- <body >
-
+{% block content %}
 <header >
     <ul class="menu">
     <li >
@@ -123,6 +120,4 @@
     Continue</b></button></li>
 </ul>
 </div>
-</body>
-
-</html>
+{% endblock %}
