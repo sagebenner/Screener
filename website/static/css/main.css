@@ -231,9 +231,9 @@ color: gray;
 .navbar-links {
   display: none;
   position: absolute;
-  left: -30%;
+  left: -80%;
   z-index: 999;
-  padding: 10%;
+  padding: 40%;
   padding-top: 0;
 
   margin: 0;
