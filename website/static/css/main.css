@@ -248,8 +248,7 @@ color: gray;
 .submenu2 {
   display: none;
   position: absolute;
-  top: 100%;
-  left: 0;
+  left: -15%;
   z-index: 999;
   padding: 0;
   margin: 0;
