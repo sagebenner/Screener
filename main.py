@@ -12,9 +12,9 @@ import base64
 from io import BytesIO
 import json
 # from wtforms.validators import InputRequired
-from flask_mysqldb import MySQL
 
-import MySQLdb.cursors
+
+
 import re
 from os import path
 
