@@ -7,7 +7,7 @@ import numpy as np
 
 short_form = Blueprint('short_form', __name__)
 
-from website import mysql
+
 message = "Please enter a response for both frequency and severity before continuing"
 
 @short_form.route('/soreness', methods=['post', 'get'])

@@ -19,7 +19,7 @@ import re
 from os import path
 
 # imports the flask app we configured in the websites folder:
-from website import create_app, mysql
+from website import create_app
 
 app = create_app()
 

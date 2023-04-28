@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from flask_mysqldb import MySQL
-from flask_session import Session
-import MySQLdb.cursors
 
-mysql = MySQL()
+from flask_session import Session
+
+
+
 
 def create_app():
     app = Flask(__name__)
@@ -12,8 +12,6 @@ def create_app():
     global session
     session = Session()
     session.init_app(app)
-
-    mysql.init_app(app)
     
     from .screener_views import screener_views
     from .login import login
