@@ -7,7 +7,7 @@ from io import BytesIO
 import json
 from flask_mysqldb import MySQL
 
-from website import mysql
+
 login = Blueprint('login', __name__)
 
 

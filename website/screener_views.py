@@ -7,8 +7,6 @@ import numpy as np
 
 screener_views = Blueprint('screener_views', __name__)
 
-from website import mysql
-
 message = "Please enter a response for both frequency and severity before continuing"
 
 
