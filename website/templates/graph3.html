@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<!doctype html>
-<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/main.css') }}"/>
+{% extends 'base.html' %}
 
- <body >
-
-
+{% block content %}
 <header >
     <ul class="menu">
     <li >
@@ -74,7 +69,7 @@
 </div>
 
 
-
+<div class="container">
     <div class="chart-center" >
   <figure id="chart"  ></figure>
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
@@ -83,7 +78,7 @@
   Plotly.plot('chart',graphs,{});
 </script>
 </div>
-
+</div>
 <div class="results" style="display: none;">
 
     <h3 style="margin: 0;">ME-ICC Assessment</h3><hr>
@@ -126,6 +121,4 @@ if you think you may be suffering from ME/CFS.</i></p>
 
 </ul>
 </div>
-</body>
-
-</html>
+{% endblock %}
