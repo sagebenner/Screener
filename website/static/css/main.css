@@ -230,6 +230,8 @@ color: gray;
 .menu li:hover .submenu2 {
   display: block;
   overflow: visible;
+  height: 240px;
+
 }
 
 .submenu {
@@ -237,24 +239,35 @@ color: gray;
   position: absolute;
   top: 100%;
   left: 0;
+
   z-index: 999;
   padding: 0;
   margin: 0;
   list-style: none;
   background-color: #0057B7;
   border: none;
+
 }
 
 .submenu2 {
   display: none;
   position: absolute;
-  left: -15%;
+  left: -25%;
+    height: 0px;
   z-index: 999;
   padding: 0;
   margin: 0;
+  top: 45px;
   list-style: none;
   background-color: #0057B7;
   border: none;
+  animation: dropdown;
+  animation-duration: 0.5s;
+}
+
+@keyframes dropdown {
+from {height: 0px; opacity: 0%;}
+to {height: 240px; opacity: 100%;}
 }
 
 .submenu li {
@@ -289,6 +302,7 @@ color: gray;
   padding: 5px;
   padding-top: 0;
   text-decoration: none;
+    margin-top: 0px;
 }
 
 .submenu2 li:hover {
