@@ -5,9 +5,9 @@ from wtforms import RadioField, SubmitField
 import base64
 from io import BytesIO
 import json
-from flask_mysqldb import MySQL
 
-from website import mysql
+
+
 login = Blueprint('login', __name__)
 
 
@@ -59,20 +59,9 @@ def log_in():
                 session['user'] = str(firstname)
                 print(session['user'])
                 email = str(request.form.get('email'))
-                cursor = mysql.connection.cursor()
 
-                cursor.execute('SELECT id FROM login WHERE email = %s', (email,))
-                row = cursor.fetchone()
-                print("row",row)
 
-                if row:
-                    print(row[0])
-                    session['user_id'] = row[0]
-                else:
-                    cursor.execute('INSERT INTO login (firstname, lastname, email) VALUES ( %s, %s, %s)',
-                                   (firstname, lastname, email))
-                    session['user_id'] = cursor.lastrowid
-                mysql.connection.commit()
+
 
                 mesg = "Successfully logged in. Please continue."
                 session['logged_in'] = True

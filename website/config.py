@@ -6,7 +6,4 @@ TESTING = True
 DEBUG = True
 SECRET_KEY = "development"
 SESSION_TYPE = 'filesystem'
-MYSQL_HOST = 'localhost'
-MYSQL_USER = 'root'
-MYSQL_PASSWORD = 'password'
-MYSQL_DB = 'dsq_screener'
+

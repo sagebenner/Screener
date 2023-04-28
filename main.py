@@ -12,14 +12,14 @@ import base64
 from io import BytesIO
 import json
 # from wtforms.validators import InputRequired
-from flask_mysqldb import MySQL
 
-import MySQLdb.cursors
+
+
 import re
 from os import path
 
 # imports the flask app we configured in the websites folder:
-from website import create_app, mysql
+from website import create_app
 
 app = create_app()
 
