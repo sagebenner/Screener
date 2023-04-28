@@ -185,6 +185,7 @@ def reduction():
         reduction = request.form.get('reduction')
         if reduction is not None:
             session['reduction'] = reduction
+            session['pagenum'] += 1
             return redirect(url_for('short_form.graph2'))
         else:
             return render_template("reduction.html", message=msg_reduction, pagenum=session['pagenum'])
