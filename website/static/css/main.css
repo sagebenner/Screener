@@ -848,3 +848,36 @@ from { width: 0; }
     display: none;
   }
 }
+@media only screen and (max-device-width: 800px) {
+    body {
+        font-size: 10px;
+    }
+
+    .button-home {
+        font-size: 1.5em;
+        width: auto;
+    }
+
+    fieldset {
+        border: none;
+        margin-bottom: 20px;
+        font-size: 1.3em;
+    }
+
+
+/* These are bandaid fixes; we will want to remove style tags in HTML pages*/
+
+
+
+    #left {
+        width: auto !important;
+        height: auto !important;
+        float: none !important;
+
+
+    }
+    #right {
+        width: auto !important;
+        height: auto !important;
+        float: none !important;
+    }
