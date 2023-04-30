@@ -910,3 +910,21 @@ from { width: 0; }
 
     .message {
         font-size: 0.4em;
+    }
+    .container div {
+        margin-right: 0;
+        margin-left: 0;
+    }
+    .layout-one {
+        font-size: 1.2em;
+        width: 95px;
+        height: 40px;
+    }
+    .layout-one:hover {
+        height: 200px;
+        margin-bottom: -200px;
+    }
+
+    div#stagethree a {
+        padding-top: 5px;
+    }
