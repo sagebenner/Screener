@@ -925,6 +925,57 @@ from { width: 0; }
         margin-bottom: -200px;
     }
 
+    .menu {
+        height: 50px;
+    }
+
     div#stagethree a {
         padding-top: 5px;
     }
+
+    .hamburger {
+        display: inline-block;
+
+    }
+    .bar1, .bar2, .bar3 {
+          width: 25px;
+          height: 2px;
+          background-color: white;
+          margin: 5px 0;
+          transition: 0.4s;
+    }
+    .change .bar1 {
+      transform: translate(0, 7px) rotate(-45deg);
+    }
+
+    /* Fade out the second bar */
+    .change .bar2 {opacity: 0;}
+
+    /* Rotate last bar */
+    .change .bar3 {
+      transform: translate(0, -7px) rotate(45deg);
+    }
+    .menu li a {
+    display: none;
+    }
+    .change .navbar-links {
+        display: inline-block;
+
+
+    }
+    .change .navbar-links a {
+        display: inline-block;
+
+    }
+    .show-navbar-links .hamburger .navbar-links {
+        display: block;
+        overflow: visible;
+
+    }
+    .menu li:hover .submenu2 {
+      display: none;
+      overflow: hidden;
+}
+
+
+}
