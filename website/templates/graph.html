@@ -1,11 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<header >
-    <ul class="menu">
+<header>
+  <ul class="menu">
+
     <li >
     <a href="{{ url_for('screener_views.home') }}">Home</a>
      </li>
+
+        <li class="hamburger" >
+
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+            <ul class="navbar-links">
+            <li >
+                <a href="{{ url_for('screener_views.home') }}">Home</a>
+                </li>
+           <li><a href="{{ url_for('aboutmecfs')}}">
+          About ME/CFS</a></li>
+            <li><a href="https://csh.depaul.edu/about/centers-and-institutes/ccr/myalgic-encephalomyelitis-cfs/Pages/measures.aspx"
+      target="_blank">
+          About the DSQ</a></li>
+      <li><a href="{{ url_for('about') }}">About This Screener</a></li>
+        </ul></li>
   <li>
    <a href="{{ url_for('aboutmecfs')}}">About</a><ul class="submenu2">
       <li><a href="{{ url_for('aboutmecfs')}}">
@@ -16,6 +34,8 @@
       <li><a href="{{ url_for('about') }}">About This Screener</a></li>
     </ul>
   </li>
+
+
  </ul>
 </header>
    <h3 class="ariel">Screener Results</h3>
@@ -94,4 +114,14 @@
 <p class="disclaimer"><i>Note: this is not a medical diagnosis. We advise you to consult with your physician or seek an ME/CFS specialist
 if you think you may be suffering from ME/CFS.</i></p>
 </div>
+<script>
+const hamburger = document.querySelector('.hamburger');
+const navbarLinks = document.querySelector('.navbar-links');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('show-navbar-links');
+  hamburger.classList.toggle('change');
+});
+
+</script>
 {% endblock %}
