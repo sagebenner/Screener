@@ -987,5 +987,7 @@ from { width: 0; }
     .results {
         width: 100%;
     }
-
+    .right-column {
+        flex: 0;
+    }
 }
