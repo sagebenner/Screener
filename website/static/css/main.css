@@ -343,6 +343,15 @@ text-decoration: underline;
   position: relative;
 }
 
+.two-buttons {
+white-space: nowrap;
+display: inline-block;
+left: 50%;
+}
+.two-buttons button {
+    margin-left: 0;
+}
+
 /* The contaner must be positioned relative: */
 .custom-select {
   position: relative;
