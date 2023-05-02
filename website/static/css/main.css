@@ -980,5 +980,8 @@ from { width: 0; }
       overflow: hidden;
 }
 
+    .chart-center {
+        width: 100%;
+    }
 
 }
