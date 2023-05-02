@@ -93,6 +93,51 @@ def diagnose2():
     categories = ['Fatigue', 'PEM', 'Sleep', 'Cognitive Problems', 'Pain', 'Gastro Problems',
                   'Orthostatic Intolerance', 'Circulatory Problems', 'Immune System', 'Neuroendocrine Problems']
 
+    # IOM assessment
+    iomfatiguecheck = "No"
+    iomreductioncheck = "No"
+    iompemcheck = "No"
+    iomsleepcheck = "No"
+    iomcogcheck = "No"
+    if int(session['fatiguescoref']) >= 2 and int(session['fatiguescores']) >= 2:
+        iomfatiguecheck = "Yes"
+    if int(session['reduction']) == 1:
+        iomreductioncheck = "Yes"
+    if (int(session['minexf']) >= 2 and int(session['minexs']) >= 2) or (
+            int(session['heavyf']) >= 2 and int(session['heavys']) >= 2) or \
+            (int(session['soref']) >= 2 and int(session['sores']) >= 2) or (
+            int(session['mentalf']) >= 2 and int(session['mentals']) >= 2) or \
+            (int(session['drainedf']) >= 2 and int(session['draineds']) >= 2):
+        iompemcheck = "Yes"
+    if (int(session['sleepf']) >= 2 and int(session['sleeps']) >= 2) or (
+            int(session['napf']) >= 2 and int(session['naps']) >= 2) or \
+            (int(session['fallf']) >= 2 and int(session['falls']) >= 2) or (
+            int(session['stayf']) >= 2 and int(session['stays']) >= 2) or \
+            (int(session['earlyf']) >= 2 and int(session['earlys']) >= 2) or (
+            int(session['alldayf']) >= 2 and int(session['alldays']) >= 2):
+        iomsleepcheck = "Yes"
+    if (int(session['lightsf']) >= 2 and int(session['lightss']) >= 2) or \
+        (int(session['rememberf']) >= 2 and int(session['remembers']) >= 2) or \
+        (int(session['attentionf']) >= 2 and int(session['attentions']) >= 2) or \
+        (int(session['wordf']) >= 2 and int(session['words']) >= 2) or (
+        int(session['understandf']) >= 2 and int(session['understands']) >= 2) or \
+        (int(session['focusf']) >= 2 and int(session['focuss']) >= 2) or (
+        int(session['visionf']) >= 2 and int(session['visions']) >= 2) or \
+        (int(session['depthf']) >= 2 and int(session['depths']) >= 2) or (
+        int(session['slowf']) >= 2 and int(session['slows']) >= 2) or \
+        (int(session['absentf']) >= 2 and int(session['absents']) >= 2):
+        iomcogcheck = "Yes"
+
+    if iomfatiguecheck == "Yes" and iomreductioncheck == "Yes" and iompemcheck == "Yes" and iomsleepcheck == "Yes" and iomcogcheck == "Yes":
+        iom_msg = "Your answers indicate you may meet the IOM Criteria for ME/CFS. To compare your" \
+                  " scores with more case definitions, continue to the next section"
+        iomdxcheck = "Met"
+
+    else:
+        iom_msg = 'Your responses do not meet the IOM Criteria for ME/CFS. To assess more case definitions, ' \
+                  'continue to the next section'
+        iomdxcheck = "Not met"
+
     # Canadian criteria assessment
     ccc_dx = False
 
@@ -385,7 +430,10 @@ def diagnose2():
                            ccc_msg=ccc_msg, ccc_fatiguecheck=ccc_fatiguecheck,
                            ccc_pemcheck=ccc_pemcheck, ccc_paincheck=ccc_paincheck, ccc_sleepcheck=ccc_sleepcheck,
                            ccc_cogcheck=ccc_cogcheck, ccc_autocheck=ccc_autocheck, ccc_immunecheck=ccc_immunecheck,
-                           ccc_neurocheck=ccc_neurocheck, ccc_dx=ccc_dx, ccc_reduction=ccc_reduction)
+                           ccc_neurocheck=ccc_neurocheck, ccc_dx=ccc_dx, ccc_reduction=ccc_reduction,
+                           iomfatiguecheck=iomfatiguecheck, iomreductioncheck=iomreductioncheck,
+                           iompemcheck=iompemcheck, iomdxcheck=iomdxcheck, iom_msg=iom_msg,
+                           iomsleepcheck=iomsleepcheck, iomcogcheck=iomcogcheck)
 
 
 @app.route('/graph')
