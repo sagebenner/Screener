@@ -984,4 +984,8 @@ from { width: 0; }
         width: 100%;
     }
 
+    .results {
+        max-width: 100%;
+    }
+
 }
