@@ -234,14 +234,14 @@ color: gray;
 
 }
 
-.submenu {
+.navbar-links {
   display: none;
   position: absolute;
-  top: 100%;
-  left: 0;
-
+  left: -80%;
   z-index: 999;
-  padding: 0;
+  padding: 40%;
+  padding-top: 0;
+
   margin: 0;
   list-style: none;
   background-color: #0057B7;
@@ -270,23 +270,21 @@ from {height: 0px; opacity: 0%;}
 to {height: 240px; opacity: 100%;}
 }
 
-.submenu li {
-  display: block;
+.navbar-links li {
+  display: inline-block;
 }
 
-.submenu li + li {
+.navbar-links li + li {
   margin: 0;
+  display: inline-block;
 }
 
-.submenu li a {
-  display: block;
-  padding: 5px;
+.navbar-links li a {
+  display: inline-block;
+  padding: 0px;
   padding-top: 0;
   text-decoration: none;
-}
-
-.submenu li:hover {
-  background-color: #00336b;
+  font-size: 1.3em;
 }
 
 .submenu2 li {
@@ -343,6 +341,16 @@ text-decoration: underline;
   margin-right: auto;
   margin-left: auto;
   position: relative;
+}
+
+.two-buttons {
+white-space: nowrap;
+display: flex;
+justify-content: center;
+
+}
+.two-buttons button {
+    margin-left: 0;
 }
 
 /* The contaner must be positioned relative: */
@@ -810,7 +818,7 @@ from { width: 0; }
     width: 100%;
     border: none;
     margin: auto;
-    position: absolute;
+    position: relative;
     top: 100px;
     margin-bottom: 5px;
   }
@@ -849,4 +857,151 @@ from { width: 0; }
   .disclaimer {
     display: none;
   }
+}
+@media only screen and (max-device-width: 800px) {
+    body {
+        font-size: 10px;
+    }
+
+    .button-home {
+        font-size: 1.5em;
+        width: auto;
+    }
+
+    fieldset {
+        border: none;
+        margin-bottom: 20px;
+        font-size: 1.3em;
+    }
+
+
+/* These are bandaid fixes; we will want to remove style tags in HTML pages*/
+
+
+
+    #left {
+        width: auto !important;
+        height: auto !important;
+        float: none !important;
+
+
+    }
+    #right {
+        width: auto !important;
+        height: auto !important;
+        float: none !important;
+    }
+
+    button {
+        font-size: 1.3em;
+
+    }
+
+
+
+    p {
+        margin-left: 20px;
+        margin-right: 20px;
+        font-size: 1.25em;
+    }
+    h2 {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    h3 {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    .meter {
+        height: 20px;
+
+    }
+
+    .instructions {
+        font-size: 20px;
+    }
+
+    .message {
+        font-size: 0.4em;
+    }
+    .container div {
+        margin-right: 0;
+        margin-left: 0;
+    }
+    .layout-one {
+        font-size: 1.2em;
+        width: 95px;
+        height: 40px;
+    }
+    .layout-one:hover {
+        height: 170px;
+        margin-bottom: -170px;
+
+    }
+    .layout-one:hover ul {
+         margin-left: -20px;
+    }
+
+    .menu {
+        height: 50px;
+    }
+
+    div#stagethree a {
+        padding-top: 5px;
+    }
+
+    .hamburger {
+        display: inline-block;
+
+    }
+    .bar1, .bar2, .bar3 {
+          width: 25px;
+          height: 2px;
+          background-color: white;
+          margin: 5px 0;
+          transition: 0.4s;
+    }
+    .change .bar1 {
+      transform: translate(0, 7px) rotate(-45deg);
+    }
+
+    /* Fade out the second bar */
+    .change .bar2 {opacity: 0;}
+
+    /* Rotate last bar */
+    .change .bar3 {
+      transform: translate(0, -7px) rotate(45deg);
+    }
+    .menu li a {
+    display: none;
+    }
+    .change .navbar-links {
+        display: inline-block;
+
+
+    }
+    .change .navbar-links a {
+        display: inline-block;
+
+    }
+    .show-navbar-links .hamburger .navbar-links {
+        display: block;
+        overflow: visible;
+
+    }
+    .menu li:hover .submenu2 {
+      display: none;
+      overflow: hidden;
+}
+
+    .chart-center {
+        width: 100%;
+    }
+
+    .results {
+        width: 100%;
+    }
+    .right-column {
+        flex: 0;
+    }
 }
