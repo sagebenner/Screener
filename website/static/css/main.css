@@ -860,7 +860,8 @@ from { width: 0; }
 }
 @media only screen and (max-device-width: 800px) {
     body {
-        font-size: 10px;
+        font-size: 11px;
+        font-weight: 500;
     }
 
     .button-home {
@@ -946,9 +947,6 @@ from { width: 0; }
         height: 50px;
     }
 
-    div#stagethree a {
-        padding-top: 5px;
-    }
 
     .hamburger {
         display: inline-block;
