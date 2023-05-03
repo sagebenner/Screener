@@ -934,8 +934,12 @@ from { width: 0; }
         height: 40px;
     }
     .layout-one:hover {
-        height: 200px;
-        margin-bottom: -200px;
+        height: 170px;
+        margin-bottom: -170px;
+
+    }
+    .layout-one:hover ul {
+         margin-left: -20px;
     }
 
     .menu {
