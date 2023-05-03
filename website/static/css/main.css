@@ -947,9 +947,6 @@ from { width: 0; }
         height: 50px;
     }
 
-    div#stagethree a {
-        padding-top: 5px;
-    }
 
     .hamburger {
         display: inline-block;
