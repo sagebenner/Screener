@@ -345,8 +345,6 @@ text-decoration: underline;
 
 .two-buttons {
 white-space: nowrap;
-display: inline-block;
-left: 50%;
 display: flex;
 justify-content: center;
 
@@ -820,7 +818,6 @@ from { width: 0; }
     width: 100%;
     border: none;
     margin: auto;
-    position: absolute;
     position: relative;
     top: 100px;
     margin-bottom: 5px;
