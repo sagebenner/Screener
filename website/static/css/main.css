@@ -862,6 +862,7 @@ from { width: 0; }
     body {
         font-size: 11px;
         font-weight: 500;
+        color: 1b1b1b;
     }
 
     .button-home {
