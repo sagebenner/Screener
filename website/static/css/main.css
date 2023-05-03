@@ -347,6 +347,9 @@ text-decoration: underline;
 white-space: nowrap;
 display: inline-block;
 left: 50%;
+display: flex;
+justify-content: center;
+
 }
 .two-buttons button {
     margin-left: 0;
